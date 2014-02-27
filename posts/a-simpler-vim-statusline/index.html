@@ -127,7 +127,7 @@ Note that the “<code>%!</code>” expression is evaluated in the context of th
 <p>This means that if we want to perform behavior specific to the window or buffer for which the statusline is being created, we should wrap that in a <code>%{}</code> expression block:</p>
 <figure class="codeblock"><pre><code class="highlight language-vim"><span class="k">let</span> stat .<span class="p">=</span> <span class="s2">&quot;%{&amp;modified ? &#39; +&#39; : &#39;&#39;}&quot;</span>
 </code></pre></figure>
-<p>Defining a function to construct the statusline isn’t as complicated as it may seem. Once the boilerplate is defined, it’s a very simple way of constructing a statusline, and in my opinion more <a href="https://github.com/blaenk/dots/blob/ad421186f38fedb46e1a630f08ac3eb994941c6d/vim/vimrc.ln#L166">organized and manageable</a> than typical, <a href="http://stackoverflow.com/a/5380230/101090">densely packed</a> statusline declarations. For example, here’s the code for showing the file-modified marker, where <code>Color</code> is a helper function that conditionally colors the passed content based on whether or not the window is active:</p>
+<p>Defining a function to construct the statusline isn’t as complicated as it may seem. Once the boilerplate is defined, it’s a very simple way of constructing a statusline, and in my opinion more <a href="https://github.com/blaenk/dots/blob/dfb34f1ad78f5aa25bc486d3c14c9a0ef24094bd/vim/.vimrc#L168">organized and manageable</a> than typical, <a href="http://stackoverflow.com/a/5380230/101090">densely packed</a> statusline declarations. For example, here’s the code for showing the file-modified marker, where <code>Color</code> is a helper function that conditionally colors the passed content based on whether or not the window is active:</p>
 <figure class="codeblock"><pre><code class="highlight language-vim"><span class="k">let</span> stat .<span class="p">=</span> Color<span class="p">(</span>isactive<span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s2">&quot;%{&amp;modified ? &#39; +&#39; : &#39;&#39;}&quot;</span><span class="p">)</span>
 </code></pre></figure>
 <p>Here’s what the modified, paste mode, and read-only markers look like:</p>
@@ -151,7 +151,7 @@ Note that the “<code>%!</code>” expression is evaluated in the context of th
   <div class="meta">
     <div class="date"><i class="fa fa-calendar fa-fw"></i> December 14, 2013</div>
     <div class="tags"><i class="fa fa-tags fa-fw"></i> <a href="/tags/vim/">Vim</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/a-simpler-vim-statusline.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/e4973f3' title='yet again update to new approach'>e4973f3</a></span></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/a-simpler-vim-statusline.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/c463cf8' title='update source link'>c463cf8</a></span></div>
   </div>
 </article>
 <section id="comment">
