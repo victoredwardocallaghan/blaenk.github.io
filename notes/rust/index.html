@@ -1,0 +1,939 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Rust - Blaenk Denum</title>
+  <meta name="author" content="Jorge Israel Peña">
+  <meta name="description" content="AKA Blaenk Denum">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="/favicon.png" rel="shortcut icon">
+  <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:900italic,900,700italic,400italic,700,400,300italic,300' rel='stylesheet' type='text/css'>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+  <link href='/css/screen.css' rel='stylesheet' type='text/css' media='screen' />
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src='/js/blaenk.js' type='text/javascript'></script>
+</head>
+<body>
+  <div id="strip"></div>
+  <header id="header" class="inner">
+    <div id="stamp">
+      <h1><a href="/">Jorge Israel Peña</a></h1>
+      <h4>AKA BLAENK DENUM</h4>
+    </div>
+    <nav id="main-nav">
+      <ul class="main">
+        <li><a href="/about/">About</a></li>
+        <li><a href="/work/">Work</a></li>
+        <li><a href="/lately/">Lately</a></li>
+        <li><a href="/notes/">Notes</a></li>
+        <li><a id="search_btn">Search</a></li>
+      </ul>
+      <form class="desk_search" action="http://google.com/search" method="get">
+        <input type="text" name="q" results="0" placeholder="Search... (Click 'Search' to hide)" autocomplete="off" spellcheck="false">
+        <input type="hidden" name="q" value="site:blaenkdenum.com">
+      </form>
+    </nav>
+    <nav id="mobile-nav">
+      <div class="alignleft menu">
+        <a class="button">Menu</a>
+        <div class="container">
+          <ul class="main">
+            <li><a href="/about/">About</a></li>
+            <li><a href="/work/">Work</a></li>
+            <li><a href="/lately/">Lately</a></li>
+            <li><a href="/notes/">Notes</a></li>
+            <li><a id="search_btn">Search</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="alignright search">
+        <a class="button"></a>
+        <div class="container">
+          <form action="http://google.com/search" method="get">
+            <input type="text" name="q" results="0">
+            <input type="hidden" name="q" value="site:blaenkdenum.com">
+          </form>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <div id="content" class="inner">
+    <article class="post">
+  <h2 class="title"><a href="/notes/rust/"><span>Rust</span></a></h2>
+  <div class="entry-content"><p>I took a shot at <a href="/notes/go/">learning Go</a> recently and I found its simplicity to be refreshing. I do like the language, but I found myself reinventing too many wheels that Go didn’t have built-in for sake of simplicity. I found that the simplicity the language strives for sometimes comes at the expense of the developer, for no particularly worthwhile benefit. Contrast this to Haskell, for example, where it might take time to ensure that everything is correct to even compile, but the process is worthwhile because it provides certain correctness guarantees about the program.</p>
+<p>My main resources are the <a href="http://static.rust-lang.org/doc/master/tutorial.html">tutorial</a> and <a href="http://static.rust-lang.org/doc/master/rust.html">manual</a>. As usual, oftentimes some things will be directly from the source, with my commentary surrounding it.</p>
+<nav id="toc"><p>Contents</p><ol><li><a href="#pattern-matching">Pattern Matching</a></li><li><a href="#structures">Structures</a></li><li><a href="#enums">Enums</a></li><li><a href="#tuples">Tuples</a></li><li><a href="#functions">Functions</a></li><li><a href="#destructors">Destructors</a></li><li><a href="#ownership">Ownership</a></li><li><a href="#boxes">Boxes</a></li><li><a href="#move-semantics">Move Semantics</a></li><li><a href="#references">References</a></li><li><a href="#parameterized-types">Parameterized Types</a></li><li><a href="#large-parameters-and-return-values">Large Parameters and Return Values</a></li><li><a href="#more-on-references">More on References</a></li><li><a href="#vectors-and-strings">Vectors and Strings</a></li><li><a href="#ownership-escape-hatches">Ownership Escape Hatches</a></li><li><a href="#closures">Closures</a></li><li><a href="#methods">Methods</a></li><li><a href="#generics">Generics</a></li><li><a href="#traits">Traits</a></li><li><a href="#modules">Modules</a></li><li><a href="#named-lifetimes">Named Lifetimes</a></li><li><a href="#tasks">Tasks</a><ol><li><a href="#spawning">Spawning</a></li><li><a href="#channels">Channels</a></li><li><a href="#futures">Futures</a></li><li><a href="#arc">Arc</a></li><li><a href="#failure">Failure</a></li><li><a href="#duplex-streams">Duplex Streams</a></li></ol></li><li><a href="#iterators">Iterators</a></li></ol></nav>
+<h1 id="pattern-matching">Pattern Matching</h1>
+<p>Pattern matching takes the place of regular switch statements. Pattern matches don’t fall through. The pipe operator <code>|</code> can be used to combine multiple patterns into one arm. The underscore <code>_</code> is a wildcard pattern as in Haskell. As in Haskell, matches must be exhaustive. Every case is separated by commas, unless block expressions are used. As in Haskell, pattern matching can be used to bind values. Pattern guards are added using <code>if</code> expressions:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">match</span> <span class="n">number</span> <span class="p">{</span>
+  <span class="m">0</span>     <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;zero&quot;</span><span class="p">),</span>
+  <span class="m">1</span> <span class="o">|</span> <span class="m">2</span> <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;one or two&quot;</span><span class="p">),</span>
+  <span class="m">3.</span><span class="p">.</span><span class="m">10</span> <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;three to ten&quot;</span><span class="p">),</span>
+  <span class="n">_</span>     <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;something else&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h1 id="structures">Structures</h1>
+<p>Structures are laid out in memory the same as as they are in C. Structures are constructed similar to Go structures. Structures have inherited mutability. Structures can be pattern matched on to destructure their fields.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span>
+  <span class="n">x</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span>
+  <span class="n">y</span><span class="o">:</span> <span class="k">f64</span>
+<span class="p">}</span>
+
+<span class="k">match</span> <span class="n">mypoint</span> <span class="p">{</span>
+  <span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="p">,</span> <span class="p">..</span> <span class="p">}</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">to_str</span><span class="p">())</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h1 id="enums">Enums</h1>
+<p>Enums in Rust feel similar to algebraic datatypes in Haskell. Enums can be C-like, in which case they can optionally be given specific values. The specific values can be converted to an <code>int</code> using the cast operator <code>as</code>. Enum variants can be structs as well:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">enum</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="n">Circle</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="k">f64</span><span class="p">)</span>
+  <span class="n">Rectangle</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="n">Point</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">enum</span> <span class="n">Direction</span> <span class="p">{</span>
+  <span class="n">Left</span><span class="p">,</span>
+  <span class="n">Right</span>
+<span class="p">}</span>
+
+<span class="k">enum</span> <span class="n">Color</span> <span class="p">{</span>
+  <span class="n">Red</span> <span class="o">=</span> <span class="mh">0xff0000</span><span class="p">,</span>
+  <span class="n">Green</span> <span class="o">=</span> <span class="mh">0x00ff00</span><span class="p">,</span>
+  <span class="n">Blue</span> <span class="o">=</span> <span class="mh">0x0000ff</span>
+<span class="p">}</span>
+
+<span class="cp">#[feature(struct_variant)]</span>
+<span class="k">enum</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="n">Circle</span> <span class="p">{</span> <span class="n">center</span><span class="o">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">radius</span><span class="o">:</span> <span class="k">f64</span> <span class="p">},</span>
+  <span class="n">Rectangle</span> <span class="p">{</span> <span class="n">top_left</span><span class="o">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">bottom_right</span><span class="o">:</span> <span class="n">Point</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h1 id="tuples">Tuples</h1>
+<p>Tuples are available and are most similar to Haskell’s. <strong>Tuple structs</strong> behave like both structs and tuples. They’re like tuples with names. Tuple structs with a single field are similar to Haskell newtypes and are often called the same thing in Rust. These provide a distinct type from the type they wrap. Newtypes’ wrapped values can be extracted using the dereference operator <code>*</code>:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">mytup</span><span class="o">:</span> <span class="p">(</span><span class="k">int</span><span class="p">,</span> <span class="k">int</span><span class="p">,</span> <span class="k">f64</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="m">20</span><span class="p">,</span> <span class="m">30.0</span><span class="p">)</span>
+
+<span class="k">struct</span> <span class="n">MyTup</span><span class="p">(</span><span class="k">int</span><span class="p">,</span> <span class="k">int</span><span class="p">,</span> <span class="k">f64</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">mytup</span><span class="o">:</span> <span class="n">MyTup</span> <span class="o">=</span> <span class="n">Mytup</span><span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="m">20</span><span class="p">,</span> <span class="m">30.0</span><span class="p">)</span>
+
+<span class="k">struct</span> <span class="n">GizmoId</span><span class="p">(</span><span class="k">int</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">my_gizmo_id</span><span class="o">:</span> <span class="n">GizmoId</span> <span class="o">=</span> <span class="n">GizmoId</span><span class="p">(</span><span class="m">10</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">id_int</span><span class="o">:</span> <span class="k">int</span> <span class="o">=</span> <span class="o">*</span><span class="n">my_gizmo_id</span><span class="p">;</span>
+</code></pre></figure>
+<h1 id="functions">Functions</h1>
+<p>Function definitions are similar to Scala’s, with the type following the name of the parameter. The return type follows the parameter list as in Scala, but more like C++11’s <a href="http://en.wikipedia.org/wiki/C++11#Alternative_function_syntax">alternative function syntax</a>. If the top-level block of the function produces an expression, the <code>return</code> statement may be omitted. Functions that return nothing return nil <code>()</code>, which can be omitted from the function declaration. However, ending the function with a semicolon is also equivalent to returning <code>()</code>. Function arguments can be destructured, but the patterns must be irrefutable:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">line</span><span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">int</span><span class="p">,</span> <span class="n">b</span><span class="o">:</span> <span class="k">int</span><span class="p">,</span> <span class="n">x</span><span class="o">:</span> <span class="k">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">int</span> <span class="p">{</span> <span class="n">a</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">b</span> <span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">do_nothing_the_hard_way</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="p">();</span> <span class="p">}</span>
+<span class="k">fn</span> <span class="n">do_nothing_the_easy_way</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="k">fn</span> <span class="n">do_nothing_another_way</span><span class="p">(</span><span class="n">a</span><span class="o">:</span> <span class="k">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="p">()</span> <span class="p">{</span> <span class="n">a</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">first</span><span class="p">((</span><span class="n">value</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span><span class="o">:</span> <span class="p">(</span><span class="k">int</span><span class="p">,</span> <span class="k">f64</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="k">int</span> <span class="p">{</span> <span class="n">value</span> <span class="p">}</span>
+</code></pre></figure>
+<p>In short, blocks such as <code>{ expr1; expr2 }</code> are considered a single expression and evaluate to the result of the last expression if it’s not followed by a semicolon, otherwise the block evaluates to <code>()</code>.</p>
+<h1 id="destructors">Destructors</h1>
+<p>Destructors are functions responsible for cleaning up resources used by an object that is no longer accessible. Objects are never accessible after their destructor has been called, so it’s not possible to fail from accessing freed resources. Further, when a task fails, destructors of all objects in the task are called.</p>
+<p>The <code>~</code> sigil represents a unique handle for a memory allocation on the heap:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="p">{</span>
+  <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="o">~</span><span class="m">10</span><span class="p">;</span> <span class="c1">// allocated on the heap</span>
+<span class="p">}</span>
+<span class="c1">// destructor frees heap memory as soon as `y` goes out of scope</span>
+</code></pre></figure>
+<h1 id="ownership">Ownership</h1>
+<p>An object’s lifetime is determined by its owner, either a variable or a task-local garbage collector. Ownership is recursive so that mutability is inherited recursively and a destructor destroys the contained tree of owned objects. Variables are to-level owners and destroy teh contained object when they go out of scope:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Foo</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="k">int</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="o">~</span><span class="k">int</span> <span class="p">}</span>
+
+<span class="p">{</span>
+  <span class="c1">// `a` is owner of struct and its fields</span>
+  <span class="k">let</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Foo</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="m">5</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="o">~</span><span class="m">10</span> <span class="p">};</span>
+<span class="p">}</span>
+<span class="c1">// `a` goes out of scope, destructor for y&#39;s `~int` is called</span>
+
+<span class="c1">// `b` is mutable, so the objects it owns are also mutable</span>
+<span class="k">let</span> <span class="k">mut</span> <span class="n">b</span> <span class="o">=</span> <span class="n">Foo</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="m">5</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="o">~</span><span class="m">10</span> <span class="p">};</span>
+<span class="n">b</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="m">10</span>
+</code></pre></figure>
+<h1 id="boxes">Boxes</h1>
+<p>Owned boxes are denoted by the <code>~</code> sigil and they use a dynamic memory allocation so that it’s always the size of a pointer, regardless of the contained type. This can be used to construct a recursive type, like a list:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">enum</span> <span class="n">List</span> <span class="p">{</span>
+  <span class="n">Cons</span><span class="p">(</span><span class="k">u32</span><span class="p">,</span> <span class="o">~</span><span class="n">List</span><span class="p">),</span>
+  <span class="n">Nil</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">list</span> <span class="o">=</span> <span class="n">Cons</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">2</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="o">~</span><span class="n">Nil</span><span class="p">)));</span>
+</code></pre></figure>
+<p>The <code>list</code> represents an owned tree of values.</p>
+<h1 id="move-semantics">Move Semantics</h1>
+<p>Move semantics in Rust is similar to <a href="/notes/cpp#move-semantics">C++11 move semantics</a>, where the “move” refers to moving ownership. Rust performs a shallow copy for parameter passing, assignment, and returning from functions. Performing such a shallow copy is treated by Rust as “moving ownership” of the value, so that the original source location can no longer be used unless it is reinitialized. A move can be avoided by cloning:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">Nil</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">xs</span><span class="p">;</span>
+
+<span class="c1">// error if attempt to use `xs`</span>
+
+<span class="n">xs</span> <span class="o">=</span> <span class="n">Nil</span><span class="p">;</span> <span class="c1">// xs can be used again</span>
+
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="o">~</span><span class="m">5</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span> <span class="c1">// y is a newly allocated box</span>
+<span class="k">let</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// no new memory alloc&#39;d, x can no longer be used</span>
+</code></pre></figure>
+<p>Mutability can be changed by moving it to a new owner:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">r</span> <span class="o">=</span> <span class="o">~</span><span class="m">13</span><span class="p">;</span>
+<span class="k">let</span> <span class="k">mut</span> <span class="n">s</span> <span class="o">=</span> <span class="n">r</span><span class="p">;</span> <span class="c1">// box becomes mutable</span>
+<span class="o">*</span><span class="n">s</span> <span class="o">+=</span> <span class="m">1</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// box becomes immutable</span>
+</code></pre></figure>
+<h1 id="references">References</h1>
+<p>References are non-owning views of a value which are obtained using the address-of operator <code>&amp;</code> and dereferenced using the <code>*</code> operator. In patterns, the <code>ref</code> keyword can be used to bind a variable name by reference rather than by value. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">eq</span><span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">List</span><span class="p">,</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span>
+  <span class="k">match</span> <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="p">{</span>
+    <span class="p">(</span><span class="o">&amp;</span><span class="n">Nil</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Nil</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+    <span class="p">(</span><span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_xs</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_ys</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="o">=&gt;</span> <span class="n">eq</span><span class="p">(</span><span class="n">next_xs</span><span class="p">,</span> <span class="n">next_ys</span><span class="p">),</span>
+    <span class="n">_</span> <span class="o">=&gt;</span> <span class="k">false</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">Cons</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="o">~</span><span class="n">Nil</span><span class="p">));</span>
+<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">Cons</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="o">~</span><span class="n">Nil</span><span class="p">));</span>
+<span class="k">assert</span><span class="o">!</span><span class="p">(</span><span class="n">eq</span><span class="p">(</span><span class="o">&amp;</span><span class="n">xs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ys</span><span class="p">));</span>
+</code></pre></figure>
+<h1 id="parameterized-types">Parameterized Types</h1>
+<p>Types can be parameterized similar to C++ class templates:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">enum</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">Const</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="o">~</span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">),</span>
+  <span class="n">Nil</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">prepend</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">value</span><span class="o">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">Cons</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">~</span><span class="n">xs</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>The compiler can infer the type of a list like this:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">Nil</span><span class="p">;</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">10</span><span class="p">);</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">20</span><span class="p">);</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">30</span><span class="p">);</span>
+</code></pre></figure>
+<p>However, it’s also possible to explicitly annotate the types:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">xs</span><span class="o">:</span> <span class="n">List</span><span class="o">&lt;</span><span class="k">int</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">Nil</span><span class="o">::&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="o">::&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">10</span><span class="p">);</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="o">::&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">20</span><span class="p">);</span>
+<span class="n">xs</span> <span class="o">=</span> <span class="n">prepend</span><span class="o">::&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="m">30</span><span class="p">);</span>
+</code></pre></figure>
+<p>The list equality function can be updated for this generic list by adding a trait bound of <code>Eq</code> on the element type and adding <code>ref</code> annotations to avoid moving out the element types. In fact, we might as well implement the <code>Eq</code> trait for this generic list already:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">impl</span><span class="o">&lt;</span><span class="n">T</span><span class="o">:</span> <span class="n">Eq</span><span class="o">&gt;</span> <span class="n">Eq</span> <span class="k">for</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">eq</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span>
+    <span class="k">match</span> <span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="p">{</span>
+      <span class="p">(</span><span class="o">&amp;</span><span class="n">Nil</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Nil</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
+      <span class="p">(</span><span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="k">ref</span> <span class="n">x</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_xs</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="k">ref</span> <span class="n">y</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_ys</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="o">=&gt;</span> <span class="n">next_xs</span> <span class="o">==</span> <span class="n">next_ys</span><span class="p">,</span>
+      <span class="n">_</span> <span class="o">=&gt;</span> <span class="k">false</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h1 id="large-parameters-and-return-values">Large Parameters and Return Values</h1>
+<p>It’s not necessary to worry about manually boxing large return values or arguments, they are essentially passed by reference if they are larger than the size of the machine’s register. To quote the tutorial:</p>
+<blockquote>
+<hr />
+<div class="padded-quote">
+<p>A large value is returned via a hidden output parameter, and the decision on where to place the return value should be left to the caller</p>
+</div>
+<hr />
+</blockquote>
+<p>What this essentially means is that if for example function <code>foo()</code> returns <code>BigStruct</code>, the compiler will pass <code>foo()</code> a pointer to an uninitialized <code>BigStruct</code> in the local scope, something like:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">x</span><span class="o">:</span> <span class="n">BigStruct</span><span class="p">;</span> <span class="c1">// uninitialized</span>
+<span class="n">foo</span><span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">);</span> <span class="c1">// as if type: foo(_ret: &amp;mut BigStruct)</span>
+</code></pre></figure>
+<p>This allows the caller to decide where to place the return value, for example:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">foo</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="k">u64</span><span class="p">,</span> <span class="k">u64</span><span class="p">,</span> <span class="k">u64</span><span class="p">,</span> <span class="k">u64</span><span class="p">,</span> <span class="k">u64</span><span class="p">,</span> <span class="k">u64</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">5</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="o">~</span><span class="n">foo</span><span class="p">();</span> <span class="c1">// allocates ~ box and writes u64&#39;s directly to it</span>
+</code></pre></figure>
+<h1 id="more-on-references">More on References</h1>
+<p>Referneces don’t imply ownership, they’re “borrowed”. Reference parameters are often used to allow functions to work with all manner of different allocated types.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">distance</span><span class="p">(</span><span class="n">p1</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Point</span><span class="p">,</span> <span class="n">p2</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">p1</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">p2</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
+  <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">p1</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">p2</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
+  <span class="n">sqrt</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>This can be used on stack-allocated variables by using the address-of operator <code>&amp;</code> to borrow the local variable, to create an alias for it, i.e. another route to the same data. Managed and owned boxes, on the other hand, are automatically converted to references, in which case the “borrowed” metaphor is more like “lent out”.</p>
+<p>If the contents of a variable are lent out then the variable can’t be sent to another task. Also, no actions can be taken that may cause the borrowed value to be freed or to change its type. It’s necessary to wait for the borrowed value to be returned, i.e. reference to go out of scope, before making full use of it again.</p>
+<p>Furthermore, the act of lending immutable pointers to variables freezes the objects they point to and prevents their mutation until the reference is destroyed (i.e. out of scope):</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">x</span> <span class="o">=</span> <span class="m">5</span><span class="p">;</span>
+<span class="p">{</span>
+  <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">;</span> <span class="c1">// x is frozen</span>
+<span class="p">}</span>
+<span class="c1">// x is unfrozen</span>
+</code></pre></figure>
+<p>Pointers and boxes are uniformly dereferenced with <code>*</code>. The pointer <code>borrowed</code> can be read as taking the reference of the mutable <code>value</code>, that is, the <code>mut</code> is part of the name. Note that the precedence levels of <code>*</code> and <code>.</code> are similar to those in C/C++, making for the awkward parenthesized dereferencing syntax. Unlike C/C++, there is no <code>-&gt;</code> shortcut. Instead, there is automatic pointer dereferencing through <code>*</code> and <code>[]</code>, which applies to any number of levels of indirection:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">owned</span> <span class="o">=</span> <span class="o">~</span><span class="m">20</span><span class="p">;</span>
+<span class="k">let</span> <span class="k">mut</span> <span class="n">value</span> <span class="o">=</span> <span class="m">30</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">borrowed</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="n">value</span><span class="p">;</span>
+
+<span class="o">*</span><span class="n">owned</span> <span class="o">=</span> <span class="o">*</span><span class="n">borrowed</span> <span class="o">+</span> <span class="m">100</span><span class="p">;</span>
+<span class="o">*</span><span class="n">borrowed</span> <span class="o">=</span> <span class="m">1000</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">point</span> <span class="o">&amp;@~</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="m">10.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">20.0</span> <span class="p">};</span>
+<span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{:f}&quot;</span><span class="p">,</span> <span class="n">point</span><span class="p">.</span><span class="n">x</span><span class="p">);</span> <span class="c1">// dereferences all three levels</span>
+</code></pre></figure>
+<h1 id="vectors-and-strings">Vectors and Strings</h1>
+<p>Fixed-size vectors are unboxed blocks of memory that owns the elements it contains.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">fixed_size</span><span class="o">:</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">five_zeroes</span><span class="o">:</span> <span class="p">[</span><span class="k">int</span><span class="p">,</span> <span class="p">..</span><span class="m">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="m">0</span><span class="p">,</span> <span class="p">..</span><span class="m">5</span><span class="p">];</span>
+</code></pre></figure>
+<p>Unique vectors are dynamically-sized and have a destructor that cleans up the allocated memory on the heap. Unique vectors also own the elements they contain.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">numbers</span> <span class="o">=</span> <span class="o">~</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="n">numbers</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="m">4</span><span class="p">);</span>
+
+<span class="k">let</span> <span class="n">more_numbers</span><span class="o">:</span> <span class="o">~</span><span class="p">[</span><span class="k">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">numbers</span><span class="p">;</span>
+</code></pre></figure>
+<p>Strings are represented as vectors of <code>u8</code> with a guarantee of containing a valid UTF-8 sequence.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">string</span> <span class="o">=</span> <span class="o">~</span><span class="s">&quot;fo&quot;</span><span class="p">;</span>
+<span class="n">string</span><span class="p">.</span><span class="n">push_char</span><span class="p">(</span><span class="sc">&#39;o&#39;</span><span class="p">);</span>
+</code></pre></figure>
+<p>Slices point into blocks of memory and don’t have ownership over the elements. Other vector types coerce to slices. An unadorned string literal is an immutable string slice:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="k">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">xs</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">three</span> <span class="o">=</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">zs</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="k">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">three</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;foobar&quot;</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">view</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">str</span> <span class="o">=</span> <span class="n">string</span><span class="p">.</span><span class="n">slice</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">3</span><span class="p">);</span>
+</code></pre></figure>
+<p>Mutable slices exist, but none for strings, since strings are a multi-byte encoding of Unicode code points, meaning they can’t be freely mutated without the ability to alter the length, something that can’t be done via slices, which simply provide a window.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">view</span> <span class="o">=</span> <span class="n">xs</span><span class="p">.</span><span class="n">mut_slice</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">);</span>
+<span class="n">view</span><span class="p">[</span><span class="m">0</span><span class="p">]</span> <span class="o">=</span> <span class="m">5</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="p">[</span><span class="k">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="k">mut</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+</code></pre></figure>
+<p>Vectors can be destructured using pattern matching:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">numbers</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="k">int</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">score</span> <span class="o">=</span> <span class="k">match</span> <span class="n">numbers</span> <span class="p">{</span>
+  <span class="p">[]</span> <span class="o">=&gt;</span> <span class="m">0</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">*</span> <span class="m">10</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">*</span> <span class="m">6</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="m">4</span><span class="p">,</span>
+  <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="p">..</span><span class="n">rest</span><span class="p">]</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">*</span> <span class="m">5</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="m">3</span> <span class="o">+</span> <span class="n">c</span> <span class="o">*</span> <span class="m">2</span> <span class="o">+</span> <span class="n">rest</span><span class="p">.</span><span class="n">len</span><span class="p">()</span> <span class="k">as</span> <span class="k">int</span>
+<span class="p">};</span>
+</code></pre></figure>
+<h1 id="ownership-escape-hatches">Ownership Escape Hatches</h1>
+<p>There are other ownership strategies that can be employed, such as task-local garbage collected and reference counted. Reference counted ownership <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> is possible through <code>std::rc::Rc</code>:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="n">rc</span><span class="o">::</span><span class="n">Rc</span><span class="p">;</span>
+
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">Rc</span><span class="o">::</span><span class="n">new</span><span class="p">([</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">]);</span>
+<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span> <span class="c1">// a new owner</span>
+<span class="k">let</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// moves x into z</span>
+
+<span class="n">assert_eq</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">z</span><span class="p">.</span><span class="n">borrow</span><span class="p">(),</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">]);</span>
+
+<span class="k">let</span> <span class="k">mut</span> <span class="n">a</span> <span class="o">=</span> <span class="n">Rc</span><span class="o">::</span><span class="n">new</span><span class="p">([</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">]);</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">z</span><span class="p">;</span> <span class="c1">// variable is mutable, not its contents</span>
+</code></pre></figure>
+<p>There are also garbage collected pointers via <code>std::gc::Gc</code> under ownership of a task-local garbage collector. These pointers allow the creation of cycles. Individual <code>Gc</code> pointers don’t have destructors.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="n">gc</span><span class="o">::</span><span class="n">Gc</span><span class="p">;</span>
+
+<span class="c1">// fixed-sized array allocated in garbage-collected box</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">Gc</span><span class="o">::</span><span class="n">new</span><span class="p">([</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">]);</span>
+<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span> <span class="c1">// doesn&#39;t perform a move, unlike Rc</span>
+<span class="k">let</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+
+<span class="n">assert_eq</span><span class="o">!</span><span class="p">(</span><span class="o">*</span><span class="n">z</span><span class="p">.</span><span class="n">borrow</span><span class="p">(),</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">]);</span>
+</code></pre></figure>
+<p>With shared ownership, mutability can’t be inherited so the boxes are always immutable. Dynamic mutability is possible via types like <code>std::cell::Cell</code>. <code>Rc</code> and <code>Gc</code> types are not sendable, so they can’t be used to share memory between tasks. This is instead possible via the <code>extra::arc</code> module.</p>
+<h1 id="closures">Closures</h1>
+<p>Regular, named functions don’t close over their environment, but closures do.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">call_closure_with_ten</span><span class="p">(</span><span class="n">b</span><span class="o">:</span> <span class="o">|</span><span class="k">int</span><span class="o">|</span><span class="p">)</span> <span class="p">{</span> <span class="n">b</span><span class="p">(</span><span class="m">10</span><span class="p">);</span> <span class="p">}</span>
+
+<span class="k">let</span> <span class="n">captured_var</span> <span class="o">=</span> <span class="m">20</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">closure</span> <span class="o">=</span> <span class="o">|</span><span class="n">arg</span><span class="o">|</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;captured_var={}, arg={}&quot;</span><span class="p">,</span> <span class="n">captured_var</span><span class="p">,</span> <span class="n">arg</span><span class="p">);</span>
+
+<span class="n">call_closure_with_ten</span><span class="p">(</span><span class="n">closure</span><span class="p">);</span>
+</code></pre></figure>
+<p>Stack closures are a specific kind of closure that directly accesses local variables in the enclosing scope, making them very efficient. To ensure that they don’t outlive the current scope, they aren’t first class, so they can’t be assigned to values or returned from functions.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="k">mut</span> <span class="n">max</span> <span class="o">=</span> <span class="m">0</span><span class="p">;</span>
+<span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">].</span><span class="n">map</span><span class="p">(</span><span class="o">|</span><span class="n">x</span><span class="o">|</span> <span class="k">if</span> <span class="o">*</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">max</span> <span class="p">{</span> <span class="n">max</span> <span class="o">=</span> <span class="o">*</span><span class="n">x</span> <span class="p">})</span>
+</code></pre></figure>
+<p>Owned closures are written with <code>proc</code>, e.g. <code>proct(arg: int)</code>, and they own values that can be sent safely between processes. The values they close over are copied, and they become owned by the closure. These are particularly used in concurrent scenarios, particularly for spawning tasks.</p>
+<p>Despite there being different types of closures, functions that expect a <code>||</code> closure can accept any kind of closure provided they have the same arguments and return types. For this reason, higher-order functions should usually define their closure types as <code>||</code> so that callers can pass any kind of closure.</p>
+<h1 id="methods">Methods</h1>
+<p>Methods are functions that take <code>self</code> as the first argument, which is of the same type as the method’s receiver. Implementations are used to define methods on specific types, such as structs and enums.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span>
+  <span class="n">x</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span>
+  <span class="n">y</span><span class="o">:</span> <span class="k">f64</span>
+<span class="p">}</span>
+
+<span class="k">enum</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="n">Circle</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="k">f64</span><span class="p">),</span>
+  <span class="n">Rectangle</span><span class="p">(</span><span class="n">Point</span><span class="p">,</span> <span class="n">Point</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">draw</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">match</span> <span class="o">*</span><span class="n">self</span> <span class="p">{</span>
+      <span class="n">Circle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>      <span class="o">=&gt;</span> <span class="n">draw_circle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">f</span><span class="p">),</span>
+      <span class="n">Rectangle</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">draw_rectangle</span><span class="p">(</span><span class="n">p1</span><span class="p">,</span> <span class="n">p2</span><span class="p">)</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">s</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="m">1.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">2.0</span><span class="p">},</span> <span class="m">3.0</span><span class="p">);</span>
+<span class="n">s</span><span class="p">.</span><span class="n">draw</span><span class="p">();</span>
+</code></pre></figure>
+<p>It’s also possible to define static methods by omitting the <code>self</code> parameter. This is usually how constructors are defined:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="k">f64</span><span class="o">::</span><span class="n">consts</span><span class="o">::</span><span class="n">PI</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">Circle</span> <span class="p">{</span> <span class="n">radius</span><span class="o">:</span> <span class="k">f64</span> <span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Circle</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">new</span><span class="p">(</span><span class="n">area</span><span class="o">:</span> <span class="k">f64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circle</span> <span class="p">{</span>
+    <span class="n">Circle</span> <span class="p">{</span> <span class="n">radius</span><span class="o">:</span> <span class="p">(</span><span class="n">area</span> <span class="o">/</span> <span class="n">PI</span><span class="p">).</span><span class="n">sqrt</span><span class="p">()</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Circle</span><span class="o">::</span><span class="n">new</span><span class="p">(</span><span class="m">42.5</span><span class="p">);</span>
+</code></pre></figure>
+<h1 id="generics">Generics</h1>
+<p>Generics are available in Rust which allows for generic functions to be defined, such as a <code>map</code> function. Generic functions in Rust have similar performance characteristics as templates in C++ because it performs <em>monomorphization</em> which generates a separate copy of each generic function at each call site, which is specialized to the argument types, optimized specifically for them. This is similar to C++ template instantiation.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">map</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">U</span><span class="o">&gt;</span><span class="p">(</span><span class="n">vector</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">function</span><span class="o">:</span> <span class="o">|</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">T</span><span class="o">|</span> <span class="o">-&gt;</span> <span class="n">U</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">~</span><span class="p">[</span><span class="n">U</span><span class="p">]</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="k">mut</span> <span class="n">accumulator</span> <span class="o">=</span> <span class="o">~</span><span class="p">[];</span>
+  <span class="k">for</span> <span class="n">element</span> <span class="n">in</span> <span class="n">vector</span><span class="p">.</span><span class="n">iter</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">accumulator</span><span class="p">.</span><span class="n">push</span><span class="p">(</span><span class="n">function</span><span class="p">(</span><span class="n">element</span><span class="p">));</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">accumulator</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Type parameters can also be used to define generic types, structs, and enums.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="n">hashmap</span><span class="o">::</span><span class="n">HashMap</span><span class="p">;</span>
+<span class="k">type</span> <span class="n">Set</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="p">()</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="c1">// Set&lt;int&gt;</span>
+
+<span class="k">struct</span> <span class="n">Stack</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">elements</span><span class="o">:</span> <span class="o">~</span><span class="p">[</span><span class="n">T</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="c1">// Stack&lt;int&gt;</span>
+
+<span class="k">enum</span> <span class="n">Option</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="n">Some</span><span class="p">(</span><span class="n">T</span><span class="p">),</span>
+  <span class="n">None</span>
+<span class="p">}</span>
+<span class="c1">// Option&lt;int&gt;</span>
+</code></pre></figure>
+<h1 id="traits">Traits</h1>
+<p>Traits are similar to type classes in Haskell. They allow the expression of <em>bounded polymorphism</em> which limits the possible types a type parameter could refer to. For example, the <code>clone</code> method which allows the copying of a type, isn’t defined on all types because it can’t be safely performed on all types, due to user-defined destructors for example. Traits allow to bound the polymorphism of a generic function by specifying that a type parameter must implement the <code>Clone</code> trait in this case to limit the types on which the function can work:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">head</span><span class="o">&lt;</span><span class="n">T</span><span class="o">:</span> <span class="n">Clone</span><span class="o">&gt;</span><span class="p">(</span><span class="n">v</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T</span> <span class="p">{</span>
+  <span class="n">v</span><span class="p">[</span><span class="m">0</span><span class="p">].</span><span class="n">clone</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>There are three traits that are automatically derived and implemented for applicable types:</p>
+<ul>
+<li><code>Send</code> is for sendable types, which don’t contain managed boxes, managed closures, or references.</li>
+<li><code>Freeze</code> is for constant/immutable types, types that don’t contain anything intrinsically mutable.</li>
+<li><code>'static</code> is for non-borrowed types, which don’t contain any references or any data whose lifetime is bound to a particular stack frame, or they are types where the only contained references have <code>'static</code> lifetime.</li>
+</ul>
+<p>The <code>Drop</code> trait can be used to define destructors via its method <code>drop</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">TimeBomb</span> <span class="p">{</span>
+  <span class="n">explosivity</span><span class="o">:</span> <span class="k">uint</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Drop</span> <span class="k">for</span> <span class="n">TimeBomb</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">drop</span><span class="p">(</span><span class="o">&amp;</span><span class="k">mut</span> <span class="n">self</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">explosivity</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">println</span><span class="p">(</span><span class="s">&quot;boom&quot;</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Traits contain zero or more method signatures. In the following trait, it is said that <code>Printable</code> provides a <code>print</code> method with the given signature:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">trait</span> <span class="n">Printable</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="k">int</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="o">~</span><span class="k">str</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>It’s also possible to define default method implementations which can later be overridden on a case-by-case basis:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">trait</span> <span class="n">Printable</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{:?}&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// these use default implementation</span>
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="k">int</span> <span class="p">{}</span>
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="n">bool</span> <span class="p">{}</span>
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="k">f32</span> <span class="p">{}</span>
+
+<span class="c1">// overrides default implementation</span>
+<span class="k">impl</span> <span class="n">Printable</span> <span class="k">for</span> <span class="o">~</span><span class="k">str</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">print</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span> <span class="n">println</span><span class="p">(</span><span class="o">*</span><span class="n">self</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Traits may be parameterized by type variables.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">trait</span> <span class="n">Seq</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">length</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">uint</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">impl</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="n">Seq</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="k">for</span> <span class="o">~</span><span class="p">[</span><span class="n">T</span><span class="p">]</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">length</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">uint</span> <span class="p">{</span>
+    <span class="n">self</span><span class="p">.</span><span class="n">len</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>The <code>Self</code> type parameter is available within the trait definition and is replaced with the eventual type <code>T</code> in the implementation:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">trait</span> <span class="n">Eq</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">equals</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">other</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Eq</span> <span class="k">for</span> <span class="n">in</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">equals</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">other</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span>
+    <span class="o">*</span><span class="n">other</span> <span class="o">==</span> <span class="o">*</span><span class="n">self</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Traits can also define static methods which are ultimately called with a <code>::</code> prefix as well:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="k">f64</span><span class="o">::</span><span class="n">consts</span><span class="o">::</span><span class="n">PI</span><span class="p">;</span>
+
+<span class="k">trait</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">new</span><span class="p">(</span><span class="n">area</span><span class="o">:</span> <span class="k">f64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Self</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="n">Circle</span> <span class="p">{</span> <span class="n">radius</span><span class="o">:</span> <span class="k">f64</span> <span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Shape</span> <span class="k">for</span> <span class="n">Circle</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">new</span><span class="p">(</span><span class="n">area</span><span class="o">:</span> <span class="k">f64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circle</span> <span class="p">{</span>
+    <span class="n">Circle</span> <span class="p">{</span> <span class="n">radius</span><span class="o">:</span> <span class="p">(</span><span class="n">area</span> <span class="o">/</span> <span class="n">PI</span><span class="p">).</span><span class="n">sqrt</span><span class="p">()</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">c</span><span class="o">:</span> <span class="n">Circle</span> <span class="o">=</span> <span class="n">Shape</span><span class="o">::</span><span class="n">new</span><span class="p">(</span><span class="n">area</span><span class="p">);</span>
+</code></pre></figure>
+<p>Type parameters can have multiple bounds by combining them with <code>+</code>. Method calls to bounded type parameters are statically dispatched:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">print_all</span><span class="o">&lt;</span><span class="n">T</span><span class="o">:</span> <span class="n">Printable</span> <span class="o">+</span> <span class="n">Clone</span><span class="o">&gt;</span><span class="p">(</span><span class="n">printable_things</span><span class="o">:</span> <span class="o">~</span><span class="p">[</span><span class="n">T</span><span class="p">])</span> <span class="p">{</span>
+  <span class="c1">// can clone() then print()</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>It’s possible to have method calls to trait types that are dynamically dispatched. With this, it’s possible to define a function that performs the <code>draw</code> method on type that implements <code>Drawable</code>, which itself provides the <code>draw</code> method. This particular method takes a borrowed pointer to an array of owned values that implement the <code>Drawable</code> trait. Such an array must be constructed by casting each element to <code>~Drawable</code>:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">draw_all</span><span class="p">(</span><span class="n">shapes</span><span class="o">:</span> <span class="o">&amp;</span><span class="p">[</span><span class="o">~</span><span class="n">Drawable</span><span class="p">])</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="n">shape</span> <span class="n">in</span> <span class="n">shapes</span><span class="p">.</span><span class="n">iter</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">shape</span><span class="p">.</span><span class="n">draw</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">draw_all</span><span class="p">([</span><span class="n">circle</span> <span class="k">as</span> <span class="o">~</span><span class="n">Drawable</span><span class="p">,</span> <span class="n">rectangle</span> <span class="k">as</span> <span class="o">~</span><span class="n">Drawable</span><span class="p">])</span>
+</code></pre></figure>
+<p>The three storage classes enforce a set of traits that their contents must fulfill in order to be packaged up in a trait object for that storage class:</p>
+<ul>
+<li>contents of <code>~owned</code> traits must fulfill the <code>Send</code> bound</li>
+<li>contents of <code>@managed</code> traits must fulfill the <code>'static</code> bound</li>
+<li>contents of <code>&amp;reference</code> traits are not constrained by any bound</li>
+</ul>
+<p>Trait objects automatically fulfill their respective trait bounds. This can be overridden by specifying a list of bounds on the trait type, such as <code>~Trait:Send+Freeze</code> which indicates that contents must fulfill <code>Send</code> and <code>~Freeze</code>.</p>
+<p>Traits can inherit from other traits, so that the traits they inherit from are referred to as <em>supertraits</em>. This means that for any type to implement the derived trait, it must also implement the supertrait:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">trait</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">area</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">trait</span> <span class="n">Circle</span> <span class="o">:</span> <span class="n">Shape</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">radius</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="n">CircleStruct</span> <span class="p">{</span> <span class="n">center</span><span class="o">:</span> <span class="n">Point</span><span class="p">,</span> <span class="n">radius</span><span class="o">:</span> <span class="k">f64</span> <span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Circle</span> <span class="k">for</span> <span class="n">CircleStruct</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">radius</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">area</span><span class="p">()</span> <span class="o">/</span> <span class="n">PI</span><span class="p">).</span><span class="n">sqrt</span><span class="p">()</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">impl</span> <span class="n">Shape</span> <span class="k">for</span> <span class="n">CircleStruct</span> <span class="p">{</span>
+  <span class="k">fn</span> <span class="n">area</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span> <span class="p">{</span>
+    <span class="n">PI</span> <span class="o">*</span> <span class="n">square</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">radius</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>It’s also possible to call supertrait methods on subtrait-bound type parameter values. This is also possible from trait objects:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">radius_times_area</span><span class="o">&lt;</span><span class="n">T</span><span class="o">:</span> <span class="n">Circle</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="o">:</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span> <span class="p">{</span>
+  <span class="n">c</span><span class="p">.</span><span class="n">radius</span><span class="p">()</span> <span class="o">*</span> <span class="n">c</span><span class="p">.</span><span class="n">area</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">concrete</span> <span class="o">=</span> <span class="o">@</span><span class="n">CircleStruct</span> <span class="p">{</span> <span class="n">center</span><span class="o">:</span> <span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="m">3</span><span class="k">f</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">4</span><span class="k">f</span><span class="p">},</span> <span class="n">radius</span><span class="o">:</span> <span class="m">5</span><span class="k">f</span> <span class="p">}</span>
+<span class="k">let</span> <span class="n">mycircle</span><span class="o">:</span> <span class="o">@</span><span class="n">Circle</span> <span class="o">=</span> <span class="n">concrete</span> <span class="k">as</span> <span class="o">@</span><span class="n">Circle</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">nonsense</span> <span class="o">=</span> <span class="n">mycircle</span><span class="p">.</span><span class="n">radius</span><span class="p">()</span> <span class="o">*</span> <span class="n">mycircle</span><span class="p">.</span><span class="n">area</span><span class="p">();</span>
+</code></pre></figure>
+<p>Some traits can be automatically derived, similar to Haskell. The full list is <code>Eq</code>, <code>TotalEq</code>, <code>Ord</code>, <code>TotalOrd</code>, <code>Encodable</code>, <code>Decodable</code>, <code>Clone</code>, <code>DeepClone</code>, <code>IterBytes</code>, <code>Rand</code>, <code>Default</code>, <code>Zero</code>, <code>FromPrimitive</code>, and <code>Show</code>:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="cp">#[deriving(Eq)]</span>
+<span class="k">struct</span> <span class="n">Circle</span> <span class="p">{</span> <span class="n">radius</span><span class="o">:</span> <span class="k">f64</span> <span class="p">}</span>
+
+<span class="cp">#[deriving(Rand, ToStr)]</span>
+<span class="k">enum</span> <span class="n">ABC</span> <span class="p">{</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="p">}</span>
+</code></pre></figure>
+<h1 id="modules">Modules</h1>
+<p>The content of all source code that the compiler directly had to compile in order to end up with a particular binary is collectively called a <strong>crate</strong>. A crate is a unit of independent compilation in Rust. Using an already compiled library in code doesn’t make it part of a crate.</p>
+<p>There exists a hierarchy of modules where the root is referred to as <strong>crate root</strong>. Global paths begin with the root path <code>::</code>, all other paths are local paths, similar to the distinction between absolute <code>/</code>-prefixed paths and relative paths.</p>
+<p>Module contents are private by default. They can be made explicitly public with the <code>pub</code> qualifier. In fact, visibility restrictions are only applicable at module boundaries. On the other hand, <code>struct</code> fields are public by default and are made explicitly private with <code>priv</code>. Since visibility restrictions only apply at module boundaries, a private field of a <code>struct</code> defined within a module is itself accessible within that module:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">mod</span> <span class="n">farm</span> <span class="p">{</span>
+  <span class="k">pub</span> <span class="k">fn</span> <span class="n">chicken</span><span class="p">()</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+
+  <span class="k">pub</span> <span class="k">struct</span> <span class="n">Farm</span> <span class="p">{</span>
+    <span class="k">priv</span> <span class="n">chickens</span><span class="o">:</span> <span class="o">~</span><span class="p">[</span><span class="n">Chicken</span><span class="p">],</span>
+    <span class="n">farmer</span><span class="o">:</span> <span class="n">Human</span>
+  <span class="p">}</span>
+
+  <span class="k">impl</span> <span class="n">Farm</span> <span class="p">{</span>
+    <span class="k">fn</span> <span class="n">feed_chickens</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+    <span class="k">pub</span> <span class="k">fn</span> <span class="n">add_chickens</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">c</span><span class="o">:</span> <span class="n">Chicken</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">pub</span> <span class="k">fn</span> <span class="n">feed_animals</span><span class="p">(</span><span class="n">farm</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Farm</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">farm</span><span class="p">.</span><span class="n">feed_chickens</span><span class="p">();</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="o">::</span><span class="n">farm</span><span class="o">::</span><span class="n">chicken</span><span class="p">();</span>
+
+  <span class="k">let</span> <span class="n">f</span> <span class="o">=</span> <span class="n">make_farm</span><span class="p">();</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">add_chicken</span><span class="p">(</span><span class="n">make_chicken</span><span class="p">());</span>
+  <span class="n">farm</span><span class="o">::</span><span class="n">feed_animals</span><span class="p">(</span><span class="o">&amp;</span><span class="n">f</span><span class="p">);</span>
+  <span class="n">f</span><span class="p">.</span><span class="n">farmer</span><span class="p">.</span><span class="n">rest</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Source files and modules are not the same thing. The only file that’s relevant when compiling is the one that contains the body of the crate root. Declaring a module without a body prompts the compiler to look for a file named after that module or for a file named <code>mod.rs</code> in a folder named after that module.</p>
+<p>The <code>use</code> statement can be used to bring in a module’s contents into the current block by providing a global path without the <code>::</code> prefix. It’s possible to prefix with <code>super::</code> to start the path in the parent module, and <code>self::</code> to start the path in the current module.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">super</span><span class="o">::</span><span class="n">some_parent_item</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">self</span><span class="o">::</span><span class="n">some_child_module</span><span class="o">::</span><span class="n">some_item</span><span class="p">;</span>
+</code></pre></figure>
+<p>Imported items are shadowed by local definitions. To make this fact more explicit, <code>use</code> statements must go before any declaration, including <code>mod</code> declarations. This looks awkward when importing items from a module that follows:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">farm</span><span class="o">::</span><span class="n">cow</span><span class="p">;</span>
+
+<span class="k">mod</span> <span class="n">farm</span> <span class="p">{</span>
+  <span class="k">pub</span> <span class="k">fn</span> <span class="n">cow</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;moo&quot;</span><span class="p">)</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">cow</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>This is even more awkward when using a <code>mod</code> statement that looks in a separate file for the contents:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">b</span><span class="o">::</span><span class="n">foo</span><span class="p">;</span>
+<span class="k">mod</span> <span class="n">b</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span> <span class="n">foo</span><span class="p">();</span> <span class="p">}</span>
+</code></pre></figure>
+<p>It’s possible to import by wildcard or selectively, similar to Scala. It’s also possible to rename an imported item:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">farm</span><span class="o">::</span><span class="p">{</span><span class="n">chicken</span><span class="p">,</span> <span class="n">cow</span><span class="p">};</span>
+
+<span class="cp">#[feature(globs)]</span>
+<span class="k">use</span> <span class="n">farm</span><span class="o">::*</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="n">egg_layer</span> <span class="o">=</span> <span class="n">farm</span><span class="o">::</span><span class="n">chicken</span><span class="p">;</span>
+</code></pre></figure>
+<p>Likewise, it’s possible to re-export items from another module:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">mod</span> <span class="n">farm</span> <span class="p">{</span>
+  <span class="k">pub</span> <span class="k">use</span> <span class="n">self</span><span class="o">::</span><span class="n">barn</span><span class="o">::</span><span class="n">hay</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>It’s common to use existing libraries, which in rust are simply referred to as other crates. The <code>extern mod</code> declaration is used to be able to reference other crates, similar to <code>extern</code> in C. <code>extern mod</code>-imported items can be shadowed by local declarations and <code>use</code>-imported items, so they must go before both. Crates declared in an <code>extern mod</code> declaration are looked for in the library search path, which can be expanded with the <code>-L</code> switch.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">num</span><span class="p">;</span>
+
+<span class="k">use</span> <span class="n">farm</span><span class="o">::</span><span class="n">dog</span><span class="p">;</span>
+<span class="k">use</span> <span class="n">num</span><span class="o">::</span><span class="n">rational</span><span class="o">::</span><span class="n">Ratio</span><span class="p">;</span>
+
+<span class="k">mod</span> <span class="n">farm</span> <span class="p">{</span>
+  <span class="k">pub</span> <span class="k">fn</span> <span class="n">dog</span><span class="p">()</span> <span class="p">{</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;woof&quot;</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">farm</span><span class="o">::</span><span class="n">dog</span><span class="p">();</span>
+  <span class="k">let</span> <span class="n">one_half</span> <span class="o">=</span> <span class="o">::</span><span class="n">num</span><span class="o">::</span><span class="n">rational</span><span class="o">::</span><span class="n">Ratio</span><span class="o">::</span><span class="n">new</span><span class="p">(</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Crates can contain metadata used for the resultant libraries, such as the package ID:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="cp">#[crate_id = </span><span class="s">&quot;farm#2.5&quot;</span><span class="cp">];</span>
+
+<span class="c1">// specify that it&#39;s a library</span>
+<span class="cp">#[crate_type = </span><span class="s">&quot;lib&quot;</span><span class="cp">];</span>
+</code></pre></figure>
+<p>This information can be used to select the crate from the <code>extern mod</code> declaration:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">farm</span> <span class="o">=</span> <span class="s">&quot;farm#2.5&quot;</span><span class="p">;</span>
+<span class="c1">// or</span>
+<span class="k">extern</span> <span class="k">mod</span> <span class="n">my_farm</span> <span class="o">=</span> <span class="s">&quot;farm&quot;</span><span class="p">;</span>
+</code></pre></figure>
+<p>For example, here’s an example library, its compilation, and usage:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="cp">#[crate_id = </span><span class="s">&quot;world#0.42&quot;</span><span class="cp">];</span>
+<span class="cp">#[crate_type = </span><span class="s">&quot;lib&quot;</span><span class="cp">];</span>
+
+<span class="k">pub</span> <span class="k">fn</span> <span class="n">explor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="k">static</span> <span class="k">str</span> <span class="p">{</span> <span class="s">&quot;world&quot;</span> <span class="p">}</span>
+</code></pre><figcaption><span>world.rs</span></figcaption></figure>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">world</span><span class="p">;</span>
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;hello {}&quot;</span><span class="p">,</span> <span class="n">world</span><span class="o">::</span><span class="n">explore</span><span class="p">());</span>
+<span class="p">}</span>
+</code></pre><figcaption><span>main.rs</span></figcaption></figure>
+<figure class="codeblock"><pre><code class="highlight language-bash"><span class="nv">$ </span>rustc world.rs     <span class="c"># compiles libworld-&lt;HASH&gt;-0.42.so</span>
+<span class="nv">$ </span>rustc main.rs -L . <span class="c"># include local dir in library search path</span>
+<span class="nv">$ </span>./main
+<span class="s2">&quot;hello world&quot;</span>
+</code></pre><figcaption><span>compilation</span></figcaption></figure>
+<p>Many predefined items such as <code>range</code> and <code>Option&lt;T&gt;</code> come from the standard library’s prelude, similar to Haskell’s. The rust compiler automatically inserts the following into the crate root:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="c1">// to prevent: in crate root</span>
+<span class="cp">#[no_std];</span>
+</code></pre></figure>
+<p>As well as the following into every module body:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">std</span><span class="o">::</span><span class="n">prelude</span><span class="o">::*</span><span class="p">;</span>
+
+<span class="c1">// to prevent: in any module</span>
+<span class="cp">#[no_implicit_prelude];</span>
+</code></pre></figure>
+<h1 id="named-lifetimes">Named Lifetimes</h1>
+<p>It’s possible to give a lifetime a name in order to explicitly specify the lifetime of a returned reference. In the following case, the named lifetime <code>'r</code> is associated with the parameter <code>p: &amp;Point</code>, this named lifetime is then also mentioned in the return type. What this means is that the returned reference will have the same lifetime as the passed in pointer parameter <code>p</code>. In effect, this means that the returned reference will remain valid as long as <code>p</code> itself remains valid.</p>
+<p>This is necessary because, generally it’s only possible to return references derived from a parameter to the function, and named parameters explicitly specify which parameter that is.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="k">f64</span><span class="p">}</span>
+
+<span class="k">fn</span> <span class="n">get_x</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">r</span><span class="o">&gt;</span><span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">Point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="k">f64</span> <span class="p">{</span>
+  <span class="o">&amp;</span><span class="n">p</span><span class="p">.</span><span class="n">x</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Named lifetimes allow grouping of parameters by lifetime. The following means that all of the parameters are assigned the same named lifetime <code>r</code>, so that in the caller the lifetime <code>r</code> will be the intersection of the lifetime of the three region parameters.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">select</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">r</span><span class="p">,</span> <span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shape</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">threshold</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span> <span class="n">a</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">compute_area</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="p">{</span>
+    <span class="n">a</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">b</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>For example, if <code>select()</code> were called by the following function it would produce an error. The reason is that the lifetime of the first parameter to <code>select()</code> is the function body of <code>select_unit()</code>. The second two parameters to <code>select()</code> share a lifetime in <code>select_unit()</code>, so there are actually two lifetimes. The intersection between these two lifetimes would be the <code>Shape</code>’s lifetime which is the function body, so the return value of the <code>select()</code> call will be the function body of <code>select_unit()</code>.</p>
+<p>This would lead to a <strong>compilation error</strong>, because <code>select_unit()</code> is supposed to return a value with a lifetime of <code>r</code>, which is the lifetime of <code>a</code> and <code>b</code>, <em>not</em> the lifetime of the local <code>Circle</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">select_unit</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">r</span><span class="p">,</span> <span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">threshold</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span> <span class="n">a</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="n">shape</span> <span class="o">=</span> <span class="n">Circle</span><span class="p">(</span><span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="m">0.</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">0.</span><span class="p">},</span> <span class="m">1.</span><span class="p">);</span>
+  <span class="n">select</span><span class="p">(</span><span class="o">&amp;</span><span class="n">shape</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>This can be resolved by creating another lifetime, <code>'tmp</code> in <code>select()</code> and assign it to the <code>shape</code> parameter, in order to distinguish it from the lifetime of the last two parameters. However, since we wouldn’t be using the <code>'tmp</code> lifetime and the compiler is guaranteed to generate a unique lifetime for ever parameter, it’s simpler to simply omit it altogether:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">select</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">r</span><span class="p">,</span> <span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">shape</span><span class="o">:</span> <span class="n">Shape</span><span class="p">,</span> <span class="n">threshold</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span> <span class="n">a</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">,</span> <span class="n">b</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">T</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">compute_area</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">threshold</span> <span class="p">{</span>
+    <span class="n">a</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">b</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h1 id="tasks">Tasks</h1>
+<p>Tasks are <em>green threads</em> similar to those in Haskell and perhaps Erlang. Tasks have dynamically sized stacks, starting out with small ones and dynamically growing as required. This means that unlike C/C++, it’s not possible to write beyond the end of the stack. Tasks provide failure isolation and recovery. When a problem occurs, the runtime destroys the entire task, and other tasks can monitor each other for failure.</p>
+<p>Tasks can’t share mutable state with each other. Instead they communicate with each other by transferring owned data through the global <em>exchange heap</em>.</p>
+<h2 id="spawning">Spawning</h2>
+<p>Tasks are spawned with the <code>spawn</code> function which accepts a closure which is executed in a separate task. Creating tasks isn’t defined at the language-level, but rather, inside the standard library.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">print_msg</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;running in diff task&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">spawn</span><span class="p">(</span><span class="n">print_msg</span><span class="p">);</span>
+
+<span class="c1">// or with lambda expression</span>
+<span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;also in diff task&quot;</span><span class="p">));</span>
+</code></pre></figure>
+<p>Since the signature of the <code>spawn</code> function is <code>spawn(f: proc())</code>, it accepts only owned closures, which by extension can only contain owned data. For this reason, <code>spawn</code> can safely move the entire closure and its associated state to an entirely different task for execution. As with any closure, it can capture an environment that it carries across tasks:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">child_task_nr</span> <span class="o">=</span> <span class="n">generate_task_nr</span><span class="p">();</span>
+
+<span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;I am child number {}&quot;</span><span class="p">,</span> <span class="n">child_task_nr</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></figure>
+<h2 id="channels">Channels</h2>
+<p>Pipes are used for communication between tasks <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. Each pipe is defined by a pair of endpoints: one for sending and another for receiving. In Rust, a channel is the <strong>sending</strong> endpoint of a pipe and the <strong>port</strong> is the receiving endpoint.</p>
+<p>The following code creates a channel for sending and receiving <code>int</code> types. Note that <code>Chan</code> and <code>Port</code> are both sendable types that may be captured into task closures or transferred between them.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span><span class="o">:</span> <span class="p">(</span><span class="n">Port</span><span class="o">&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">,</span> <span class="n">Chan</span><span class="o">&lt;</span><span class="k">int</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+
+<span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="n">result</span> <span class="o">=</span> <span class="n">expensive_computation</span><span class="p">();</span>
+  <span class="n">chan</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="n">other_expensive_computation</span><span class="p">();</span>
+<span class="k">let</span> <span class="n">result</span> <span class="o">=</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">();</span>
+</code></pre></figure>
+<p>A regular <code>Chan</code> and <code>Port</code> created by <code>Chan::new</code> can’t be used by more than one task. Attempting to do so leads to an error, since the first task to use it becomes its owner. Instead it’s possible to use a <code>SharedChan</code> by calling <code>clone</code> on the endpoint.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span> <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+
+<span class="k">for</span> <span class="n">init_val</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="m">0</span><span class="k">u</span><span class="p">,</span> <span class="m">3</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// create a SharedChan</span>
+  <span class="k">let</span> <span class="n">child_chan</span> <span class="o">=</span> <span class="n">chan</span><span class="p">.</span><span class="n">clone</span><span class="p">();</span>
+
+  <span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">child_chan</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">expensive_computation</span><span class="p">(</span><span class="n">init_val</span><span class="p">));</span>
+  <span class="p">});</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="n">result</span> <span class="o">=</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span> <span class="o">+</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span> <span class="o">+</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">();</span>
+</code></pre></figure>
+<p>The above example is contrived and could’ve been done with three separate channels:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">ports</span> <span class="o">=</span> <span class="n">vec</span><span class="o">::</span><span class="n">from_fn</span><span class="p">(</span><span class="m">3</span><span class="p">,</span> <span class="o">|</span><span class="n">init_val</span><span class="o">|</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span> <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+  <span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">chan</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">some_expensive_computation</span><span class="p">(</span><span class="n">init_val</span><span class="p">));</span>
+  <span class="p">});</span>
+  <span class="n">port</span>
+<span class="p">});</span>
+
+<span class="k">let</span> <span class="n">result</span> <span class="o">=</span> <span class="n">ports</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">fold</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="o">|</span><span class="n">accum</span><span class="p">,</span> <span class="n">port</span><span class="o">|</span> <span class="n">accum</span> <span class="o">+</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span> <span class="p">);</span>
+</code></pre></figure>
+<h2 id="futures">Futures</h2>
+<p>Futures can be used for requesting a computation and getting the result later. In the code below, <code>sync::Future::spawn</code> immediately returns a <code>future</code> object whether or not the computation is complete. The result can be explicitly retrieve with the <code>get()</code> function, which blocks until the value becomes available. <strong>Note</strong> that the future is mutable so that it can save the result inside the object once the computation is complete.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">:</span> <span class="k">u64</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">u64</span> <span class="p">{</span> <span class="m">12586269025</span> <span class="p">}</span>
+
+<span class="k">let</span> <span class="k">mut</span> <span class="n">delayed_fib</span> <span class="o">=</span> <span class="n">sync</span><span class="o">::</span><span class="n">Future</span><span class="o">::</span><span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="n">fib</span><span class="p">(</span><span class="m">50</span><span class="p">));</span>
+<span class="n">something_else</span><span class="p">();</span>
+<span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;fib(50) = {:?}&quot;</span><span class="p">,</span> <span class="n">delayed_fib</span><span class="p">.</span><span class="n">get</span><span class="p">());</span>
+</code></pre></figure>
+<h2 id="arc">Arc</h2>
+<p>When wanting to share immutable data between tasks, it may be expensive to use a typical pipe as that would create a copy of the data on each transfer. For this it would be more efficient to use an Atomically Reference Counted wrapper, <code>Arc</code>, which is implemented in the <code>sync</code> library. <code>Arc</code> acts as a reference to shared data so that only the reference itself is shared and cloned.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">sync</span><span class="o">::</span><span class="n">Arc</span><span class="p">;</span>
+
+<span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="n">big_data</span> <span class="o">=</span> <span class="o">~</span><span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">];</span>
+  <span class="k">let</span> <span class="n">data_arc</span> <span class="o">=</span> <span class="n">Arc</span><span class="o">::</span><span class="n">new</span><span class="p">(</span><span class="n">big_data</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="n">num</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="m">1</span><span class="k">u</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span>  <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+
+    <span class="c1">// send arc</span>
+    <span class="n">chan</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data_arc</span><span class="p">.</span><span class="n">clone</span><span class="p">());</span>
+
+    <span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+      <span class="c1">// receive arc</span>
+      <span class="k">let</span> <span class="n">local_arc</span> <span class="o">:</span> <span class="n">Arc</span><span class="o">&lt;~</span><span class="p">[</span><span class="k">f64</span><span class="p">]</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">port</span><span class="p">.</span><span class="n">recv</span><span class="p">();</span>
+
+      <span class="c1">// data pointed to by arc</span>
+      <span class="k">let</span> <span class="n">task_data</span> <span class="o">=</span> <span class="n">local_arc</span><span class="p">.</span><span class="n">get</span><span class="p">();</span>
+
+      <span class="n">expensive_computation</span><span class="p">(</span><span class="n">task_data</span><span class="p">);</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
+<h2 id="failure">Failure</h2>
+<p>Exceptions can be raised in Rust using the <code>fail!()</code> macro. Exceptions are unrecoverable within a single task. When an exception is raised, the task unwinds its stack — running destructors and freeing memory along the way — then exits.</p>
+<p>However, tasks may notify each other of failure. The <code>try</code> function is similar to <code>spawn</code> but blocks until the child is finish, yielding a return value of <code>Result&lt;T, ()&gt;</code> <a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a> which has two variants: <code>Ok(T)</code> and <code>Err</code>. This <code>Result</code> can then be pattern-matched to determine the outcome of the task, with <code>Err</code> representing termination with an error. <strong>Note</strong> currently, it’s not possible to retrieve a useful error value from the <code>Err</code> variant, since <code>try</code> always returns <code>()</code>:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">result</span><span class="o">:</span> <span class="n">Result</span><span class="o">&lt;</span><span class="k">int</span><span class="p">,</span> <span class="p">()</span><span class="o">&gt;</span> <span class="o">=</span> <span class="n">task</span><span class="o">::</span><span class="n">try</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="n">some_condition</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">calculate_result</span><span class="p">()</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">fail</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;oops!&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="k">assert</span><span class="o">!</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">is_err</span><span class="p">());</span>
+</code></pre></figure>
+<h2 id="duplex-streams">Duplex Streams</h2>
+<p>A <code>DuplexStream</code> can be used to both send and receive from one task to another. The following code creates a task that continually receives a <code>uint</code> and sends it back converted to a string.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">stringifier</span><span class="p">(</span><span class="n">channel</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">DuplexStream</span><span class="o">&lt;~</span><span class="k">str</span><span class="p">,</span> <span class="k">uint</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">let</span> <span class="k">mut</span> <span class="n">value</span><span class="o">:</span> <span class="k">uint</span><span class="p">;</span>
+  <span class="k">loop</span> <span class="p">{</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">channel</span><span class="p">.</span><span class="n">recv</span><span class="p">();</span>
+    <span class="n">channel</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">value</span><span class="p">.</span><span class="n">to_str</span><span class="p">());</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="m">0</span> <span class="p">{</span> <span class="k">break</span><span class="p">;</span> <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">let</span> <span class="p">(</span><span class="n">from_child</span><span class="p">,</span> <span class="n">to_child</span><span class="p">)</span> <span class="o">=</span> <span class="n">DuplexStream</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+
+<span class="n">spawn</span><span class="p">(</span><span class="n">proc</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">stringifier</span><span class="p">(</span><span class="o">&amp;</span><span class="n">to_child</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="n">from_child</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="m">22</span><span class="p">);</span>
+<span class="k">assert</span><span class="o">!</span><span class="p">(</span><span class="n">from_child</span><span class="p">.</span><span class="n">recv</span><span class="p">()</span> <span class="o">==</span> <span class="o">~</span><span class="s">&quot;22&quot;</span><span class="p">);</span>
+</code></pre></figure>
+<h1 id="iterators">Iterators</h1>
+<p>Iterators can be transformed by adaptors that themselves return another iterator:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">,</span> <span class="m">5</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;one&quot;</span><span class="p">,</span> <span class="s">&quot;two&quot;</span><span class="p">,</span> <span class="s">&quot;three&quot;</span><span class="p">,</span> <span class="s">&quot;four&quot;</span><span class="p">,</span> <span class="s">&quot;five&quot;</span><span class="p">];</span>
+
+<span class="k">let</span> <span class="k">mut</span> <span class="n">it</span> <span class="o">=</span> <span class="n">xs</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">zip</span><span class="p">(</span><span class="n">ys</span><span class="p">.</span><span class="n">iter</span><span class="p">());</span>
+
+<span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="n">in</span> <span class="n">it</span> <span class="p">{</span>
+  <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{} {}&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="o">*</span><span class="n">h</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Iterators offer a generic conversion to containers with the <code>collect</code> adaptor. This method is provided by the <code>FromIterator</code> trait:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="p">[</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="m">3</span><span class="p">,</span> <span class="m">4</span><span class="p">];</span>
+<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">xs</span><span class="p">.</span><span class="n">rev_iter</span><span class="p">().</span><span class="n">skip</span><span class="p">(</span><span class="m">1</span><span class="p">).</span><span class="n">map</span><span class="p">(</span><span class="o">|&amp;</span><span class="n">x</span><span class="o">|</span> <span class="n">x</span> <span class="o">*</span> <span class="m">2</span><span class="p">).</span><span class="n">collect</span><span class="o">::&lt;~</span><span class="p">[</span><span class="k">int</span><span class="p">]</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></figure>
+<section class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This really reminds me of C++11’s <a href="http://en.cppreference.com/w/cpp/utility/functional/ref"><code>std::ref</code></a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn2"><p>This of course reminds me of C++11’s <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr"><code>std::shared_ptr</code></a>.<a href="#fnref2">↩</a></p></li>
+<li id="fn3"><p>Pipes remind me of Go’s channels, or Haskell’s.<a href="#fnref3">↩</a></p></li>
+<li id="fn4"><p>This <code>Result</code> type is a lot like Haskell’s <code>Either</code>.<a href="#fnref4">↩</a></p></li>
+</ol>
+</section></div>
+  <div class="meta">
+    <div class="date"><i class="fa fa-calendar fa-fw"></i> December 29, 2013</div>
+    <div class="notes"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/rust.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/ba28a7a' title='woops, meant the opposite'>ba28a7a</a></span></div>
+  </div>
+</article>
+
+
+  </div>
+  <footer id="footer" class="inner">
+    <span id="social">
+      <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
+      &middot;
+      <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
+      &middot;
+      <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
+      &middot;
+      <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
+      &middot;
+      <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
+    </span>
+  </footer>
+  
+  
+  <!-- google analytics -->
+  <script async="true" type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-37339861-1']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
+  <!--MathJax CDN-->
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      messageStyle: "none"
+    });
+
+    MathJax.Hub.Register.MessageHook('End Process', function() {
+      jQuery('#MathJax_Font_Test').empty();
+      jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
+    });
+  </script>
+  <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+  </script>
+</body>
+</html>
