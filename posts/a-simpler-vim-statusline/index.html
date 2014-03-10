@@ -87,15 +87,15 @@
 <p>The file name is of course useful, specifically shown relative to the current working directory. The git branch is also useful and provided by the <a href="https://github.com/tpope/vim-fugitive">fugitive</a> plugin.</p>
 <p>Finally, a select few markers are very useful, such as whether or not the file has been modified since the last write, if a file is read-only, and if one is in paste mode.</p>
 <p>After removing what I didn’t need, I ended up with this very customized airline installation, where the number on the right side is the column number:</p>
-<p><img src="/images/vim/airline.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/airline.png" class="center"></p>
 <h2 id="redesign" class="notoc">Redesign</h2>
 <p>This statusline was fine, but I couldn’t shake the thought that it felt out of place with those colors and arrows; it felt overdone. I ended up commenting out my airline configuration — which was <a href="https://github.com/blaenk/dots/blob/275b3b40fa0c57f1b48b5ba59b9ecbc00cddf866/vim/vimrc.ln#L80-L202">already pretty long</a> — and attempted to create a statusline from scratch with the goal of simplicity. I ended up with this, where the number on the left under the number line is the column number:</p>
-<p><img src="/images/vim/regular.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/regular.png" class="center"></p>
 <p>I completely got rid of any mode designation in the statusline since I realized that I had the <code>showmode</code> option set, which already shows the current mode in the message line under the statusline. Further still, I created <a href="https://github.com/blaenk/dots/blob/9843177fa6155e843eb9e84225f458cd0205c969/vim/vimrc.ln#L49-L64">mode-aware cursors</a> that change color based on the mode using the <code>gcr</code> option. Top-to-bottom: normal, insert, visual, replace, command:</p>
-<p><img src="/images/vim/gcr-normal.png" class="center"> <img src="/images/vim/gcr-insert.png" class="center"> <img src="/images/vim/gcr-visual.png" class="center"> <img src="/images/vim/gcr-replace.png" class="center"> <img src="/images/vim/gcr-command.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/gcr-normal.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/gcr-insert.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/gcr-visual.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/gcr-replace.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/gcr-command.png" class="center"></p>
 <h3 id="inactive-statuslines" class="notoc">Inactive Statuslines</h3>
 <p>One piece of functionality that I wanted to preserve from airline was support for different active and inactive statuslines. In my case, I wanted this to be a subtle difference as you can see in the image below, where some things lose their color and the angle quotes become inverted:</p>
-<p><img src="/images/vim/regular-inactive.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/regular-inactive.png" class="center"></p>
 <p>This feature isn’t built into Vim, but it can be emulated by defining Vim auto commands on window focus events which refreshes every window’s statusline:</p>
 <figure class="codeblock"><pre><code class="highlight language-vim"><span class="k">function</span><span class="p">!</span> <span class="k">s</span>:RefreshStatus<span class="p">()</span>
   <span class="k">for</span> nr <span class="k">in</span> range<span class="p">(</span><span class="m">1</span><span class="p">,</span> winnr<span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">))</span>
@@ -131,14 +131,14 @@ Note that the “<code>%!</code>” expression is evaluated in the context of th
 <figure class="codeblock"><pre><code class="highlight language-vim"><span class="k">let</span> stat .<span class="p">=</span> Color<span class="p">(</span>isactive<span class="p">,</span> <span class="m">2</span><span class="p">,</span> <span class="s2">&quot;%{&amp;modified ? &#39; +&#39; : &#39;&#39;}&quot;</span><span class="p">)</span>
 </code></pre></figure>
 <p>Here’s what the modified, paste mode, and read-only markers look like:</p>
-<p><img src="/images/vim/regular-modified.png" class="center"> <img src="/images/vim/regular-paste.png" class="center"> <img src="/images/vim/regular-readonly.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/regular-modified.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/regular-paste.png" class="center"> <img src="/images/posts/a-simpler-vim-statusline/regular-readonly.png" class="center"></p>
 <p>I didn’t want the read-only marker to be <code>RO</code>, so instead I got the inspiration from when one does <code>sudo !!</code> to re-do the previous command with <code>sudo</code>. In fact, I have a mapping for this that I found online, <code>w!!</code>:</p>
 <figure class="codeblock"><pre><code class="highlight language-vim">cmap <span class="k">w</span><span class="p">!!</span> %<span class="p">!</span>sudo tee <span class="p">&gt;</span> <span class="sr">/dev/</span>null %
 </code></pre></figure>
 <p>I finally had to redo the CtrlP theme from scratch as well, because I had previously customized it through airline’s API. This turned out to be pretty straightforward, since CtrlP itself exposes a function for this. With airline, I had this, which I specifically made to look like how it looked in powerline by default:</p>
-<p><img src="/images/vim/airline-ctrlp.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/airline-ctrlp.png" class="center"></p>
 <p>This actually looked pretty nice, in my opinion, but this look doesn’t mesh well with what I’ve created so far. I completely got rid of everything but the current mode and search scope path. Whether regex is turned on and/or if searching by file name is reflected in the CtrlP prompt already:</p>
-<p><img src="/images/vim/regular-ctrlp.png" class="center"></p>
+<p><img src="/images/posts/a-simpler-vim-statusline/regular-ctrlp.png" class="center"></p>
 <h2 id="conclusion" class="notoc">Conclusion</h2>
 <p>Like I said when I started out this post: there’s nothing wrong with using one of these statusline plugins. They certainly look nice and seem like a step up from the default statusline. It’s just that I took a step back and realized I didn’t need the things they offered, and they didn’t look as great as I had originally thought, back when I compared it to a default statusline.</p>
 <p>For as much as some of these plugins claim to be “light,” it’s generally difficult to be lighter than using no plugin at all <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. It’s not that this extra code will make your Vim unusably slow with today’s hardware, but that it seems pointless to carry around if you’re not even using most of it, especially considering how simple it seems to be to define your own statusline, and — if you care to — personalize your setup.</p>
@@ -151,7 +151,7 @@ Note that the “<code>%!</code>” expression is evaluated in the context of th
   <div class="meta">
     <div class="date"><i class="fa fa-calendar fa-fw"></i> December 14, 2013</div>
     <div class="tags"><i class="fa fa-tags fa-fw"></i> <a href="/tags/vim/">Vim</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/a-simpler-vim-statusline.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/c463cf8' title='update source link'>c463cf8</a></span></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/a-simpler-vim-statusline.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/8705716' title='organize images file struct, fix paths in docs'>8705716</a></span></div>
   </div>
 </article>
 <section id="comment">

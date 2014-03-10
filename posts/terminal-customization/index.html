@@ -73,7 +73,7 @@
 <p>A while back I switched over to <a href="http://en.wikipedia.org/wiki/Z_shell">zsh</a> as my shell and used <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a> to get up and running quickly. I barely used any of the features it provided, so I recently decided to do away with it and get zsh setup from scratch. At the same time I decided it’d be a good idea to do the same for <a href="http://en.wikipedia.org/wiki/Rxvt-unicode">urxvt</a>. These initiatives had the consequence that I ended up completely redoing the way I maintained my dotfiles which had the effect of greatly improving my overall setup.</p>
 <p>Before I go any further I’d like to point out that all of the things that I’ll talk about in this post are available in my <a href="https://github.com/blaenk/dots">dotfiles</a> repository. I’ll make an effort to link to the relevant individual files from the repository for each topic I cover.</p>
 <p>Here is the end result:</p>
-<p><img src="/images/terminal/urxvt.png" class="center"></p>
+<p><img src="/images/posts/terminal-customization/urxvt.png" class="center"></p>
 <h2 id="dotfiles">dotfiles</h2>
 <p>I previously had a simple Rakefile that symlinked all of the files in the dotfiles directory into my home directory, except for some in an exception list. However, this had the consequence that I had to have ruby installed beforehand, and I didn’t like to install ruby through means other than something like <a href="https://github.com/sstephenson/rbenv/">rbenv</a>. I preferred instead to be able to get my dotfiles up and running as soon as possible on a new system. As a result I opted to use a shell script to deploy my dotfiles.</p>
 <p>After looking around in dotfile repositories I found <a href="https://github.com/holman/dotfiles/blob/master/script/bootstrap">hoffman’s bootstrap script</a>. The simple script uses <code>find</code> to find files and directories whose names end in “.ln” and symlinks them into the home directory. I modified it a bit to use the “.ln” suffix instead of “.symlink” — purely cosmetic of course — as well as some other slight changes. I think I’ll change it later so that it can gracefully handle operating system-dependent dotfiles.</p>
@@ -96,20 +96,20 @@
 <figure class="codeblock"><pre><code class="highlight language-haskell"><span class="nf">\</span><span class="n">dir</span> <span class="ow">-&gt;</span> <span class="n">command_in</span><span class="p">(</span><span class="n">dir</span><span class="p">)</span>
 </code></pre></figure>
 <p>Here’s what the actual prompt looks like:</p>
-<p><img src="/images/terminal/basic-prompt.png" class="center"></p>
+<p><img src="/images/posts/terminal-customization/basic-prompt.png" class="center"></p>
 <p>Here it is in text:</p>
 <figure class="codeblock"><pre><code class="highlight language-text">λ ~/code/haskell ➜</code></pre></figure>
 <p><strong>Update</strong>: I have changed my prompt to be multiline. All that has changed is that the ➜ is on its own line.</p>
 <h4 id="git">git</h4>
 <p>Like any self-respecting modern prompt, mine <a href="https://github.com/blaenk/dots/blob/master/zsh/zsh/vcsinfo.zsh">incorporates git information</a> when within a git repository. It shows the current branch, whether there are any untracked files (denoted by <code>.</code>), modified files (denoted by <code>#</code>), or staged files (denoted by <code>+</code>). Another nice little thing I added was a marker for how far ahead and/or behind we are from the remote branch. This is appended to the aforementioned information and only shows up when we <em>are</em> ahead or behind.</p>
 <p>All of these features were done using zsh’s <a href="http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information">vcsinfo</a> with the help of <a href="http://arjanvandergaag.nl/blog/customize-zsh-prompt-with-vcs-info.html">Arjan van der Gaag</a> and — once again — <a href="https://github.com/sunaku/home/blob/master/.zsh/config/prompt.zsh">sunaku</a>. Here’s what it looks like <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>:</p>
-<p><img src="/images/terminal/git-prompt.png" class="center"></p>
+<p><img src="/images/posts/terminal-customization/git-prompt.png" class="center"></p>
 <p>Again in text:</p>
 <figure class="codeblock"><pre><code class="highlight language-text">λ ~/.dots (master . # +){+1} ➜ </code></pre></figure>
 <p>The branch is <code>master</code> and apparently there’s unstaged files, modifed files, and staged files. Furthermore, the <code>{+1}</code> shows that my branch is one commit ahead of the remote branch. It would also show the number of commits we are behind — in red — if that were the case, which in my opinion can be very handy so that you can avoid conflicts by rebasing or merging before you push. This segment only shows up if either of those conditions is met.</p>
 <h4 id="ssh">SSH</h4>
 <p>The prompt also detects if it’s being viewed through SSH. I don’t like viewing hostname in my prompt on machines I’m on locally as I feel it’s pointless. However, when I’m connected to a remote server via SSH, it’s often handy to have the hostname around to differentiate between your computer and the remote host. For this reason my prompt only shows the hostname when it detects that it’s being viewed through an SSH connection. Here’s what it looks like:</p>
-<p><img src="/images/terminal/ssh-prompt.png" class="center"></p>
+<p><img src="/images/posts/terminal-customization/ssh-prompt.png" class="center"></p>
 <p>Once again in text:</p>
 <figure class="codeblock"><pre><code class="highlight language-text">[someserver] λ ~/.dots (master) ➜ </code></pre></figure>
 <p><strong>Update — October 28, 2013</strong>: I’ve actually done away with this component of the prompt. I didn’t like how the lambda no longer aligned with the arrow symbol — it created a sort of inconsistency. I’ve instead decided to add a pretty simple green <code>R</code> at the end of the current working path, to signify that I am on a “remote” machine, so it reads something like “currently on x path remotely.”</p>
@@ -132,7 +132,7 @@
   <div class="meta">
     <div class="date"><i class="fa fa-calendar fa-fw"></i> February 12, 2013</div>
     <div class="tags"><i class="fa fa-tags fa-fw"></i> <a href="/tags/linux/">Linux</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/terminal-customization.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/1c3a597' title='make em dashes'>1c3a597</a></span></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/terminal-customization.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/8705716' title='organize images file struct, fix paths in docs'>8705716</a></span></div>
   </div>
 </article>
 <section id="comment">

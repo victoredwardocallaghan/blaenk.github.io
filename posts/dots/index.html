@@ -78,14 +78,14 @@
 <p>My deploy script is called <code>sprinkle</code>, which is a heavily modified fork of the deploy script from <a href="https://github.com/holman/dotfiles">holman’s dotfiles</a>. I chose this script to start from because I liked that it was a shell script, unlike most other deploy scripts I had seen which were Rakefiles, naturally requiring Ruby to be installed on the system before being able to deploy the dotfiles.</p>
 <p>I also liked that the deploy script had a naming convention such that files and folders with a <code>.symlink</code> suffix were those that were deployed. However, I didn’t like that vim and Github wouldn’t detect the filetype — and therefore wouldn’t highlight — due to the misleading file extension. So I ended up heavily customizing the script.</p>
 <p>Now, instead of the <code>.symlink</code>-suffix naming convention, those files and folders that should be deployed are themselves hidden. This allows vim, Github, and others to detect the file type and provide highlighting. Running the deploy script for the first time yields something like this:</p>
-<p><img class="center" src="/images/dots/deploy.png"></p>
+<p><img class="center" src="/images/posts/dots/deploy.png"></p>
 <p>My zsh files have an alias for the sprinkle script so that it can be run from anywhere, though in this case I was already in my dots directory. Files that haven’t been deployed are immediately deployed (symlinked) unless there’s an existing file in the destination. In that case, there are options to backup, overwrite, or remove (without deploying) the existing file, as well as skip that file altogether.</p>
 <p>These commands are entered when prompted by simply entering the first letter of the action, i.e. <code>o</code> for overwrite. A capitalized letter performs that action for all remaining files as well. This is what the prompt looks like:</p>
-<p><img class="center" src="/images/dots/prompt.png"></p>
+<p><img class="center" src="/images/posts/dots/prompt.png"></p>
 <h2 id="tmux">tmux</h2>
 <p>My tmux configuration is pretty simple I think. I keep the bind at <code>C-b</code> though it kind of interferes with <code>C-f/C-b</code> scrolling, in which case there’s a bit of lag for <code>C-b</code> unless I tap it twice. Instead I’m getting used to scrolling with <code>C-u/C-d</code> though it’s pretty disorienting starting out.</p>
 <p>My window list is pretty subtle I think. Active windows are underlined and the current window name is emboldened.</p>
-<p><img class="center" src="/images/dots/tmux.png"></p>
+<p><img class="center" src="/images/posts/dots/tmux.png"></p>
 <p>I have binds for creating new windows with <code>M-n</code> and renaming a window with <code>M-r</code>:</p>
 <figure class="codeblock"><pre><code class="highlight language-text">bind -n M-r command-prompt 'rename-window %%'
 bind -n M-n command-prompt -p "Name of new window:" "new-window -n '%%'"</code></pre></figure>
@@ -207,7 +207,7 @@ clojure may be found in the following packages:
   community/clojure 1.5.1-2     /usr/bin/clojure
 </code></pre></figure>
 <p>I also configured <a href="https://github.com/blaenk/dots/blob/master/zsh/zsh/highlight.zsh">highlighting</a> for the <code>less</code> pager.</p>
-<p><img class="center" src="/images/dots/less.png"></p>
+<p><img class="center" src="/images/posts/dots/less.png"></p>
 <p>My prompt is pretty involved and it’s discussed more in-depth in my <a href="/posts/terminal-customization/#prompt">customization</a> post, though it’s slightly outdated. See my dotfiles for the latest configuration.</p>
 <p>One noteworthy thing however is that I highlight the path separator in a subtle cyan.</p>
 <figure class="codeblock"><pre><code class="highlight language-bash"><span class="nv">SLASH</span><span class="o">=</span><span class="s2">&quot;%{$fg[cyan]%}/%{$reset_color%}&quot;</span>
@@ -260,7 +260,7 @@ augroup END
   <div class="meta">
     <div class="date"><i class="fa fa-calendar fa-fw"></i> February 16, 2014</div>
     <div class="tags"><i class="fa fa-tags fa-fw"></i> <a href="/tags/linux/">Linux</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/dots.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/bbb98be' title='tmux 1.9 released: Cc -> Cs'>bbb98be</a></span></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/posts/dots.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/8705716' title='organize images file struct, fix paths in docs'>8705716</a></span></div>
   </div>
 </article>
 <section id="comment">

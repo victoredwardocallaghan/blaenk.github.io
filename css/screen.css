@@ -898,9 +898,6 @@ sup {
     .inner {
       width: 100%; } }
 
-dt {
-  font-weight: bold; }
-
 article .entry-content ul li,
 article .entry-content ol li {
   line-height: 1.625; }

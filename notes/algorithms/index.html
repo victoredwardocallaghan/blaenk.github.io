@@ -470,7 +470,7 @@
 <span class="o">}</span>
 </code></pre><figcaption><span>quick sort <a href="http://www.sorting-algorithms.com/quick-sort">visualize</a></span></figcaption></figure>
 <p>The partition algorithm is similar to merge in merge sort in that it is what actually does the sorting.</p>
-<p><img class="center" src="/images/algorithms/quicksort/partition.png"></p>
+<p><img class="center" src="/images/notes/algorithms/quicksort/partition.png"></p>
 <ol type="1">
 <li>choose a partition element separator <span class="math">\(v\)</span></li>
 <li>scan through the array from <span class="math">\(i\)</span> to <span class="math">\(j\)</span> in both directions
@@ -539,7 +539,7 @@
 </div>
 <p>One problem with quick sort as it is implemented above is that items with keys equal to that of the partition item are nonetheless swapped, unnecessarily. Three-way partitioning aims to resolve this by partitioning into three separate sub-arrays, the middle of which corresponds to those items with keys equal to the partition point. E. W. Dijkstra popularized this as the <em>Dutch National Flag</em> problem.</p>
 <p><strong>Performance Factors</strong>: distribution of the keys</p>
-<p><img class="center" src="/images/algorithms/quicksort/3waypartition.png"></p>
+<p><img class="center" src="/images/notes/algorithms/quicksort/3waypartition.png"></p>
 <ol type="1">
 <li>perform a 3-way comparison between element <span class="math">\(i\)</span> and <span class="math">\(v\)</span>
 <ol type="1">
@@ -899,7 +899,7 @@
 <li>new node and parent lean in the same direction</li>
 </ol>
 <p><strong>First</strong>, if the parent and its uncle are <strong>red</strong>, flip their colors and make the grandparent <strong>red</strong> instead. This allows the newly added <strong>red</strong> node to satisfy all properties, since its parent is <strong>black</strong>. However, making the grandparent <strong>red</strong> may possibly violate properties <strong>2</strong> (root is <strong>black</strong>) and <strong>4</strong> (both children of <strong>red</strong> nodes are <strong>black</strong>), so recurse the enforcement algorithm on the grandparent starting from case 1:</p>
-<p><img src="/images/algorithms/red-black-trees/insert_1.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/insert_1.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">insert_case3a</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">u</span> <span class="o">=</span> <span class="n">uncle</span><span class="p">(</span><span class="n">n</span><span class="p">),</span> <span class="o">*</span><span class="n">g</span><span class="p">;</span>
 
@@ -918,7 +918,7 @@
 <p><strong>Second</strong>, the new node could be added diagonal to a <strong>red</strong> parent node, meaning for example the parent node being <strong>red</strong> and the <strong>left child</strong> of its parent and the new node could be <strong>red</strong> (as always) and the <strong>right child</strong> of its parent.</p>
 <p>This is ultimately resolved by two rotations, but the first rotation is made to get the new node leaning in the same direction as its parent. This is accomplished by rotating the new node in the direction of the parent’s direction from its parent. In the above example, the new node is its parent’s <strong>right child</strong> and the parent is the grandparent’s <strong>left child</strong>, so the new node is <strong>rotated left</strong>.</p>
 <p>There are still consecutive <strong>red</strong> nodes after this rotation, albeit leaning in the same direction. This makes it simple for case 3c to handle, provided it is applied to the ex-parent, i.e. the now-bottom node, since case 3c operates in a more general sense from the perspective of the grandchild.</p>
-<p><img src="/images/algorithms/red-black-trees/insert_2.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/insert_2.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">insert_case3b</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">g</span> <span class="o">=</span> <span class="n">grandparent</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 
@@ -936,7 +936,7 @@
 <p><strong>Third</strong>, the new node could be added below a <strong>red</strong> parent node and leaning in the same direction. For example, the new node is the <strong>left child</strong> of its parent and its parent is the <strong>left child</strong> of its parent (grandparent of the new node) as well.</p>
 <p>This is resolved by rotating the grandparent in the direction <strong>opposite</strong> to the direction in which the consecutive <strong>red</strong> links lean. This has the effect of making the parent be the new root of the subtree previously rooted by the grandparent.</p>
 <p>The grandparent was known to be <strong>black</strong>, since the <strong>red</strong> parent could not have been a child of it otherwise. Knowing this, the parent — now the root — switches colors with the grandparent, such that the subtree now consists of the <strong>black</strong> root and two <strong>red</strong> children.</p>
-<p><img src="/images/algorithms/red-black-trees/insert_3.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/insert_3.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">insert_case3c</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">g</span> <span class="o">=</span> <span class="n">grandparent</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 
@@ -1008,7 +1008,7 @@
 </code></pre></figure>
 <p>When both <span class="math">\(M\)</span> and <span class="math">\(C\)</span> are <strong>black</strong> nodes, four situations <a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a> can arise that require re-balancing, unless <span class="math">\(C\)</span>’s new position <span class="math">\(N\)</span> is the new root. If <span class="math">\(C\)</span> becomes the root it simply means that a <strong>black</strong> node was removed from all paths, effectively decreasing the black-height of every path by one and the tree therefore requires no re-balancing.</p>
 <p><strong>First</strong>: <span class="math">\(N\)</span>’s sibling <span class="math">\(S\)</span> is <strong>red</strong>. In this case, reverse the colors of <span class="math">\(P\)</span> and <span class="math">\(S\)</span> and rotate <span class="math">\(P\)</span> left. Although all paths still have the same black-height, <span class="math">\(N\)</span>’s sibling <span class="math">\(S\)</span> is now <strong>black</strong> and its parent <span class="math">\(P\)</span> is <strong>red</strong>, allowing fall-through to case 4, 5, or 6:</p>
-<p><img src="/images/algorithms/red-black-trees/delete_1.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/delete_1.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">delete_case1</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="o">-&gt;</span><span class="n">parent</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
 
@@ -1028,9 +1028,9 @@
 <span class="p">}</span>
 </code></pre></figure>
 <p><strong>Second</strong>: <span class="math">\(P\)</span>, <span class="math">\(S\)</span>, and <span class="math">\(S\)</span>’s children are all <strong>black</strong>. Repaint <span class="math">\(S\)</span> <strong>red</strong> so that all paths passing through <span class="math">\(S\)</span> have the same black-height as those that go through <span class="math">\(N\)</span>.</p>
-<p><img src="/images/algorithms/red-black-trees/delete_2a.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/delete_2a.png" class="center"></p>
 <p>If <span class="math">\(P\)</span> is <strong>red</strong>, then the tree is violating property <strong>4</strong> (both children of <strong>red</strong> nodes are <strong>black</strong>), fix it by simply painting <span class="math">\(P\)</span> <strong>black</strong>.</p>
-<p><img src="/images/algorithms/red-black-trees/delete_2b.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/delete_2b.png" class="center"></p>
 <p>Otherwise, if <span class="math">\(P\)</span> was already <strong>black</strong>, however, then after the painting of <span class="math">\(S\)</span> to <strong>red</strong>, <span class="math">\(P\)</span> now has effectively lost one level from its black-height, so case 1 should be applied to <span class="math">\(P\)</span>:</p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">delete_case2</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">sibling</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
@@ -1049,7 +1049,7 @@
 <span class="p">}</span>
 </code></pre></figure>
 <p><strong>Third</strong>: <span class="math">\(S\)</span> is <strong>black</strong>, <span class="math">\(S_{L}\)</span> is <strong>red</strong>, <span class="math">\(S_{R}\)</span> is <strong>black</strong>, <span class="math">\(N\)</span> is left child of its <span class="math">\(P\)</span>. Rotate <span class="math">\(S\)</span> right, then exchange colors of <span class="math">\(S\)</span> and its new parent. This case just prepares the tree for falling into case 6, since <span class="math">\(N\)</span> now has a <strong>black</strong> sibling — <span class="math">\(S_{L}\)</span> — whose right child is <strong>red</strong>.</p>
-<p><img src="/images/algorithms/red-black-trees/delete_3.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/delete_3.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">delete_case3</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">sibling</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 
@@ -1068,7 +1068,7 @@
 </code></pre></figure>
 <p><strong>Fourth</strong>: <span class="math">\(S\)</span> is <strong>black</strong>, <span class="math">\(S_{R}\)</span> is <strong>red</strong>, <span class="math">\(N\)</span> is left child of its <span class="math">\(P\)</span>. Rotate <span class="math">\(P\)</span> left, exchange colors of <span class="math">\(P\)</span> and <span class="math">\(S\)</span>, and make <span class="math">\(S_{R}\)</span> <strong>black</strong>.</p>
 <p>This unbalances the tree by increasing black-height of paths through <span class="math">\(N\)</span> by one because either <span class="math">\(P\)</span> became <strong>black</strong> or it was <strong>black</strong> and <span class="math">\(S\)</span> became a <strong>black</strong> grandparent.</p>
-<p><img src="/images/algorithms/red-black-trees/delete_4.png" class="center"></p>
+<p><img src="/images/notes/algorithms/red-black-trees/delete_4.png" class="center"></p>
 <figure class="codeblock"><pre><code class="highlight language-c"><span class="kt">void</span> <span class="nf">delete_case4</span><span class="p">(</span><span class="n">node</span> <span class="o">*</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">node</span> <span class="o">*</span><span class="n">s</span> <span class="o">=</span> <span class="n">sibling</span><span class="p">(</span><span class="n">n</span><span class="p">);</span>
 
@@ -1235,7 +1235,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre><figcaption><span>depth-first search</span></figcaption></figure>
-<p>To trace the paths in the graph, an array can be kept of sice <span class="math">\(V\)</span> indexed by a given vertex whose value is the vertex that connects to it. This array of edges represents a tree rooted at the source vertex.</p>
+<p>To trace the paths in the graph, an array can be kept of size <span class="math">\(V\)</span> indexed by a given vertex whose value is the vertex that connects to it. This array of edges represents a tree rooted at the source vertex.</p>
 <h3 id="breadth-first-search">Breadth-First Search</h3>
 <p>Breadth-First Search (<abbr title="Breadth-First Search">BFS</abbr>) traversal aids in finding the shortest path between two vertices. Its basic operation consists of:</p>
 <ol type="1">
@@ -1401,7 +1401,7 @@
 <p>The first vertex in a reverse postorder of <span class="math">\(G\)</span> is in a <em>source</em> component of the kernel <abbr title="Directed Acyclic Graph">DAG</abbr>, whereas the first vertex in a reverse postorder of the <em>reverse</em> digraph <span class="math">\(G^R\)</span> is in a <em>sink</em> component of the kernel <abbr title="Directed Acyclic Graph">DAG</abbr>.</p>
 <h3 id="all-pairs-reachability">All-Pairs Reachability</h3>
 <p>All-Pairs reachability asks: given a digraph, is there a directed path from a given vertex <span class="math">\(v\)</span> to another given vertex <span class="math">\(w\)</span>? This can be answered by creating a separate graph representation known as a transitive closure, which allows for straightforward checking of which vertex is reachable by others.</p>
-<p><img src="/images/algorithms/graphs/transitive-closure.png" class="right"></p>
+<p><img src="/images/notes/algorithms/graphs/transitive-closure.png" class="right"></p>
 <p>The <strong>transitive closure</strong> of digraph <span class="math">\(G\)</span> is another digraph with the same set of vertices but with an edge from <span class="math">\(v\)</span> to <span class="math">\(w\)</span> in the transitive closure if and only if <span class="math">\(w\)</span> is reachable from <span class="math">\(v\)</span> in <span class="math">\(G\)</span>. Transitive closures are generally represented as a matrix of booleans where row <span class="math">\(v\)</span> at column <span class="math">\(w\)</span> is true if <span class="math">\(w\)</span> is reachable from <span class="math">\(v\)</span> in the digraph.</p>
 <p>Finding the transitive closure of a digraph can be accomplished by running <abbr title="Depth-First Search">DFS</abbr> on every vertex of the digraph and storing the resulting reachability array for each each vertex from which <abbr title="Depth-First Search">DFS</abbr> was run. However, it can be impractical for large graphs because it uses space proportional to <span class="math">\(V^2\)</span> and time proportional to <span class="math">\(V(V + E)\)</span>.</p>
 <h2 id="minimum-spanning-trees">Minimum Spanning Trees</h2>
@@ -1936,7 +1936,7 @@
 </code></pre><figcaption><span>string quicksort</span></figcaption></figure>
 <h2 id="tries">Tries</h2>
 <p>Trie structures exploit string properties to provide much faster string search, with hits taking time proportional to the length of the key and where misses require examining only a few characters.</p>
-<p><img src="/images/algorithms/tries/trie.png" class="right"></p>
+<p><img src="/images/notes/algorithms/tries/trie.png" class="right"></p>
 <p>The structure of tries is comprised of a tree where every node has <span class="math">\(R\)</span> <strong>links</strong> where <span class="math">\(R\)</span> is the size of the alphabet. Every node also has an associated <strong>label</strong> corresponding to the character value consumed to reach the node. The root node has no such label as there is no link pointing to it. Every node also also has an associated <strong>value</strong> corresponding to the value associated with the key denoted by the path ending at the particular node.</p>
 <p>A <strong>search hit</strong> occurs when the trie search arrives at the final node and that node’s value is not empty. A <strong>search hit</strong> occurs both if the final node’s value is empty or if the search terminated on a null link.</p>
 <figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Value</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
@@ -2529,7 +2529,7 @@ A B C D E F
   <div class="meta">
     <div class="date"><i class="fa fa-calendar fa-fw"></i> July 15, 2013</div>
     <div class="notes"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/algorithms.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/1e8214f' title='add section on BST traversal'>1e8214f</a></span></div>
+    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/algorithms.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/3c69d8c' title='typo'>3c69d8c</a></span></div>
   </div>
 </article>
 
