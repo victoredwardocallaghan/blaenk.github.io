@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Machine Learning Theory - Blaenk Denum</title>
+  <title>Machine Learning - Blaenk Denum</title>
   <meta name="author" content="Jorge Israel Peña">
   <meta name="description" content="AKA Blaenk Denum">
 
@@ -13,7 +13,7 @@
   <link href="/favicon.png" rel="shortcut icon">
   <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Merriweather:900italic,900,700italic,400italic,700,400,300italic,300' rel='stylesheet' type='text/css'>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link href='/css/screen.css' rel='stylesheet' type='text/css' media='screen' />
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
   <!--[if lt IE 9]>
@@ -23,52 +23,52 @@
   <script src='/js/blaenk.js' type='text/javascript'></script>
 </head>
 <body>
-  <div id="strip"></div>
-  <header id="header" class="inner">
-    <div id="stamp">
-      <h1><a href="/">Jorge Israel Peña</a></h1>
-      <h4>AKA BLAENK DENUM</h4>
-    </div>
-    <nav id="main-nav">
-      <ul class="main">
-        <li><a href="/about/">About</a></li>
-        <li><a href="/work/">Work</a></li>
-        <li><a href="/lately/">Lately</a></li>
-        <li><a href="/notes/">Notes</a></li>
-        <li><a id="search_btn">Search</a></li>
-      </ul>
+  <div class="wrapper">
+    <header id="header" class="inner">
+      <div id="stamp">
+        <h1><a href="/">Jorge Israel Peña</a></h1>
+        <h4>AKA BLAENK DENUM</h4>
+      </div>
+      <nav id="main-nav">
+        <ul class="main">
+          <li><a href="/about/">About</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/lately/">Lately</a></li>
+          <li><a href="/notes/">Notes</a></li>
+          <li><a id="search_btn">Search</a></li>
+        </ul>
+      </nav>
+      <nav id="mobile-nav">
+        <div class="alignleft menu">
+          <a class="button">Menu</a>
+          <div class="container">
+            <ul class="main">
+              <li><a href="/about/">About</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/lately/">Lately</a></li>
+              <li><a href="/notes/">Notes</a></li>
+              <li><a id="search_btn">Search</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="alignright search">
+          <a class="button"></a>
+          <div class="container">
+            <form action="http://google.com/search" method="get">
+              <input type="text" name="q" results="0">
+              <input type="hidden" name="q" value="site:blaenkdenum.com">
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div id="content" class="inner">
       <form class="desk_search" action="http://google.com/search" method="get">
-        <input type="text" name="q" results="0" placeholder="Search... (Click 'Search' to hide)" autocomplete="off" spellcheck="false">
+        <input id="search" type="text" name="q" results="0" placeholder="Search" autocomplete="off" spellcheck="false">
         <input type="hidden" name="q" value="site:blaenkdenum.com">
       </form>
-    </nav>
-    <nav id="mobile-nav">
-      <div class="alignleft menu">
-        <a class="button">Menu</a>
-        <div class="container">
-          <ul class="main">
-            <li><a href="/about/">About</a></li>
-            <li><a href="/work/">Work</a></li>
-            <li><a href="/lately/">Lately</a></li>
-            <li><a href="/notes/">Notes</a></li>
-            <li><a id="search_btn">Search</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="alignright search">
-        <a class="button"></a>
-        <div class="container">
-          <form action="http://google.com/search" method="get">
-            <input type="text" name="q" results="0">
-            <input type="hidden" name="q" value="site:blaenkdenum.com">
-          </form>
-        </div>
-      </div>
-    </nav>
-  </header>
-  <div id="content" class="inner">
-    <article class="post">
-  <h2 class="title"><a href="/notes/machine-learning-theory/"><span>Machine Learning Theory</span></a></h2>
+      <article class="post">
+  <h2 class="title"><a href="/notes/machine-learning/"><span>Machine Learning</span></a></h2>
   <div class="entry-content"><p>I’ve been wanting to learn about the subject of machine learning for a while now. I’m familiar with some basic concepts, as well as reinforcement learning. What follows are notes on my attempt to comprehend the subject. The primary learning resource I’m using is Cal Tech’s CS 1156 on edX, with supplementary material from Stanford’s CS 229 on Coursera.</p>
 <p>I pushed my code for the programming assignments for this class to <a href="https://github.com/blaenk/learning-from-data">github</a>.</p>
 <nav id="toc"><p>Contents</p><ol><li><a href="#learning-problem">Learning Problem</a><ol><li><a href="#learning-components">Learning Components</a></li><li><a href="#perceptrons">Perceptrons</a><ol><li><a href="#perceptron-model">Model</a></li><li><a href="#perceptron-learning-algorithm">Learning Algorithm</a></li></ol></li><li><a href="#types-of-learning">Types of Learning</a></li></ol></li><li><a href="#feasibility">Feasibility</a><ol><li><a href="#notation-for-learning">Notation</a></li></ol></li><li><a href="#linear-model">Linear Model</a><ol><li><a href="#input-representation">Input Representation</a></li><li><a href="#pocket-algorithm">Pocket Algorithm</a></li><li><a href="#linear-regression">Linear Regression</a><ol><li><a href="#linear-regression-algorithm">Algorithm</a></li><li><a href="#linear-regression-for-classification">Classification</a></li></ol></li><li><a href="#non-linear-transformations">Non-Linear Transformations</a></li></ol></li><li><a href="#error-and-noise">Error and Noise</a><ol><li><a href="#choosing-the-error-measure">Choosing the Error Measure</a></li><li><a href="#noise">Noise</a></li></ol></li><li><a href="#training-vs-testing">Training vs. Testing</a><ol><li><a href="#difference-between-testing-and-training">Difference</a></li><li><a href="#overlapping-events">Overlapping Events</a></li><li><a href="#dichotomies">Dichotomies</a></li><li><a href="#growth-function">Growth Function</a><ol><li><a href="#positive-rays">Positive Rays</a></li><li><a href="#positive-intervals">Positive Intervals</a></li><li><a href="#convex-sets">Convex Sets</a></li></ol></li><li><a href="#break-point">Break Point</a></li></ol></li><li><a href="#theory-of-generalization">Theory of Generalization</a><ol><li><a href="#conceptualization">Conceptualization</a></li><li><a href="#estimating-alpha-and-beta">Estimating <span class="math">\(\alpha\)</span> and <span class="math">\(\beta\)</span></a></li><li><a href="#estimating-beta">Estimating <span class="math">\(\beta\)</span></a></li><li><a href="#bound-relation">Bound Relation</a></li><li><a href="#computing-the-bound">Computing the Bound</a><ol><li><a href="#numerical-bound-computation">Numerically</a></li><li><a href="#analytical-bound-computation">Analytically</a></li></ol></li><li><a href="#vapnik-chervonenkis-inequality">Vapnik-Chervonenkis Inequality</a></li></ol></li><li><a href="#vc-dimension">VC Dimension</a><ol><li><a href="#vc-dimension-of-perceptrons">Perceptrons</a></li><li><a href="#vc-dimension-interpretation">Interpretation</a></li><li><a href="#minimum-sample-size">Minimum Sample Size</a></li><li><a href="#generalization-bound">Generalization Bound</a></li></ol></li><li><a href="#bias-variance-tradeoff">Bias-Variance Tradeoff</a><ol><li><a href="#bias-variance-representation">Representation</a></li><li><a href="#tradeoff">Tradeoff</a></li><li><a href="#learning-curves">Learning Curves</a></li><li><a href="#analysis-of-linear-regression">Analysis of Linear Regression</a></li></ol></li><li><a href="#linear-model-ii">Linear Model II</a><ol><li><a href="#non-linear-transformations-ii">Non-Linear Transformations II</a></li><li><a href="#logistic-regression">Logistic Regression</a><ol><li><a href="#logistic-regression-error-measure">Error Measure</a></li><li><a href="#logistic-regression-learning-algorithm">Learning Algorithm</a></li></ol></li></ol></li><li><a href="#neural-networks">Neural Networks</a><ol><li><a href="#stochastic-gradient-descent">Stochastic Gradient Descent</a></li><li><a href="#neural-network-model">Model</a></li><li><a href="#neural-network-backpropagation">Backpropagation</a></li></ol></li><li><a href="#overfitting">Overfitting</a><ol><li><a href="#role-of-noise">Role of Noise</a></li><li><a href="#deterministic-noise">Deterministic Noise</a></li><li><a href="#noise-and-bias-variance">Noise and Bias-Variance</a></li><li><a href="#dealing-with-overfitting">Dealing with Overfitting</a></li></ol></li><li><a href="#regularization">Regularization</a><ol><li><a href="#polynomial-model">Polynomial Model</a></li><li><a href="#augmented-error">Augmented Error</a></li><li><a href="#weight-decay">Weight Decay</a><ol><li><a href="#variations-of-weight-decay">Variations</a></li></ol></li><li><a href="#weight-growth">Weight Growth</a></li><li><a href="#generalized-regularizer">Generalized Regularizer</a></li><li><a href="#neural-network-regularizers">Neural Network Regularizers</a><ol><li><a href="#neural-network-weight-decay">Weight Decay</a></li><li><a href="#neural-network-weight-elimination">Weight Elimination</a></li><li><a href="#neural-network-early-stopping">Early Stopping</a></li></ol></li><li><a href="#optimal-lambda">Optimal <span class="math">\(\lambda\)</span></a></li></ol></li><li><a href="#validation">Validation</a><ol><li><a href="#purpose-of-validation">Purpose of Validation</a></li><li><a href="#model-selection">Model Selection</a></li><li><a href="#validation-bias">Bias</a></li><li><a href="#data-contamination">Data Contamination</a></li><li><a href="#cross-validation">Cross-Validation</a></li><li><a href="#cross-validation-optimization">Optimization</a></li></ol></li><li><a href="#support-vector-machines">Support Vector Machines</a><ol><li><a href="#lagrange-formulation">Lagrange Formulation</a></li><li><a href="#svm-non-linear-transformations">Non-Linear Transformations</a></li></ol></li><li><a href="#kernel-methods">Kernel Methods</a><ol><li><a href="#kernel-trick">Kernel Trick</a><ol><li><a href="#polynomial-kernel">Polynomial Kernel</a></li><li><a href="#kernel-formulation-of-svm">Kernel Formulation of SVM</a></li><li><a href="#kernel-function-validity">Kernel Function Validity</a></li></ol></li><li><a href="#soft-margin-svm">Soft-Margin SVM</a><ol><li><a href="#soft-margin-svm-error-measure">Error Measure</a></li><li><a href="#soft-margin-svm-optimization">Optimization</a></li><li><a href="#types-of-support-vectors">Types of Support Vectors</a></li></ol></li></ol></li><li><a href="#radial-basis-functions">Radial Basis Functions</a><ol><li><a href="#effect-of-gamma">Effect of <span class="math">\(\gamma\)</span></a></li><li><a href="#rbf-classification">Classification</a><ol><li><a href="#k-centers-rbf">K-Centers RBF</a></li><li><a href="#k-center-rbf-center-selection">K-Means Clustering</a></li><li><a href="#lloyds-algorithm">LLoyd’s Algorithm</a></li><li><a href="#rbf-centers-calculating-weights">Calculating Weights</a></li></ol></li><li><a href="#rbf-network">RBF Network</a><ol><li><a href="#rbf-neural-network-comparison">Neural Network Comparison</a></li></ol></li><li><a href="#choosing-gamma">Choosing <span class="math">\(\gamma\)</span></a></li><li><a href="#rbf-vs.svm-kernel">RBF vs. SVM Kernel</a></li><li><a href="#rbf-regularization">Regularization</a></li></ol></li><li><a href="#three-learning-principles">Three Learning Principles</a><ol><li><a href="#occams-razor">Occam’s Razor</a><ol><li><a href="#puzzle-1-football-oracle">Puzzle 1: Football Oracle</a></li><li><a href="#why-is-simpler-better">Why is Simpler Better?</a></li><li><a href="#meaningless-fit">Meaningless Fit</a></li></ol></li><li><a href="#sampling-bias">Sampling Bias</a><ol><li><a href="#puzzle-2-presidential-election">Puzzle 2: Presidential Election</a></li><li><a href="#matching-the-distributions">Matching the Distributions</a></li><li><a href="#puzzle-3-credit-approval">Puzzle 3: Credit Approval</a></li></ol></li><li><a href="#data-snooping">Data Snooping</a><ol><li><a href="#looking-at-the-data">Looking at the Data</a></li><li><a href="#puzzle-4-financial-forecasting">Puzzle 4: Financial Forecasting</a></li><li><a href="#data-set-reuse">Data Set Reuse</a></li><li><a href="#data-snooping-remedies">Remedies</a></li><li><a href="#puzzle-5-bias-via-snooping">Puzzle 5: Bias via Snooping</a></li></ol></li></ol></li><li><a href="#epilogue">Epilogue</a><ol><li><a href="#map-of-machine-learning">Map of Machine Learning</a></li><li><a href="#bayesian-learning">Bayesian Learning</a></li><li><a href="#aggregation-methods">Aggregation Methods</a><ol><li><a href="#before-the-fact">Before the Fact</a></li><li><a href="#after-the-fact">After the Fact</a></li></ol></li></ol></li><li><a href="#resources">Resources</a></li></ol></nav>
@@ -2169,12 +2169,12 @@ y_N \vphantom {\Big(}
 <hr />
 <div class="padded-quote">
 <p>The simplest model that fits the data is also the most plausible.</p>
+</div>
+<hr />
 <footer>
 <strong>Occam’s Razor</strong> applied to ML
 </footer>
 
-</div>
-<hr />
 </blockquote>
 <p>It’s therefore important to know when a model is considered “simple,” and for this purpose there are two main types of complexity measures: one being the complexity of the hypothesis <span class="math">\(h\)</span> (object), the second being the complexity of the hypothesis set <span class="math">\(\mathcal H\)</span> (set of objects).</p>
 <p>The complexity of <span class="math">\(h\)</span> can be measured using minimum description length (<abbr title="Minimum Description Length">MDL</abbr>) or the order of the polynomial. <abbr title="Minimum Description Length">MDL</abbr> concerns specifying an object with as few bits as possible, the fewer the bits, the “simpler” the object. For example, for a million-digit number we want to determine the complexity of individual numbers of that length. If we choose the number <span class="math">\(2^{1,000,000} - 1\)</span>, which is a million digits long, all the number <span class="math">\(9\)</span>. Despite the fact that this is a very long number, it’s simple because we can simply describe it as <span class="math">\(2^{1,000,000} - 1\)</span>, which isn’t a very long description. The order of the polynomial as a measure of complexity is straightforward.</p>
@@ -2241,12 +2241,12 @@ y_N \vphantom {\Big(}
 <hr />
 <div class="padded-quote">
 <p>If the data is sampled in a biased way, then learning will produce a similarly biased outcome.</p>
+</div>
+<hr />
 <footer>
 <strong>Sampling Bias Principle</strong>
 </footer>
 
-</div>
-<hr />
 </blockquote>
 <p>This presents a problem of making sure that the data is representative of what we want. For example, in financial forecasting, we may want to predict the market by taking periods of the market where the market was normal. If this model is then tested in the real market which contains non-normal conditions, we will have no idea how the model will perform in those conditions.</p>
 <h3 id="matching-the-distributions">Matching the Distributions</h3>
@@ -2295,12 +2295,12 @@ y_N \vphantom {\Big(}
 <hr />
 <div class="padded-quote">
 <p>If a data set has affected any step of the learning process, it’s ability to assess the outcome has been compromised.</p>
+</div>
+<hr />
 <footer>
 <strong>Data Snooping Principle</strong>
 </footer>
 
-</div>
-<hr />
 </blockquote>
 <p>This is the most common trap for practitioners. A possible reason is that, when we data snoop, we end up with better performance — or so we think. Data snooping isn’t only looking at the data, in fact there are many ways to fall into the trap.</p>
 <h3 id="looking-at-the-data">Looking at the Data</h3>
@@ -2407,6 +2407,7 @@ P(h = f \mid \mathcal D) = \frac {P(\mathcal D \mid h = f) P(h = f)} {P(\mathcal
 <li><a href="https://www.coursera.org/course/recsys">Recommender Systems</a></li>
 <li><a href="https://www.coursera.org/course/datasci">Introduction to Data Science</a></li>
 <li><a href="http://www.metacademy.org/">Metacademy</a></li>
+<li><a href="http://camdavidsonpilon.github.io/Probabilistic-Programming-and-Bayesian-Methods-for-Hackers/">Probabilistic Programming &amp; Bayesian Methods for Hackers</a></li>
 </ul>
 <section class="footnotes">
 <hr />
@@ -2415,53 +2416,54 @@ P(h = f \mid \mathcal D) = \frac {P(\mathcal D \mid h = f) P(h = f)} {P(\mathcal
 </ol>
 </section></div>
   <div class="meta">
-    <div class="date"><i class="fa fa-calendar fa-fw"></i> September 30, 2013</div>
-    <div class="notes"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/machine-learning-theory.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/8705716' title='organize images file struct, fix paths in docs'>8705716</a></span></div>
+    <div class="meta-component"><i class="fa fa-calendar fa-fw"></i> September 30, 2013</div>
+    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/machine-learning.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/c89aff0" title="clean up drafts">c89aff0</a></span></div>
+    <div class="meta-component"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
   </div>
 </article>
 
 
+    </div>
+    <footer id="footer" class="inner">
+      <span id="social">
+        <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
+        &middot;
+        <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
+        &middot;
+        <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
+        &middot;
+        <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
+        &middot;
+        <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
+      </span>
+    </footer>
+    
+    
+    <!-- google analytics -->
+    <script async="true" type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37339861-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!--MathJax CDN-->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: "none"
+      });
+
+      MathJax.Hub.Register.MessageHook('End Process', function() {
+        jQuery('#MathJax_Font_Test').empty();
+        jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
+      });
+    </script>
+    <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
   </div>
-  <footer id="footer" class="inner">
-    <span id="social">
-      <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
-      &middot;
-      <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
-      &middot;
-      <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
-      &middot;
-      <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
-      &middot;
-      <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
-    </span>
-  </footer>
-  
-  
-  <!-- google analytics -->
-  <script async="true" type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-37339861-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-  <!--MathJax CDN-->
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      messageStyle: "none"
-    });
-
-    MathJax.Hub.Register.MessageHook('End Process', function() {
-      jQuery('#MathJax_Font_Test').empty();
-      jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
-    });
-  </script>
-  <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
-  </script>
 </body>
 </html>

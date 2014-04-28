@@ -222,7 +222,7 @@ endif</code></pre>
 </ul></li>
 </ul>
 <h2 id="state">State</h2>
-<p>First, however, I had to think about how the WebSocket server would communicate with the clients. I decided that the most straightforward thing to do would be to communicate on a per-route basis. A route in this case refers to a post, such as <strong>posts/live-editing-with-hakyll.markdown</strong>. The clients use that path to establish the connection, which tells the WebSocket server that they’re interested in data about that particular post. This way, the client doesn’t get updates posts it doesn’t care about.</p>
+<p>First, however, I had to think about how the WebSocket server would communicate with the clients. I decided that the most straightforward thing to do would be to communicate on a per-route basis. A route in this case refers to a post, such as <strong>posts/live-editing-with-hakyll.markdown</strong>. The clients use that path to establish the connection, which tells the WebSocket server that they’re interested in data about that particular post. This way, the client doesn’t get updates about posts it doesn’t care about.</p>
 <p>An alternative to this would’ve perhaps been to use a single communication channel, where the server would send data about every post that was changed, and clients decided which applied to them. While this seems simpler, it has the consequence that <em>every</em> post’s data is sent to the client, even posts no one is actually paying attention to. This is inefficient, and to avoid this inefficiency would again require some form of “interest-registration” which is implicit in the aforementioned method.</p>
 <p>For this reason, the server needs a bit of state to keep track of which connections care about which routes, best represented by a <code>Map</code> of routes to connections, something like:</p>
 <pre class="haskell"><code>Map.Map Route Connections</code></pre>
@@ -443,7 +443,7 @@ augroup END</code></pre>
 <p>I set the statusline using the <code>%!SomeFunc()</code> syntax so that the result of the function is the value that’s interpreted to construct the statusline. One problem is that when done this way, the function is evaluated in the context of the currently focused window and buffer, so if you use the value of <code>&amp;modified</code> in your statusline somehow, and you have various windows but only the currently focused one is modified, all of the other windows will show the same modified marker, because the query as to whether or not they’re modified was done within the context of the focused window.</p>
 <p>The documentation presented the solution to this problem:</p>
 <blockquote>
-Note that the “<code>%!</code>” expression is evaluated in the context of the current window and buffer, while <code>%{}</code> items are evaluated in the context of the window that the statusline belongs to.
+<p>Note that the “<code>%!</code>” expression is evaluated in the context of the current window and buffer, while <code>%{}</code> items are evaluated in the context of the window that the statusline belongs to.</p>
 <footer>
 <strong>Vim 7.4</strong> <cite><a href="http://vimhelp.appspot.com/options.txt.html#%27statusline%27">docs</a></cite>
 </footer>
@@ -480,26 +480,28 @@ Note that the “<code>%!</code>” expression is evaluated in the context of th
     <summary type="html"><![CDATA[<p>As I’ve <a href="/posts/xmonad-ignores-bindings/#media-keys">explained before</a>, I use a keyboard without media keys, so I rebind three otherwise-unused keys to act as my media keys. I accomplish this on Gnome by using a custom XKB option that I <a href="/posts/xmonad-ignores-bindings/#workaround">created</a>. I have to do this because the Gnome keyboard settings binder ignores the keys I want to bind for this particular purpose. I used to enable this XKB option by simply running a script at startup that enabled it, but I noticed that it was subject to either a race condition or a precedence issue. I’m more convinced it was the latter, as if the option that I enabled was overridden by Gnome’s own initialization of XKB. This suspicion seems to be confirmed by the Arch wiki page on <a href="https://wiki.archlinux.org/index.php/Keyboard_Configuration_in_Xorg">keyboard configuration</a>:</p>
 <blockquote>
 <p>This article describes low-level configuration using XKB which is effective in most cases, but some desktop environments like GNOME override it with its own settings.</p>
+<footer>
+<strong>Arch Wiki</strong>
+</footer>
+
 </blockquote>
-<p>As a result, I decided to look for a way to have my solution work alongside Gnome’s initialization of XKB. There was <em>very</em> little information on Gnome’s interaction with XKB short of reading Gnome’s source, but after searching around for a long time, I found that there is indeed a dconf option hidden away at <strong>/org/gnome/desktop/input-sources/xkb-options</strong>. Before I could use this though, I had to make my XKB option available system-wide.</p>
-<p>First the symbol file has to be placed in the symbols directory <strong>/usr/share/X11/xkb/symbols</strong>. This file simply binds the keys I want to use to the XF86 designated media keys. This way the Gnome binder will pick them up without complaining when I bind them to the volume keys, since it otherwise seems to prevent the binding of these very keys as they are. In other words, with this symbol file, RCTRL will be interpreted by the system as if I had pressed XF86AudioRaiseVolume, which is what an actual volume-up media key would yield:</p>
+<p>As a result, I decided to look for a way to have my solution work alongside Gnome’s initialization of XKB. There was <em>very</em> little information on Gnome’s interaction with XKB short of reading Gnome’s source, but after searching around for a long time, I found that there is indeed a dconf option hidden away at <code class="path">/org/gnome/desktop/input-sources/xkb-options</code>. Before I could use this though, I had to make my XKB option available system-wide.</p>
+<p>First the symbol file has to be placed in the symbols directory <code class="path">/usr/share/X11/xkb/symbols</code>. This file simply binds the keys I want to use to the XF86 designated media keys. This way the Gnome binder will pick them up without complaining when I bind them to the volume keys, since it otherwise seems to prevent the binding of these very keys as they are. In other words, with this symbol file, RCTRL will be interpreted by the system as if I had pressed XF86AudioRaiseVolume, which is what an actual volume-up media key would yield:</p>
 <pre><code>partial hidden modifier_keys
 xkb_symbols &quot;bottom_right&quot; {
   key &lt;RCTL&gt; { [ XF86AudioRaiseVolume ] };
   key &lt;MENU&gt; { [ XF86AudioLowerVolume ] };
   key &lt;RWIN&gt; { [ XF86AudioMute ] };
 };</code></pre>
-<p>Now an option has to be created for this symbol file and then listed in the system-wide options list for the rule set you’re using, in my case evdev, at <strong>/usr/share/X11/xkb/rules/evdev</strong>. Here, volume_keys corresponds to the filename of the symbol file, and bottom_right is the name I gave the group:</p>
+<p>Now an option has to be created for this symbol file and then listed in the system-wide options list for the rule set you’re using, in my case evdev, at <code class="path">/usr/share/X11/xkb/rules/evdev</code>. Here, <code>volume_keys</code> corresponds to the filename of the symbol file, and <code>bottom_right</code> is the name I gave the group:</p>
 <pre><code>volume_keys:bottom_right = +volume_keys(bottom_right)</code></pre>
-<p>Now the option can be referenced system-wide, so it can be entered into the the Gnome XKB options dconf key at <strong>/org/gnome/desktop/input-sources/xkb-options</strong>. Put it inside the list as ‘volume_keys:bottom_right’, for example mine is set to:</p>
+<p>Now the option can be referenced system-wide, so it can be entered into the the Gnome XKB options dconf key at <code class="path">/org/gnome/desktop/input-sources/xkb-options</code>. Put it inside the list as <code>'volume_keys:bottom_right'</code>, for example mine is set to:</p>
 <pre><code>[&#39;volume_keys:bottom_right&#39;, &#39;compose:ralt&#39;]</code></pre>
 <p>You can now go ahead and bind the appropriate keys to volume functions inside Gnome Setting’s keyboard section.</p>
 <p>Given that it’s tucked away deep inside dconf, and given Gnome developers’ track record of pruning “cruft” or anything that the lowest common denominator user doesn’t use, the future availability of this option is in question. That said, it currently works perfectly fine.</p>
-<dl>
-<dt>Update</dt>
-<dd>On archlinux, <code>pacman -Qo</code> shows that the <strong>evdev</strong> file is owned by the <a href="https://www.archlinux.org/packages/extra/any/xkeyboard-config/">xkeyboard-config</a> package. Whenever this package is updated, it overwrites this file, necessitating the change to be added once again. I’ll have to look into a more resilient way to have this setup.
-</dd>
-</dl>]]></summary>
+<div class="callout">
+<p><strong>Update</strong>: On archlinux, <code>pacman -Qo</code> shows that the <strong>evdev</strong> file is owned by the <a href="https://www.archlinux.org/packages/extra/any/xkeyboard-config/">xkeyboard-config</a> package. Whenever this package is updated, it overwrites this file, necessitating the change to be added once again. I’ll have to look into a more resilient way to have this setup.</p>
+</div>]]></summary>
 </entry>
 <entry>
     <title>Extra Dependencies in Hakyll</title>
@@ -512,7 +514,7 @@ xkb_symbols &quot;bottom_right&quot; {
 <p>A common practice I’ve noticed with the use of scss is to avoid having one monolithic stylesheet and instead opt to split it out into separate semantic files. For example, <strong>post.scss</strong> would concern styling for posts, <strong>syntax.scss</strong> would concern styling for Pygments syntax highlighting, etc. These files are then imported into one stylesheet — e.g., <strong>screen.scss</strong> — using the <code>@import</code> directive. It is this stylesheet that gets compiled by the scss compiler into the monolithic CSS.</p>
 <h2 id="problem">Problem</h2>
 <p>In Hakyll, rules are generally designated by a pattern that matches a resource coupled with a route and a compiler. So this was the rule I originally had for <strong>scss/screen.scss</strong>:</p>
-<pre lang="haskell"><code>match &quot;scss/screen.scss&quot; $ do
+<pre class="haskell"><code>match &quot;scss/screen.scss&quot; $ do
   route $ constRoute &quot;css/screen.css&quot;
   compile $ sassCompiler</code></pre>
 <p>The rule simply states that Hakyll should:</p>
@@ -533,7 +535,7 @@ xkb_symbols &quot;bottom_right&quot; {
 
 </blockquote>
 <p>Now when I’m previewing my site — or when I build the site in general — and I modify any scss file, it correctly regenerates the monolithic <strong>css/screen.css</strong> file. Here’s my new scss compiler rule:</p>
-<pre lang="haskell"><code>match &quot;scss/**.scss&quot; $ do
+<pre class="haskell"><code>match &quot;scss/**.scss&quot; $ do
   compile getResourceBody
 
 scssDependencies &lt;- makePatternDependency &quot;scss/**.scss&quot;
@@ -550,7 +552,7 @@ rulesExtraDependencies [scssDependencies] $ do
     <updated>2013-06-19T00:00:00Z</updated>
     <summary type="html"><![CDATA[<p>When I made my site, specifically when I <a href="/posts/the-switch-to-hakyll">switched to Hakyll</a>, I didn’t bother to include a <a href="http://en.wikipedia.org/wiki/Web_feed">syndication feed</a> because I didn’t expect that anyone would care to want to subscribe to my site. However, someone <a href="https://github.com/blaenk/blaenk.github.io/issues/1">filed an issue</a> concerning this on github. I knew Hakyll exposed a module specifically for this: <a href="http://hackage.haskell.org/packages/archive/hakyll/latest/doc/html/Hakyll-Web-Feed.html">Hakyll.Web.Feed</a>. It was more a matter of implementing it in a straightforward manner with the least duplication of work.</p>
 <blockquote>
-I’d like to subscribe to your blog, but I can’t seem to find an RSS feed (nor the Hakyll code to generate one). Would you consider adding one?
+<p>I’d like to subscribe to your blog, but I can’t seem to find an RSS feed (nor the Hakyll code to generate one). Would you consider adding one?</p>
 <footer>
 <strong>Nathan</strong> <cite><a href="https://github.com/blaenk/blaenk.github.io/issues/1">Issue #1</a></cite>
 </footer>
@@ -630,7 +632,7 @@ urlField&#39; key = field key $
 <h2 id="examples">Examples</h2>
 <p>The following two draft system implementations exemplify the two approaches I can think of for a draft system. These are approaches taken by static site generators. There are other ad hoc solutions, such as creating a separate <code>drafts</code> branch in git.</p>
 <p><a href="http://octopress.org/">Octopress</a> had support for drafts hacked onto Jekyll by way of a plugin that allowed a metadata field <code>published</code> to be set that, if set to <strong>false</strong>, would establish an environment variable that would be detected on site generation in order to regenerate the site without the draft posts. This consequently meant that draft posts were stored in the same directory as regular posts.</p>
-<p><a href="http://jekyllrb.com">Jekyll</a> implemented support for this in its 1.0 version by allowing a new directory, <strong>_drafts/</strong>, to store draft posts which could be previewed by specifying the <code>--drafts</code> flag to most operations. However, it was right after Jekyll 1.0 was released that I decided to switch to Hakyll.</p>
+<p><a href="http://jekyllrb.com">Jekyll</a> implemented support for this in its 1.0 version by allowing a new directory, <code class="path">_drafts/</code>, to store draft posts which could be previewed by specifying the <code>--drafts</code> flag to most operations. However, it was right after Jekyll 1.0 was released that I decided to switch to Hakyll.</p>
 <p>Octopress’ draft system was pretty straightforward in my opinion, despite being a pretty hack-ish implementation. I would create drafts in the same directory as all of the other posts, and would simply set metadata <code>published: false</code>. This would allow the draft to show up when I previewed the site, but not when it was ultimately deployed. This was accomplished by regenerating the site on deploy, this time without the preview posts.</p>
 <p>The other solution I could think of consisted of detecting when the site was being previewed, and if that were the case, establish a different output directory and a different posts pattern which would include the posts in a separate <strong>drafts/</strong> directory. When the site <em>wasn’t</em> being previewed, the regular output directory would be used.</p>
 <h2 id="implementation">Implementation</h2>
@@ -781,11 +783,9 @@ abbreviationReplace body =
       found = body =~ pat :: [[String]]</code></pre>
 <h3 id="git-tag">Git Tag</h3>
 <p>In a <a href="/posts/commit-tag-for-jekyll/">previous post</a> I talked about a liquid tag I created for Jekyll which inserts the SHA of the commit on which the site was last generated. I have come to like this small feature of my site. It’s not some tacky “Powered by blah” footer. It’s pretty unobtrusive. It seems unimportant to people who wouldn’t understand what it’s about, and those who would understand it might immediately recognize its purpose.</p>
-<dl>
-<dt>Update</dt>
-<dd>I have stopped including the git commit in the footer of every page. The problem with doing this was that, in order to have every page reflect the new commit, I had to regenerate every page before deploy. This obviously doesn’t scale well once more and more pages are added to the site. Instead I have adopted a per-post commit and history link which I believe is a lot more meaningful and meshes perfectly well with generation of pages, i.e. if a post is modified, there’ll be a commit made for it and since it was modified it will have to be regenerated anyways. Now I simply include social links in the footer.
-</dd>
-</dl>
+<div class="callout">
+<strong>Update</strong>: I have stopped including the git commit in the footer of every page. The problem with doing this was that, in order to have every page reflect the new commit, I had to regenerate every page before deploy. This obviously doesn’t scale well once more and more pages are added to the site. Instead I have adopted a per-post commit and history link which I believe is a lot more meaningful and meshes perfectly well with generation of pages, i.e. if a post is modified, there’ll be a commit made for it and since it was modified it will have to be regenerated anyways. Now I simply include social links in the footer.
+</div>
 <p>One thing I forgot to update the previous post about was that I ended up switching from using the Rugged git-bindings for Ruby to just using straight up commands and reading their output. The reason for doing this was that, while everything worked perfectly fine on Linux, Rugged had problems building on Windows. It turned out that taking this approach ended up being simpler and had the added benefit of decreasing my dependencies.</p>
 <p>The equivalent of a liquid tag in Jekyll would be a field, expressed as a <code>Context</code>. For this reason I created the <code>gitTag</code> function that takes a desired key, such as <code>git</code> — which would be used as <code>$git$</code> in templates — and returns a <code>Context</code> which returns the <code>String</code> of formatted HTML. One problem was that to do this I had to use <code>IO</code>, so I needed some way to escape the <code>Compiler</code> Monad. It turned out that Hakyll already had a function for something like this called <code>unsafeCompiler</code>, which it uses for <code>UnixFilter</code> for example.</p>
 <p>Here’s what <code>gitTag</code> looks like:</p>
@@ -806,12 +806,10 @@ gitTag key = field key $ \_ -&gt; do
 <p>Note that the pandoc document model does not support abbreviations, so if this extension is enabled, abbreviation keys are simply skipped (as opposed to being parsed as paragraphs).</p>
 </blockquote>
 <h3 id="pygments">Pygments</h3>
-<dl>
-<dt>Update</dt>
-<dd><p>This has been through two redesigns since this was written. The first involved an fs-backed caching system, but this was still too slow, since the bottleneck seemed to be caused by continuously spawning a new pygmentize process. Most recently I’ve created a pygments server that the site opens alongside it at launch, and this Pandoc AST transformer communicates with it through its stdout/stdin handles. It works perfectly and the site compiles a lot quicker. It also fully supports UTF-8:</p>
+<div class="callout">
+<p><strong>Update</strong>: This has been through two redesigns since this was written. The first involved an fs-backed caching system, but this was still too slow, since the bottleneck seemed to be caused by continuously spawning a new pygmentize process. Most recently I’ve created a pygments server that the site opens alongside it at launch, and this Pandoc AST transformer communicates with it through its stdout/stdin handles. It works perfectly and the site compiles a lot quicker. It also fully supports UTF-8:</p>
 <pre><code>¥ · £ · € · $ · ¢ · ₡ · ₢ · ₣ · ₤ · ₥ · ₦ · ₧ · ₨ · ₩ · ₪ · ₫ · ₭ · ₮ · ₯ · ₹</code></pre>
-</dd>
-</dl>
+</div>
 <p>One of the first things I wanted to implement right away was syntax highlighting with <a href="http://pygments.org/">Pygments</a>. There are a variety of options for syntax highlighting. In fact, Pandoc comes with support for <a href="http://johnmacfarlane.net/highlighting-kate/">kate</a>: a Haskell package for syntax highlighting written by the author of Pandoc. However, I don’t find it to be on par with Pygments. In the past, I simply posted code to <a href="https://gist.github.com/">gist</a> and then embedded it into posts. This caused unnecessary overhead and more importantly, would break my site when github made changes to the service.</p>
 <p>Eventually I realized that github just uses Pygments underneath, so I implemented a Pandoc AST transformer that finds every <a href="http://hackage.haskell.org/packages/archive/pandoc-types/latest/doc/html/Text-Pandoc-Definition.html#t:Block"><code>CodeBlock</code></a>, extracts the code within it, passes it to Pygments, and replaces that <code>CodeBlock</code> with a <code>RawBlock</code> containing the raw HTML output by Pygments. I also implemented a way to specify an optional caption which is shown under the code block. I use <a href="http://jaspervdj.be/blaze/">blaze-html</a> for the parts where I need to hand-craft HTML.</p>
 <p>Ultimately, this all means that I can write code blocks like this in markdown:</p>
@@ -884,11 +882,9 @@ git commit -m &quot;generated from $SHA&quot; -q</code></pre>
     <published>2013-02-24T00:00:00Z</published>
     <updated>2013-02-24T00:00:00Z</updated>
     <summary type="html"><![CDATA[<p>In my <a href="/posts/terminal-customization/">previous post</a> I talked about how I spent a while configuring my system, specifically urxvt and zsh, in preparation for setting up <a href="http://xmonad.org">xmonad</a>. I’ve finally gotten around to setting up xmonad. One problem in particular stopped me from continuing with the rest of the configuration.</p>
-<dl>
-<dt>Update</dt>
-<dd>Shortly after posting in the <a href="https://code.google.com/p/xmonad/issues/detail?id=273">issue tracker entry</a> for this issue relating my experience and affirming that the proposed patch fixed the problem, the gracious developers merged the patch into the main tree. This problem should no longer affect anyone!
-</dd>
-</dl>
+<div class="callout">
+<strong>Update</strong>: Shortly after posting in the <a href="https://code.google.com/p/xmonad/issues/detail?id=273">issue tracker entry</a> for this issue relating my experience and affirming that the proposed patch fixed the problem, the gracious developers merged the patch into the main tree. This problem should no longer affect anyone!
+</div>
 <h2 id="media-keys">Media Keys</h2>
 <p>I have a regular keyboard layout, <a href="http://www.daskeyboard.com/model-s-ultimate/">Das Keyboard Model S Ultimate</a>, which lacks media keys (i.e. volume up, down, etc). This wasn’t too much of a problem when I used headsets because most of them have dedicated volume controls. However, I got tired of headsets being rendered useless when any little thing messed up (e.g. microphone, a speaker, etc).</p>
 <p>As a result I ended up buying a <a href="http://amzn.com/B00029MTMQ">cheap standalone mic</a> and now use my iPhone’s <a href="http://amzn.com/B004PNZFZ8">Shure SE215-K</a> earbuds for sound on my computer. This is very easy to do given my computer case’ front panel audio connector. Of course, the problem now is that there aren’t any dedicated media keys and having to use a GUI to change the volume is cumbersome.</p>
@@ -1007,7 +1003,9 @@ xkb_symbols &quot;volume_keys&quot; {
 <p><img src="/images/posts/terminal-customization/basic-prompt.png" class="center"></p>
 <p>Here it is in text:</p>
 <pre lang="text"><code>λ ~/code/haskell ➜</code></pre>
-<p><strong>Update</strong>: I have changed my prompt to be multiline. All that has changed is that the ➜ is on its own line.</p>
+<div class="callout">
+<strong>Update</strong>: I have changed my prompt to be multiline. All that has changed is that the ➜ is on its own line.
+</div>
 <h4 id="git">git</h4>
 <p>Like any self-respecting modern prompt, mine <a href="https://github.com/blaenk/dots/blob/master/zsh/zsh/vcsinfo.zsh">incorporates git information</a> when within a git repository. It shows the current branch, whether there are any untracked files (denoted by <code>.</code>), modified files (denoted by <code>#</code>), or staged files (denoted by <code>+</code>). Another nice little thing I added was a marker for how far ahead and/or behind we are from the remote branch. This is appended to the aforementioned information and only shows up when we <em>are</em> ahead or behind.</p>
 <p>All of these features were done using zsh’s <a href="http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information">vcsinfo</a> with the help of <a href="http://arjanvandergaag.nl/blog/customize-zsh-prompt-with-vcs-info.html">Arjan van der Gaag</a> and — once again — <a href="https://github.com/sunaku/home/blob/master/.zsh/config/prompt.zsh">sunaku</a>. Here’s what it looks like <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>:</p>
@@ -1020,7 +1018,9 @@ xkb_symbols &quot;volume_keys&quot; {
 <p><img src="/images/posts/terminal-customization/ssh-prompt.png" class="center"></p>
 <p>Once again in text:</p>
 <pre lang="text"><code>[someserver] λ ~/.dots (master) ➜ </code></pre>
-<p><strong>Update — October 28, 2013</strong>: I’ve actually done away with this component of the prompt. I didn’t like how the lambda no longer aligned with the arrow symbol — it created a sort of inconsistency. I’ve instead decided to add a pretty simple green <code>R</code> at the end of the current working path, to signify that I am on a “remote” machine, so it reads something like “currently on x path remotely.”</p>
+<div class="callout">
+<strong>Update — October 28, 2013</strong>: I’ve actually done away with this component of the prompt. I didn’t like how the lambda no longer aligned with the arrow symbol — it created a sort of inconsistency. I’ve instead decided to add a pretty simple green <code>R</code> at the end of the current working path, to signify that I am on a “remote” machine, so it reads something like “currently on x path remotely.”
+</div>
 <pre><code>λ ~/.dots R (master)
 ➜</code></pre>
 <h3 id="vi-binds">vi-Binds</h3>

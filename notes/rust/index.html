@@ -13,7 +13,7 @@
   <link href="/favicon.png" rel="shortcut icon">
   <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Merriweather:900italic,900,700italic,400italic,700,400,300italic,300' rel='stylesheet' type='text/css'>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link href='/css/screen.css' rel='stylesheet' type='text/css' media='screen' />
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
   <!--[if lt IE 9]>
@@ -23,55 +23,57 @@
   <script src='/js/blaenk.js' type='text/javascript'></script>
 </head>
 <body>
-  <div id="strip"></div>
-  <header id="header" class="inner">
-    <div id="stamp">
-      <h1><a href="/">Jorge Israel Peña</a></h1>
-      <h4>AKA BLAENK DENUM</h4>
-    </div>
-    <nav id="main-nav">
-      <ul class="main">
-        <li><a href="/about/">About</a></li>
-        <li><a href="/work/">Work</a></li>
-        <li><a href="/lately/">Lately</a></li>
-        <li><a href="/notes/">Notes</a></li>
-        <li><a id="search_btn">Search</a></li>
-      </ul>
+  <div class="wrapper">
+    <header id="header" class="inner">
+      <div id="stamp">
+        <h1><a href="/">Jorge Israel Peña</a></h1>
+        <h4>AKA BLAENK DENUM</h4>
+      </div>
+      <nav id="main-nav">
+        <ul class="main">
+          <li><a href="/about/">About</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/lately/">Lately</a></li>
+          <li><a href="/notes/">Notes</a></li>
+          <li><a id="search_btn">Search</a></li>
+        </ul>
+      </nav>
+      <nav id="mobile-nav">
+        <div class="alignleft menu">
+          <a class="button">Menu</a>
+          <div class="container">
+            <ul class="main">
+              <li><a href="/about/">About</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/lately/">Lately</a></li>
+              <li><a href="/notes/">Notes</a></li>
+              <li><a id="search_btn">Search</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="alignright search">
+          <a class="button"></a>
+          <div class="container">
+            <form action="http://google.com/search" method="get">
+              <input type="text" name="q" results="0">
+              <input type="hidden" name="q" value="site:blaenkdenum.com">
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div id="content" class="inner">
       <form class="desk_search" action="http://google.com/search" method="get">
-        <input type="text" name="q" results="0" placeholder="Search... (Click 'Search' to hide)" autocomplete="off" spellcheck="false">
+        <input id="search" type="text" name="q" results="0" placeholder="Search" autocomplete="off" spellcheck="false">
         <input type="hidden" name="q" value="site:blaenkdenum.com">
       </form>
-    </nav>
-    <nav id="mobile-nav">
-      <div class="alignleft menu">
-        <a class="button">Menu</a>
-        <div class="container">
-          <ul class="main">
-            <li><a href="/about/">About</a></li>
-            <li><a href="/work/">Work</a></li>
-            <li><a href="/lately/">Lately</a></li>
-            <li><a href="/notes/">Notes</a></li>
-            <li><a id="search_btn">Search</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="alignright search">
-        <a class="button"></a>
-        <div class="container">
-          <form action="http://google.com/search" method="get">
-            <input type="text" name="q" results="0">
-            <input type="hidden" name="q" value="site:blaenkdenum.com">
-          </form>
-        </div>
-      </div>
-    </nav>
-  </header>
-  <div id="content" class="inner">
-    <article class="post">
+      <article class="post">
   <h2 class="title"><a href="/notes/rust/"><span>Rust</span></a></h2>
-  <div class="entry-content"><p>I took a shot at <a href="/notes/go/">learning Go</a> recently and I found its simplicity to be refreshing. I do like the language, but I found myself reinventing too many wheels that Go didn’t have built-in for sake of simplicity. I found that the simplicity the language strives for sometimes comes at the expense of the developer, for no particularly worthwhile benefit. Contrast this to Haskell, for example, where it might take time to ensure that everything is correct to even compile, but the process is worthwhile because it provides certain correctness guarantees about the program.</p>
-<p>My main resources are the <a href="http://static.rust-lang.org/doc/master/tutorial.html">tutorial</a> and <a href="http://static.rust-lang.org/doc/master/rust.html">manual</a>. As usual, oftentimes some things will be directly from the source, with my commentary surrounding it.</p>
-<nav id="toc"><p>Contents</p><ol><li><a href="#pattern-matching">Pattern Matching</a></li><li><a href="#structures">Structures</a></li><li><a href="#enums">Enums</a></li><li><a href="#tuples">Tuples</a></li><li><a href="#functions">Functions</a></li><li><a href="#destructors">Destructors</a></li><li><a href="#ownership">Ownership</a></li><li><a href="#boxes">Boxes</a></li><li><a href="#move-semantics">Move Semantics</a></li><li><a href="#references">References</a></li><li><a href="#parameterized-types">Parameterized Types</a></li><li><a href="#large-parameters-and-return-values">Large Parameters and Return Values</a></li><li><a href="#more-on-references">More on References</a></li><li><a href="#vectors-and-strings">Vectors and Strings</a></li><li><a href="#ownership-escape-hatches">Ownership Escape Hatches</a></li><li><a href="#closures">Closures</a></li><li><a href="#methods">Methods</a></li><li><a href="#generics">Generics</a></li><li><a href="#traits">Traits</a></li><li><a href="#modules">Modules</a></li><li><a href="#named-lifetimes">Named Lifetimes</a></li><li><a href="#tasks">Tasks</a><ol><li><a href="#spawning">Spawning</a></li><li><a href="#channels">Channels</a></li><li><a href="#futures">Futures</a></li><li><a href="#arc">Arc</a></li><li><a href="#failure">Failure</a></li><li><a href="#duplex-streams">Duplex Streams</a></li></ol></li><li><a href="#iterators">Iterators</a></li></ol></nav>
+  <div class="entry-content"><p>I took a shot at <a href="/notes/go/">learning Go</a> recently and I found its simplicity to be refreshing. Rust is a similar language from Mozilla which I’ve been interested in for a while now.</p>
+<p>My main resources are the <a href="http://static.rust-lang.org/doc/master/tutorial.html">tutorial</a> and <a href="http://static.rust-lang.org/doc/master/rust.html">manual</a>, but there are <a href="http://static.rust-lang.org/doc/master/index.html">many more</a>. As usual, oftentimes some things will be directly from the source, with my commentary surrounding it. There is also a more basic <a href="http://rustbyexample.github.io/">Rust by Example</a> which is similar to the go tour.</p>
+<nav id="toc"><p>Contents</p><ol><li><a href="#printing">Printing</a></li><li><a href="#pattern-matching">Pattern Matching</a></li><li><a href="#structures">Structures</a></li><li><a href="#enums">Enums</a></li><li><a href="#tuples">Tuples</a></li><li><a href="#functions">Functions</a></li><li><a href="#destructors">Destructors</a></li><li><a href="#ownership">Ownership</a></li><li><a href="#boxes">Boxes</a></li><li><a href="#move-semantics">Move Semantics</a></li><li><a href="#references">References</a></li><li><a href="#parameterized-types">Parameterized Types</a></li><li><a href="#large-parameters-and-return-values">Large Parameters and Return Values</a></li><li><a href="#more-on-references">More on References</a></li><li><a href="#vectors-and-strings">Vectors and Strings</a></li><li><a href="#ownership-escape-hatches">Ownership Escape Hatches</a></li><li><a href="#closures">Closures</a></li><li><a href="#methods">Methods</a></li><li><a href="#generics">Generics</a></li><li><a href="#traits">Traits</a></li><li><a href="#modules">Modules</a></li><li><a href="#named-lifetimes">Named Lifetimes</a></li><li><a href="#tasks">Tasks</a><ol><li><a href="#spawning">Spawning</a></li><li><a href="#channels">Channels</a></li><li><a href="#futures">Futures</a></li><li><a href="#arc">Arc</a></li><li><a href="#failure">Failure</a></li><li><a href="#duplex-streams">Duplex Streams</a></li></ol></li><li><a href="#iterators">Iterators</a></li></ol></nav>
+<h1 id="printing">Printing</h1>
+<p>Use the <code>print!</code>, <code>println!</code>, and <code>write!</code> macros to print strings in a <code>printf</code>-like manner. If just printing an actual string, then just use the direct functions <code>print</code> and <code>println</code>. The <code>format!</code> macro also exists for creating a <code>~str</code> with a specific format. See the docs for <a href="http://static.rust-lang.org/doc/master/std/fmt/index.html"><code>std::fmt</code></a> for more information.</p>
 <h1 id="pattern-matching">Pattern Matching</h1>
 <p>Pattern matching takes the place of regular switch statements. Pattern matches don’t fall through. The pipe operator <code>|</code> can be used to combine multiple patterns into one arm. The underscore <code>_</code> is a wildcard pattern as in Haskell. As in Haskell, matches must be exhaustive. Every case is separated by commas, unless block expressions are used. As in Haskell, pattern matching can be used to bind values. Pattern guards are added using <code>if</code> expressions:</p>
 <figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">match</span> <span class="n">number</span> <span class="p">{</span>
@@ -79,6 +81,12 @@
   <span class="m">1</span> <span class="o">|</span> <span class="m">2</span> <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;one or two&quot;</span><span class="p">),</span>
   <span class="m">3.</span><span class="p">.</span><span class="m">10</span> <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;three to ten&quot;</span><span class="p">),</span>
   <span class="n">_</span>     <span class="o">=&gt;</span> <span class="n">println</span><span class="p">(</span><span class="s">&quot;something else&quot;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>Patterns can also be bound to variables as in Haskell and Scala:</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">match</span> <span class="n">age</span> <span class="p">{</span>
+  <span class="n">a</span> <span class="o">@</span> <span class="m">0.</span><span class="p">.</span><span class="m">20</span> <span class="o">=&gt;</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{} years old&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span>
+  <span class="n">_</span>         <span class="o">=&gt;</span> <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;older than 21&quot;</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></figure>
 <h1 id="structures">Structures</h1>
@@ -147,7 +155,7 @@
 <span class="c1">// destructor frees heap memory as soon as `y` goes out of scope</span>
 </code></pre></figure>
 <h1 id="ownership">Ownership</h1>
-<p>An object’s lifetime is determined by its owner, either a variable or a task-local garbage collector. Ownership is recursive so that mutability is inherited recursively and a destructor destroys the contained tree of owned objects. Variables are to-level owners and destroy teh contained object when they go out of scope:</p>
+<p>An object’s lifetime is determined by its owner, either a variable or a task-local garbage collector. Ownership is recursive so that mutability is inherited recursively and a destructor destroys the contained tree of owned objects. Variables are to-level owners and destroy the contained object when they go out of scope:</p>
 <figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Foo</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="k">int</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="o">~</span><span class="k">int</span> <span class="p">}</span>
 
 <span class="p">{</span>
@@ -190,18 +198,58 @@
 <span class="k">let</span> <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="p">;</span> <span class="c1">// box becomes immutable</span>
 </code></pre></figure>
 <h1 id="references">References</h1>
-<p>References are non-owning views of a value which are obtained using the address-of operator <code>&amp;</code> and dereferenced using the <code>*</code> operator. In patterns, the <code>ref</code> keyword can be used to bind a variable name by reference rather than by value. <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a></p>
-<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">eq</span><span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">List</span><span class="p">,</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span>
-  <span class="k">match</span> <span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span> <span class="p">{</span>
-    <span class="p">(</span><span class="o">&amp;</span><span class="n">Nil</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Nil</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="k">true</span><span class="p">,</span>
-    <span class="p">(</span><span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_xs</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">Cons</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="o">~</span><span class="k">ref</span> <span class="n">next_ys</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="n">y</span> <span class="o">=&gt;</span> <span class="n">eq</span><span class="p">(</span><span class="n">next_xs</span><span class="p">,</span> <span class="n">next_ys</span><span class="p">),</span>
-    <span class="n">_</span> <span class="o">=&gt;</span> <span class="k">false</span>
-  <span class="p">}</span>
-<span class="p">}</span>
+<p>The <code>&amp;</code> symbol has multiple context-dependent meanings in Rust, as in C++ <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>. Remembering that expressions are for constructing and patterns for destructuring, a <code>&amp;</code> in a pattern <em>dereferences</em> the expression being destructured. This can be useful to avoid having to manually dereference the variable within the body using <code>*</code>.</p>
+<p>For example, the <code>fold</code> function takes a folding operation in the form of a closure that is passed the accumulator and a reference <code>&amp;T</code> to the current element, which means that within the body it would have to be manually dereferenced with <code>*</code>, and we can avoid that by specifying the <code>&amp;</code> in the pattern.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">manual</span>  <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">fold</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">|</span> <span class="n">a</span> <span class="o">+</span> <span class="o">*</span><span class="n">b</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">pattern</span> <span class="o">=</span> <span class="n">v</span><span class="p">.</span><span class="n">iter</span><span class="p">().</span><span class="n">fold</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span><span class="o">|</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">);</span>
+</code></pre></figure>
+<p>It’s also necessary when attempting to match on borrowed values. In this case, it reads as <em>dereference the variable then see if it matches the pattern</em>.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="m">5</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">x</span><span class="p">,</span> <span class="m">2</span><span class="p">);</span>
 
-<span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="n">Cons</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="o">~</span><span class="n">Nil</span><span class="p">));</span>
-<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="n">Cons</span><span class="p">(</span><span class="m">5</span><span class="p">,</span> <span class="o">~</span><span class="n">Cons</span><span class="p">(</span><span class="m">10</span><span class="p">,</span> <span class="o">~</span><span class="n">Nil</span><span class="p">));</span>
-<span class="k">assert</span><span class="o">!</span><span class="p">(</span><span class="n">eq</span><span class="p">(</span><span class="o">&amp;</span><span class="n">xs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ys</span><span class="p">));</span>
+<span class="k">match</span> <span class="n">y</span> <span class="p">{</span>
+  <span class="p">(</span><span class="o">&amp;</span><span class="n">Some</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">b</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">,</span>
+  <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="n">a</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>A <code>&amp;</code> in a function signature means that the parameter accepts a reference. Owned pointers <code>~</code> and types that implement the <code>Deref</code> trait are automatically converted to references when passed to such functions. Variables on the stack, on the other hand, can yield a reference manually using <code>&amp;</code>, which is the address-of operator in that context.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">eq</span><span class="p">(</span><span class="n">xs</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">int</span><span class="p">,</span> <span class="n">ys</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+
+<span class="k">let</span> <span class="n">xs</span> <span class="o">=</span> <span class="o">~</span><span class="m">34</span><span class="p">;</span>
+<span class="k">let</span> <span class="n">ys</span> <span class="o">=</span> <span class="m">34</span><span class="p">;</span>
+<span class="k">assert</span><span class="o">!</span><span class="p">(</span><span class="n">eq</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ys</span><span class="p">));</span>
+</code></pre></figure>
+<p>A <code>&amp;</code> that’s applied to an rvalue is a shorthand for creating a temporary and taking its address.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">explicit</span> <span class="o">=</span> <span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="m">3.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">4.0</span><span class="p">};</span>
+<span class="n">reference_taking_func</span><span class="p">(</span><span class="o">&amp;</span><span class="n">explicit</span><span class="p">);</span>
+
+<span class="k">let</span> <span class="n">shorthand</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="m">3.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">4.0</span><span class="p">};</span>
+<span class="n">reference_taking_func</span><span class="p">(</span><span class="n">shorthand</span><span class="p">);</span>
+</code></pre></figure>
+<p>A mutable reference <code>&amp;mut</code> is one through which the pointed-to variable can be modified, provided the pointed-to variable is also mutable. When a mutable reference exists, no other kind of reference can exist, regardless of whether it’s mutable or not. Compare this with a regular, immutable reference of which many can exist to the same variable, since the variable cannot be modified through it.</p>
+<p>There is also the <code>ref</code> keyword that can be used in a pattern. In this context, it is similar to C++’s ref-qualifier, which means bind by reference. This is required when matching on something that can’t or we don’t want to be taken by value.</p>
+<p>For example, we want to get a reference to the <code>Foo</code> in <code>&amp;Option&lt;Foo&gt;</code>. Taking it by value would require moving ownership, but since the <code>Option</code> is borrowed we don’t have ownership to begin with. Instead we bind the <code>foo</code> by reference which does away with the need to take ownership.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">let</span> <span class="n">some</span> <span class="o">=</span> <span class="n">Some</span><span class="p">(</span><span class="n">foo</span><span class="p">);</span>
+<span class="k">let</span> <span class="n">borrowed</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">some</span><span class="p">;</span>
+
+<span class="k">match</span> <span class="n">borrowed</span> <span class="p">{</span>
+  <span class="o">&amp;</span><span class="n">Some</span><span class="p">(</span><span class="k">ref</span> <span class="n">foo</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="o">*</span><span class="n">foo</span>
+<span class="p">}</span>
+</code></pre></figure>
+<p>There’s also a language inconsistency where <code>&quot;str&quot;</code> is of type <code>&amp;str</code>, but to get a type of <code>&amp;&amp;str</code> it doesn’t suffice to simply do <code>&amp;&quot;str&quot;</code>, because that <em>too</em> is treated as <code>&amp;str</code>, so <em>two</em> are needed: <code>&amp;&amp;str</code>.</p>
+<p>In the following example, <code>contains_key</code> takes a value of type <code>&amp;K</code> where <code>K</code> is the key type. The key type is <code>&amp;str</code>, so <code>&amp;K</code> is <code>&amp;&amp;str</code>. Because of the language inconsistency noted above, two <code>&amp;</code>’s must prefix the string literal in order to yield a <code>&amp;&amp;str</code> to pass to <code>contains_key</code>.</p>
+<p>Issue <a href="https://github.com/mozilla/rust/issues/10105">#10105</a> is a proposal to fix this. I’ve also read that <a href="https://github.com/mozilla/rust/issues/6308">DST</a> will fix this as a consequence of its implementation.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">use</span> <span class="n">collections</span><span class="o">::</span><span class="n">Hashmap</span><span class="p">;</span>
+
+<span class="c1">// type inferred as HashMap&lt;&amp;str, &amp;str&gt;</span>
+<span class="k">let</span> <span class="k">mut</span> <span class="n">items</span> <span class="o">=</span> <span class="n">HashMap</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+
+<span class="n">items</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;key1&quot;</span><span class="p">,</span> <span class="s">&quot;value1&quot;</span><span class="p">);</span>
+<span class="n">items</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">&quot;key2&quot;</span><span class="p">,</span> <span class="s">&quot;value2&quot;</span><span class="p">);</span>
+
+<span class="k">if</span> <span class="o">!</span><span class="n">items</span><span class="p">.</span><span class="n">contains_key</span><span class="p">(</span><span class="o">&amp;</span> <span class="o">&amp;</span><span class="s">&quot;key1&quot;</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;not present&quot;</span><span class="p">);</span>
+<span class="p">}</span>
 </code></pre></figure>
 <h1 id="parameterized-types">Parameterized Types</h1>
 <p>Types can be parameterized similar to C++ class templates:</p>
@@ -258,7 +306,7 @@
 <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="o">~</span><span class="n">foo</span><span class="p">();</span> <span class="c1">// allocates ~ box and writes u64&#39;s directly to it</span>
 </code></pre></figure>
 <h1 id="more-on-references">More on References</h1>
-<p>Referneces don’t imply ownership, they’re “borrowed”. Reference parameters are often used to allow functions to work with all manner of different allocated types.</p>
+<p>References don’t imply ownership, they’re “borrowed.” Reference parameters are often used to allow functions to work with all manner of different allocated types.</p>
 <figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">fn</span> <span class="n">distance</span><span class="p">(</span><span class="n">p1</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Point</span><span class="p">,</span> <span class="n">p2</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">f64</span> <span class="p">{</span>
   <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">p1</span><span class="p">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">p2</span><span class="p">.</span><span class="n">x</span><span class="p">;</span>
   <span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="n">p1</span><span class="p">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">p2</span><span class="p">.</span><span class="n">y</span><span class="p">;</span>
@@ -282,7 +330,7 @@
 <span class="o">*</span><span class="n">owned</span> <span class="o">=</span> <span class="o">*</span><span class="n">borrowed</span> <span class="o">+</span> <span class="m">100</span><span class="p">;</span>
 <span class="o">*</span><span class="n">borrowed</span> <span class="o">=</span> <span class="m">1000</span><span class="p">;</span>
 
-<span class="k">let</span> <span class="n">point</span> <span class="o">&amp;@~</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="m">10.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">20.0</span> <span class="p">};</span>
+<span class="k">let</span> <span class="n">point</span> <span class="o">=</span> <span class="o">&amp;@~</span><span class="n">Point</span> <span class="p">{</span> <span class="n">x</span><span class="o">:</span> <span class="m">10.0</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="m">20.0</span> <span class="p">};</span>
 <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;{:f}&quot;</span><span class="p">,</span> <span class="n">point</span><span class="p">.</span><span class="n">x</span><span class="p">);</span> <span class="c1">// dereferences all three levels</span>
 </code></pre></figure>
 <h1 id="vectors-and-strings">Vectors and Strings</h1>
@@ -497,7 +545,7 @@
   <span class="k">fn</span> <span class="n">equals</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">other</span><span class="o">:</span> <span class="o">&amp;</span><span class="n">Self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span><span class="p">;</span>
 <span class="p">}</span>
 
-<span class="k">impl</span> <span class="n">Eq</span> <span class="k">for</span> <span class="n">in</span> <span class="p">{</span>
+<span class="k">impl</span> <span class="n">Eq</span> <span class="k">for</span> <span class="k">int</span> <span class="p">{</span>
   <span class="k">fn</span> <span class="n">equals</span><span class="p">(</span><span class="o">&amp;</span><span class="n">self</span><span class="p">,</span> <span class="n">other</span><span class="o">:</span> <span class="o">&amp;</span><span class="k">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bool</span> <span class="p">{</span>
     <span class="o">*</span><span class="n">other</span> <span class="o">==</span> <span class="o">*</span><span class="n">self</span><span class="p">;</span>
   <span class="p">}</span>
@@ -675,21 +723,21 @@
 <span class="k">extern</span> <span class="k">mod</span> <span class="n">my_farm</span> <span class="o">=</span> <span class="s">&quot;farm&quot;</span><span class="p">;</span>
 </code></pre></figure>
 <p>For example, here’s an example library, its compilation, and usage:</p>
-<figure class="codeblock"><pre><code class="highlight language-rust"><span class="cp">#[crate_id = </span><span class="s">&quot;world#0.42&quot;</span><span class="cp">];</span>
+<figure class="codeblock"><figcaption><span>world.rs</span></figcaption><pre><code class="highlight language-rust"><span class="cp">#[crate_id = </span><span class="s">&quot;world#0.42&quot;</span><span class="cp">];</span>
 <span class="cp">#[crate_type = </span><span class="s">&quot;lib&quot;</span><span class="cp">];</span>
 
-<span class="k">pub</span> <span class="k">fn</span> <span class="n">explor</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="k">static</span> <span class="k">str</span> <span class="p">{</span> <span class="s">&quot;world&quot;</span> <span class="p">}</span>
-</code></pre><figcaption><span>world.rs</span></figcaption></figure>
-<figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">world</span><span class="p">;</span>
+<span class="k">pub</span> <span class="k">fn</span> <span class="n">explore</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="k">static</span> <span class="k">str</span> <span class="p">{</span> <span class="s">&quot;world&quot;</span> <span class="p">}</span>
+</code></pre></figure>
+<figure class="codeblock"><figcaption><span>main.rs</span></figcaption><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">world</span><span class="p">;</span>
 <span class="k">fn</span> <span class="n">main</span><span class="p">()</span> <span class="p">{</span>
   <span class="n">println</span><span class="o">!</span><span class="p">(</span><span class="s">&quot;hello {}&quot;</span><span class="p">,</span> <span class="n">world</span><span class="o">::</span><span class="n">explore</span><span class="p">());</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>main.rs</span></figcaption></figure>
-<figure class="codeblock"><pre><code class="highlight language-bash"><span class="nv">$ </span>rustc world.rs     <span class="c"># compiles libworld-&lt;HASH&gt;-0.42.so</span>
+</code></pre></figure>
+<figure class="codeblock"><figcaption><span>compilation</span></figcaption><pre><code class="highlight language-bash"><span class="nv">$ </span>rustc world.rs     <span class="c"># compiles libworld-&lt;HASH&gt;-0.42.so</span>
 <span class="nv">$ </span>rustc main.rs -L . <span class="c"># include local dir in library search path</span>
 <span class="nv">$ </span>./main
 <span class="s2">&quot;hello world&quot;</span>
-</code></pre><figcaption><span>compilation</span></figcaption></figure>
+</code></pre></figure>
 <p>Many predefined items such as <code>range</code> and <code>Option&lt;T&gt;</code> come from the standard library’s prelude, similar to Haskell’s. The rust compiler automatically inserts the following into the crate root:</p>
 <figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">extern</span> <span class="k">mod</span> <span class="n">std</span><span class="p">;</span>
 
@@ -704,7 +752,7 @@
 </code></pre></figure>
 <h1 id="named-lifetimes">Named Lifetimes</h1>
 <p>It’s possible to give a lifetime a name in order to explicitly specify the lifetime of a returned reference. In the following case, the named lifetime <code>'r</code> is associated with the parameter <code>p: &amp;Point</code>, this named lifetime is then also mentioned in the return type. What this means is that the returned reference will have the same lifetime as the passed in pointer parameter <code>p</code>. In effect, this means that the returned reference will remain valid as long as <code>p</code> itself remains valid.</p>
-<p>This is necessary because, generally it’s only possible to return references derived from a parameter to the function, and named parameters explicitly specify which parameter that is.</p>
+<p>This is necessary because, generally it’s only possible to return references derived from a parameter to the function, and named lifetimes explicitly specify which parameter that is. The lifetime is something that’s implicitly passed in from the caller’s context, just like the parameter.</p>
 <figure class="codeblock"><pre><code class="highlight language-rust"><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span><span class="n">x</span><span class="o">:</span> <span class="k">f64</span><span class="p">,</span> <span class="n">y</span><span class="o">:</span> <span class="k">f64</span><span class="p">}</span>
 
 <span class="k">fn</span> <span class="n">get_x</span><span class="o">&lt;</span><span class="err">&#39;</span><span class="n">r</span><span class="o">&gt;</span><span class="p">(</span><span class="n">p</span><span class="o">:</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="n">Point</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="o">&amp;</span><span class="err">&#39;</span><span class="n">r</span> <span class="k">f64</span> <span class="p">{</span>
@@ -736,8 +784,17 @@
   <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></figure>
+<p>It’s also possible to use named lifetime notation to label control structures, allowing for breaking and continuing to specific locations.</p>
+<figure class="codeblock"><pre><code class="highlight language-rust"><span class="err">&#39;</span><span class="n">h</span><span class="o">:</span> <span class="k">for</span> <span class="n">i</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">10</span><span class="p">)</span> <span class="p">{</span>
+  <span class="err">&#39;</span><span class="n">g</span><span class="o">:</span> <span class="k">loop</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="m">2</span> <span class="o">==</span> <span class="m">0</span> <span class="p">{</span> <span class="n">continue</span> <span class="err">&#39;</span><span class="n">h</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="m">9</span> <span class="p">{</span> <span class="k">break</span> <span class="err">&#39;</span><span class="n">h</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">break</span> <span class="err">&#39;</span><span class="n">g</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></figure>
 <h1 id="tasks">Tasks</h1>
-<p>Tasks are <em>green threads</em> similar to those in Haskell and perhaps Erlang. Tasks have dynamically sized stacks, starting out with small ones and dynamically growing as required. This means that unlike C/C++, it’s not possible to write beyond the end of the stack. Tasks provide failure isolation and recovery. When a problem occurs, the runtime destroys the entire task, and other tasks can monitor each other for failure.</p>
+<p>Tasks have dynamically sized stacks, starting out with small ones and dynamically growing as required. This means that unlike C/C++, it’s not possible to write beyond the end of the stack. Tasks provide failure isolation and recovery. When a problem occurs, the runtime destroys the entire task, and other tasks can monitor each other for failure.</p>
 <p>Tasks can’t share mutable state with each other. Instead they communicate with each other by transferring owned data through the global <em>exchange heap</em>.</p>
 <h2 id="spawning">Spawning</h2>
 <p>Tasks are spawned with the <code>spawn</code> function which accepts a closure which is executed in a separate task. Creating tasks isn’t defined at the language-level, but rather, inside the standard library.</p>
@@ -812,7 +869,7 @@
   <span class="k">let</span> <span class="n">data_arc</span> <span class="o">=</span> <span class="n">Arc</span><span class="o">::</span><span class="n">new</span><span class="p">(</span><span class="n">big_data</span><span class="p">);</span>
 
   <span class="k">for</span> <span class="n">num</span> <span class="n">in</span> <span class="n">range</span><span class="p">(</span><span class="m">1</span><span class="k">u</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span>  <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
+    <span class="k">let</span> <span class="p">(</span><span class="n">port</span><span class="p">,</span> <span class="n">chan</span><span class="p">)</span> <span class="o">=</span> <span class="n">Chan</span><span class="o">::</span><span class="n">new</span><span class="p">();</span>
 
     <span class="c1">// send arc</span>
     <span class="n">chan</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">data_arc</span><span class="p">.</span><span class="n">clone</span><span class="p">());</span>
@@ -880,60 +937,61 @@
 <section class="footnotes">
 <hr />
 <ol>
-<li id="fn1"><p>This really reminds me of C++11’s <a href="http://en.cppreference.com/w/cpp/utility/functional/ref"><code>std::ref</code></a>.<a href="#fnref1">↩</a></p></li>
+<li id="fn1"><p>In C++, an <code>&amp;</code> on the lhs can be the ref-qualifier, i.e. <em>bind by reference</em>, and on the rhs it can be the address-of operator.<a href="#fnref1">↩</a></p></li>
 <li id="fn2"><p>This of course reminds me of C++11’s <a href="http://en.cppreference.com/w/cpp/memory/shared_ptr"><code>std::shared_ptr</code></a>.<a href="#fnref2">↩</a></p></li>
 <li id="fn3"><p>Pipes remind me of Go’s channels, or Haskell’s.<a href="#fnref3">↩</a></p></li>
 <li id="fn4"><p>This <code>Result</code> type is a lot like Haskell’s <code>Either</code>.<a href="#fnref4">↩</a></p></li>
 </ol>
 </section></div>
   <div class="meta">
-    <div class="date"><i class="fa fa-calendar fa-fw"></i> December 29, 2013</div>
-    <div class="notes"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/rust.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/ba28a7a' title='woops, meant the opposite'>ba28a7a</a></span></div>
+    <div class="meta-component"><i class="fa fa-calendar fa-fw"></i> December 29, 2013</div>
+    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/rust.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/44e5ddf" title="tasks not green by default anymore; rust by example">44e5ddf</a></span></div>
+    <div class="meta-component"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
   </div>
 </article>
 
 
+    </div>
+    <footer id="footer" class="inner">
+      <span id="social">
+        <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
+        &middot;
+        <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
+        &middot;
+        <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
+        &middot;
+        <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
+        &middot;
+        <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
+      </span>
+    </footer>
+    
+    
+    <!-- google analytics -->
+    <script async="true" type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37339861-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!--MathJax CDN-->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: "none"
+      });
+
+      MathJax.Hub.Register.MessageHook('End Process', function() {
+        jQuery('#MathJax_Font_Test').empty();
+        jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
+      });
+    </script>
+    <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
   </div>
-  <footer id="footer" class="inner">
-    <span id="social">
-      <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
-      &middot;
-      <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
-      &middot;
-      <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
-      &middot;
-      <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
-      &middot;
-      <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
-    </span>
-  </footer>
-  
-  
-  <!-- google analytics -->
-  <script async="true" type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-37339861-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-  <!--MathJax CDN-->
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      messageStyle: "none"
-    });
-
-    MathJax.Hub.Register.MessageHook('End Process', function() {
-      jQuery('#MathJax_Font_Test').empty();
-      jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
-    });
-  </script>
-  <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
-  </script>
 </body>
 </html>

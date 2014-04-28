@@ -13,7 +13,7 @@
   <link href="/favicon.png" rel="shortcut icon">
   <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
   <link href='http://fonts.googleapis.com/css?family=Merriweather:900italic,900,700italic,400italic,700,400,300italic,300' rel='stylesheet' type='text/css'>
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link href='/css/screen.css' rel='stylesheet' type='text/css' media='screen' />
   <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
   <!--[if lt IE 9]>
@@ -23,51 +23,51 @@
   <script src='/js/blaenk.js' type='text/javascript'></script>
 </head>
 <body>
-  <div id="strip"></div>
-  <header id="header" class="inner">
-    <div id="stamp">
-      <h1><a href="/">Jorge Israel Peña</a></h1>
-      <h4>AKA BLAENK DENUM</h4>
-    </div>
-    <nav id="main-nav">
-      <ul class="main">
-        <li><a href="/about/">About</a></li>
-        <li><a href="/work/">Work</a></li>
-        <li><a href="/lately/">Lately</a></li>
-        <li><a href="/notes/">Notes</a></li>
-        <li><a id="search_btn">Search</a></li>
-      </ul>
+  <div class="wrapper">
+    <header id="header" class="inner">
+      <div id="stamp">
+        <h1><a href="/">Jorge Israel Peña</a></h1>
+        <h4>AKA BLAENK DENUM</h4>
+      </div>
+      <nav id="main-nav">
+        <ul class="main">
+          <li><a href="/about/">About</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/lately/">Lately</a></li>
+          <li><a href="/notes/">Notes</a></li>
+          <li><a id="search_btn">Search</a></li>
+        </ul>
+      </nav>
+      <nav id="mobile-nav">
+        <div class="alignleft menu">
+          <a class="button">Menu</a>
+          <div class="container">
+            <ul class="main">
+              <li><a href="/about/">About</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/lately/">Lately</a></li>
+              <li><a href="/notes/">Notes</a></li>
+              <li><a id="search_btn">Search</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="alignright search">
+          <a class="button"></a>
+          <div class="container">
+            <form action="http://google.com/search" method="get">
+              <input type="text" name="q" results="0">
+              <input type="hidden" name="q" value="site:blaenkdenum.com">
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div id="content" class="inner">
       <form class="desk_search" action="http://google.com/search" method="get">
-        <input type="text" name="q" results="0" placeholder="Search... (Click 'Search' to hide)" autocomplete="off" spellcheck="false">
+        <input id="search" type="text" name="q" results="0" placeholder="Search" autocomplete="off" spellcheck="false">
         <input type="hidden" name="q" value="site:blaenkdenum.com">
       </form>
-    </nav>
-    <nav id="mobile-nav">
-      <div class="alignleft menu">
-        <a class="button">Menu</a>
-        <div class="container">
-          <ul class="main">
-            <li><a href="/about/">About</a></li>
-            <li><a href="/work/">Work</a></li>
-            <li><a href="/lately/">Lately</a></li>
-            <li><a href="/notes/">Notes</a></li>
-            <li><a id="search_btn">Search</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="alignright search">
-        <a class="button"></a>
-        <div class="container">
-          <form action="http://google.com/search" method="get">
-            <input type="text" name="q" results="0">
-            <input type="hidden" name="q" value="site:blaenkdenum.com">
-          </form>
-        </div>
-      </div>
-    </nav>
-  </header>
-  <div id="content" class="inner">
-    <article class="post">
+      <article class="post">
   <h2 class="title"><a href="/notes/algorithms/"><span>Algorithms</span></a></h2>
   <div class="entry-content"><p>What follows are some notes on algorithms I’ve been reviewing from <a href="http://amzn.com/032157351X">Algorithms</a> by Robert Sedgewick and Kevin Wayne, <a href="http://amzn.com/1849967202">The Algorithm Design Manual</a> by Steven S. Skiena, and other sources around the Internet <a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a> <a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a> <a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. I wanted to write some notes on the material so that I could easily look back on it, but mainly so that I could be sure that I understand the material — since I have to understand it to explain it.</p>
 <nav id="toc"><p>Contents</p><ol><li><a href="#dynamic-connectivity">Dynamic Connectivity</a><ol><li><a href="#quick-find">Quick-Find</a></li><li><a href="#quick-union">Quick-Union</a></li><li><a href="#weighted-quick-union">Weighted Quick-Union</a><ol><li><a href="#path-compression">Path Compression</a></li></ol></li></ol></li><li><a href="#sorting">Sorting</a><ol><li><a href="#selection-sort">Selection Sort</a></li><li><a href="#insertion-sort">Insertion Sort</a></li><li><a href="#shell-sort">Shell Sort</a></li><li><a href="#merge-sort">Merge Sort</a><ol><li><a href="#top-down">Top-Down</a><ol><li><a href="#merge-sort-improvements">Improvements</a></li></ol></li><li><a href="#bottom-up">Bottom-Up</a></li></ol></li><li><a href="#quick-sort">Quick Sort</a><ol><li><a href="#quick-sort-improvements">Improvements</a></li><li><a href="#three-way-partitioning">Three-way Partitioning</a></li></ol></li><li><a href="#priority-queues">Priority Queues</a><ol><li><a href="#priority-queue-data-structure">Data Structure</a><ol><li><a href="#priority-queue-insertion">Insertion</a></li><li><a href="#priority-queue-removal">Removal</a></li></ol></li><li><a href="#heap-sort">Heap Sort</a></li></ol></li><li><a href="#selection">Selection</a></li></ol></li><li><a href="#searching">Searching</a><ol><li><a href="#binary-search-trees">Binary Search Trees</a><ol><li><a href="#binary-search-tree-traversal">Traversal</a></li><li><a href="#binary-search-tree-deletion">Deletion</a></li></ol></li><li><a href="#two-three-search-trees">2-3 Search Trees</a><ol><li><a href="#two-three-tree-searching">Searching</a></li><li><a href="#two-three-tree-insertion">Insertion</a></li></ol></li><li><a href="#red-black-trees">Red-Black Trees</a><ol><li><a href="#red-black-tree-insertion">Insertion</a></li><li><a href="#red-black-tree-deletion">Deletion</a><ol><li><a href="#red-black-tree-deletion-balance">Balance</a></li></ol></li></ol></li><li><a href="#interval-trees">Interval Trees</a><ol><li><a href="#intersection-queries">Intersection Queries</a></li></ol></li><li><a href="#hash-tables">Hash Tables</a><ol><li><a href="#hash-functions">Hash Functions</a></li><li><a href="#separate-chaining">Separate Chaining</a></li><li><a href="#linear-probing">Linear Probing</a><ol><li><a href="#hash-table-deletion">Deletion</a></li><li><a href="#hash-table-load-factor">Load Factor</a></li></ol></li><li><a href="#sparse-vectors">Sparse Vectors</a></li></ol></li></ol></li><li><a href="#graphs">Graphs</a><ol><li><a href="#undirected-graphs">Undirected Graphs</a><ol><li><a href="#depth-first-search">Depth-First Search</a></li><li><a href="#breadth-first-search">Breadth-First Search</a></li><li><a href="#connected-components">Connected Components</a></li><li><a href="#cycle-detection">Cycle Detection</a></li><li><a href="#bipartite-detection">Bipartite Detection</a></li></ol></li><li><a href="#directed-graphs">Directed Graphs</a><ol><li><a href="#digraph-reachability">Reachability</a></li><li><a href="#directed-cycle-detection">Cycle Detection</a></li><li><a href="#topological-order">Topological Order</a></li><li><a href="#strong-connectivity">Strong Connectivity</a></li><li><a href="#all-pairs-reachability">All-Pairs Reachability</a></li></ol></li><li><a href="#minimum-spanning-trees">Minimum Spanning Trees</a><ol><li><a href="#prims-algorithm">Prim’s Algorithm</a><ol><li><a href="#eager-prims">Eager Prim’s Algorithm</a></li></ol></li><li><a href="#kruskals-algorithm">Kruskal’s Algorithm</a></li></ol></li><li><a href="#shortest-paths">Shortest Paths</a><ol><li><a href="#dijkstras-algorithm">Dijkstra’s Algorithm</a></li><li><a href="#topological-sort">Topological Sort</a></li><li><a href="#parallel-job-scheduling">Parallel Job Scheduling</a></li><li><a href="#bellman-ford-algorithm">Bellman-Ford Algorithm</a></li></ol></li></ol></li><li><a href="#strings">Strings</a><ol><li><a href="#string-sorting">Sorting</a><ol><li><a href="#counting-sort">Counting Sort</a></li><li><a href="#least-significant-digit-sort">Least Significant Digit Sort</a></li><li><a href="#most-significant-digit-sort">Most Significant Digit Sort</a></li><li><a href="#three-way-string-quicksort">Three-way String QuickSort</a></li></ol></li><li><a href="#tries">Tries</a><ol><li><a href="#trie-deletion">Deletion</a></li><li><a href="#ternary-search-trees">Ternary Search Trees</a></li></ol></li><li><a href="#substring-search">Substring Search</a><ol><li><a href="#brute-force-substring-search">Brute-Force</a></li><li><a href="#knuth-morris-pratt">Knuth-Morris-Pratt</a><ol><li><a href="#kmp-dfa-composition">DFA Composition</a></li><li><a href="#kmp-prevent-backtracking">Preventing Backtracking</a></li><li><a href="#kmp-dfa-construction">DFA Construction</a></li><li><a href="#kmp-search">KMP Search</a></li></ol></li><li><a href="#boyer-moore">Boyer-Moore</a><ol><li><a href="#bm-skip-table">Skip Table</a></li><li><a href="#bm-search">Search</a></li></ol></li><li><a href="#rabin-karp">Rabin-Karp</a></li></ol></li><li><a href="#regular-expressions">Regular Expressions</a><ol><li><a href="#regex-match-checking">Match Checking</a></li><li><a href="#regex-nfa-construction">NFA Construction</a></li></ol></li><li><a href="#data-compression">Data Compression</a><ol><li><a href="#run-length-encoding">Run-Length Encoding</a></li><li><a href="#huffman-compression">Huffman Compression</a></li><li><a href="#lzw-compression">LZW Compression</a></li></ol></li></ol></li><li><a href="#context">Context</a><ol><li><a href="#b-trees">B-Trees</a><ol><li><a href="#b-tree-insertion">Insertion</a></li></ol></li><li><a href="#suffix-arrays">Suffix Arrays</a></li><li><a href="#network-flow">Network-Flow</a><ol><li><a href="#ford-fulkerson">Ford-Fulkerson</a></li></ol></li><li><a href="#np-complete-problems">NP-Complete Problems</a></li></ol></li></ol></nav>
@@ -105,7 +105,7 @@
 <li>goes through the whole array, setting sites which were part of <span class="math">\(P\)</span>’s component to now be part of <span class="math">\(Q\)</span>’s</li>
 <li>decrements the number of components in the disjoint-set</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">site</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">id</span><span class="o">[</span><span class="n">site</span><span class="o">];</span> <span class="o">}</span>
+<figure class="codeblock"><figcaption><span>quick-find</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">site</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">id</span><span class="o">[</span><span class="n">site</span><span class="o">];</span> <span class="o">}</span>
 
 <span class="kd">public</span> <span class="kt">void</span> <span class="nf">union</span><span class="o">(</span><span class="kt">int</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">b</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">pID</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
@@ -118,7 +118,7 @@
 
   <span class="n">count</span><span class="o">--;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>quick-find</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="quick-union">Quick-Union</h2>
 <div class="right">
 <table>
@@ -143,7 +143,7 @@
 <p>This algorithm aims to speed up the <code>union()</code> operation by avoiding the act of going through the whole array to change the component of every affected site.</p>
 <p>This is accomplished by creating a tree-like relationship between sites. With a tree representation, sites are added as direct leaves to the root node of the component to which they were merged.</p>
 <p>As a result of this, the <code>find()</code> operation needs to walk up the tree from any given site to find the root note which designates the component to which the given site belongs to. The walk is terminated when it encounters a site whose component is itself.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>quick-union</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">while</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">])</span> <span class="n">p</span> <span class="o">=</span> <span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">];</span>
   <span class="k">return</span> <span class="n">p</span><span class="o">;</span>
 <span class="o">}</span>
@@ -158,7 +158,7 @@
 
   <span class="n">count</span><span class="o">--;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>quick-union</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="weighted-quick-union">Weighted Quick-Union</h2>
 <div class="right">
 <table>
@@ -190,7 +190,7 @@
 <p>This input eventually creates a linked-list, where the deepest node in the tree incurs the cost of having to traverse the entire list of sites before determining the component to which it belongs.</p>
 <p>Weighted Quick-Union fixes this by keeping track of each component’s size in a separate array. With this information it then chooses to merge the smaller component under the larger one.</p>
 <p>In the example above, by step 2, component 1 is size 2, so component 2, being size 1, is merged under component 1 and not the other way around.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">union</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>weighted quick-union</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">union</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">,</span> <span class="kt">int</span> <span class="n">q</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">p</span><span class="o">);</span>
   <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">q</span><span class="o">);</span>
 
@@ -201,7 +201,7 @@
 
   <span class="n">count</span><span class="o">--;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>weighted quick-union</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="path-compression">Path Compression</h3>
 <div class="right">
 <table>
@@ -220,13 +220,13 @@
 </table>
 </div>
 <p>A further improvement can be done called <strong>path compression</strong> in which every site traversed due to a call to <code>find()</code> is directly linked to the component root.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>path compression</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">int</span> <span class="nf">find</span><span class="o">(</span><span class="kt">int</span> <span class="n">p</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">p</span> <span class="o">!=</span> <span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">])</span>
     <span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">]</span> <span class="o">=</span> <span class="n">find</span><span class="o">(</span><span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">]);</span>
 
   <span class="k">return</span> <span class="n">id</span><span class="o">[</span><span class="n">p</span><span class="o">];</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>path compression</span></figcaption></figure>
+</code></pre></figure>
 <h1 id="sorting">Sorting</h1>
 <p>Many problems can be reduced to sorting.</p>
 <p><strong>Answers</strong>: Ordering a sequence into a specified order.</p>
@@ -259,7 +259,7 @@
 <li>repeat until the end of the sequence</li>
 </ol>
 <p>This essentially splits the sequence into a left sorted region and a right unsorted region.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>selection sort <a href="http://www.sorting-algorithms.com/selection-sort">visualize</a></span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
@@ -271,7 +271,7 @@
     <span class="n">swap</span><span class="o">(</span><span class="n">seq</span><span class="o">[</span><span class="n">i</span><span class="o">],</span> <span class="n">seq</span><span class="o">[</span><span class="n">min</span><span class="o">]);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>selection sort <a href="http://www.sorting-algorithms.com/selection-sort">visualize</a></span></figcaption></figure>
+</code></pre></figure>
 <h2 id="insertion-sort">Insertion Sort</h2>
 <div class="right">
 <table>
@@ -302,14 +302,14 @@
 </ol>
 <p>The benefit of insertion sort is that if the sequence is already sorted then the algorithm operates in linear time. Similarly, if the sequence is nearly sorted, the algorithm will perform better than the worst case.</p>
 <p><strong>Performance Factors</strong>: order of the items</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>insertion sort <a href="http://www.sorting-algorithms.com/insertion-sort">visualize</a></span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
     <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span><span class="o">;</span> <span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">seq</span><span class="o">[</span><span class="n">j</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">seq</span><span class="o">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">];</span> <span class="n">j</span><span class="o">--)</span>
       <span class="n">swap</span><span class="o">(</span><span class="n">seq</span><span class="o">[</span><span class="n">j</span><span class="o">],</span> <span class="n">seq</span><span class="o">[</span><span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">]);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>insertion sort <a href="http://www.sorting-algorithms.com/insertion-sort">visualize</a></span></figcaption></figure>
+</code></pre></figure>
 <h2 id="shell-sort">Shell Sort</h2>
 <div class="right">
 <table>
@@ -341,7 +341,7 @@
 <p><span class="math">\[\frac {(3^k - 1)} {2} \text{, not greater than}\ \lceil N/3 \rceil\]</span></p>
 <p>This sequence begins at the largest increment less than <span class="math">\(N/3\)</span> and decreases to 1. This means that for a sequence of length <span class="math">\(16\)</span> the sequence is <span class="math">\(13, 4, 1\)</span>.</p>
 <p>The effect of shell sort is that it sorts elements that are <span class="math">\(H\)</span> elements apart with one swap instead of <span class="math">\(H\)</span>. The granularity of the sorting operation increases as <span class="math">\(H\)</span> itself decreases such that every element is eventually sorted, but with the added benefit that as <span class="math">\(H\)</span> decreases, the distance of the longest-distance swap decreases.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>shell sort <a href="http://www.sorting-algorithms.com/shell-sort">visualize</a></span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
   <span class="kt">int</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
 
@@ -356,7 +356,7 @@
     <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">/</span> <span class="mi">3</span><span class="o">;</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>shell sort <a href="http://www.sorting-algorithms.com/shell-sort">visualize</a></span></figcaption></figure>
+</code></pre></figure>
 <h2 id="merge-sort">Merge Sort</h2>
 <div class="right">
 <table>
@@ -380,7 +380,7 @@
 </div>
 <p>This is a <strong>stable</strong> algorithm and the first algorithm that is linearithmic in complexity. The general idea is that the sequence is split into many pieces and then they’re all merged back together. The sorting occurs during the merging phase. The merging algorithm works such that the resultant merged piece is sorted.</p>
 <p>The main drawback is that it has <span class="math">\(O(n)\)</span> space complexity because an auxiliary sequence has to be created to facilitate the merging process.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">merge</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">mid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>merge algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">merge</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">mid</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">lo</span><span class="o">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">lo</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span>
@@ -392,10 +392,10 @@
     <span class="k">else</span> <span class="nf">if</span> <span class="o">(</span><span class="n">aux</span><span class="o">[</span><span class="n">j</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">aux</span><span class="o">[</span><span class="n">i</span><span class="o">])</span> <span class="n">seq</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">aux</span><span class="o">[</span><span class="n">j</span><span class="o">++];</span>
     <span class="k">else</span>                      <span class="n">seq</span><span class="o">[</span><span class="n">k</span><span class="o">]</span> <span class="o">=</span> <span class="n">aux</span><span class="o">[</span><span class="n">i</span><span class="o">++];</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>merge algorithm</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="top-down">Top-Down</h3>
 <p>This is a recursive approach that works by splitting the array into two pieces until the pieces consist of pairs of elements. On each recurrence, the two pieces that were split for that recurrence are merged back.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>merge sort – top-down</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">aux</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Comparable</span><span class="o">[</span><span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">];</span>
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
 <span class="o">}</span>
@@ -410,7 +410,7 @@
 
   <span class="n">merge</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">mid</span><span class="o">,</span> <span class="n">hi</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>merge sort – top-down</span></figcaption></figure>
+</code></pre></figure>
 <h4 id="merge-sort-improvements">Improvements</h4>
 <p>There are a couple of improvements that can be made to top-down merge sort:</p>
 <ul>
@@ -424,7 +424,7 @@
 <li>merges every sub-array of length <span class="math">\(2SZ\)</span></li>
 </ol>
 <p>One <strong>advantage</strong> of bottom-up merge sort is that it can be modified to perform on linked-lists <strong>in place</strong>.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>merge sort – bottom-up</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
   <span class="n">aux</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Comparable</span><span class="o">[</span><span class="n">N</span><span class="o">];</span>
 
@@ -432,7 +432,7 @@
     <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">lo</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">lo</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">-</span> <span class="n">sz</span><span class="o">;</span> <span class="n">lo</span> <span class="o">+=</span> <span class="n">sz</span> <span class="o">+</span> <span class="n">sz</span><span class="o">)</span>
       <span class="n">merge</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">sz</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">min</span><span class="o">(</span><span class="n">lo</span> <span class="o">+</span> <span class="n">sz</span> <span class="o">+</span> <span class="n">sz</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="o">));</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>merge sort – bottom-up</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="quick-sort">Quick Sort</h2>
 <div class="right">
 <table>
@@ -455,7 +455,7 @@
 </table>
 </div>
 <p>This is a divide-and-conquer algorithm that works by essentially partitioning the array into two sub-arrays and sorting them independently. It is typically faster than merge sort because it does less data movement.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>quick sort <a href="http://www.sorting-algorithms.com/quick-sort">visualize</a></span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">shuffle</span><span class="o">(</span><span class="n">seq</span><span class="o">);</span>
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="mi">0</span><span class="o">,</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
 <span class="o">}</span>
@@ -468,7 +468,7 @@
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">hi</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>quick sort <a href="http://www.sorting-algorithms.com/quick-sort">visualize</a></span></figcaption></figure>
+</code></pre></figure>
 <p>The partition algorithm is similar to merge in merge sort in that it is what actually does the sorting.</p>
 <p><img class="center" src="/images/notes/algorithms/quicksort/partition.png"></p>
 <ol type="1">
@@ -483,7 +483,7 @@
 <li>swap the partition element <span class="math">\(v\)</span> with the final position of the right-side iterator <span class="math">\(j\)</span></li>
 </ol>
 <p>The sorting algorithm then recurses on the two partitions.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">int</span> <span class="nf">partition</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>partition algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">int</span> <span class="nf">partition</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">lo</span><span class="o">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">hi</span> <span class="o">+</span> <span class="mi">1</span><span class="o">;</span>
   <span class="n">Comparable</span> <span class="n">v</span> <span class="o">=</span> <span class="n">a</span><span class="o">[</span><span class="n">lo</span><span class="o">];</span>
 
@@ -499,7 +499,7 @@
   <span class="n">swap</span><span class="o">(</span><span class="n">seq</span><span class="o">[</span><span class="n">lo</span><span class="o">],</span> <span class="n">seq</span><span class="o">[</span><span class="n">j</span><span class="o">]);</span>
   <span class="k">return</span> <span class="n">j</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>partition algorithm</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="quick-sort-improvements">Improvements</h3>
 <ul>
 <li><p><strong>use insertion sort for small sub-arrays</strong>: Adding a cutoff size for which to apply insertion sort to small sub-arrays can improve the performance of the algorithm.</p>
@@ -551,7 +551,7 @@
 <li>recurse on the left and right segments</li>
 </ol>
 <p>Quick sort performs a lot better than merge sort in sequences that have duplicate keys. Its time is reduced from linearithmic to linear for sequences with large numbers of duplicate keys.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>three-way partitioning</span></figcaption><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">hi</span> <span class="o">&lt;=</span> <span class="n">lo</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
 
   <span class="kt">int</span> <span class="n">lt</span> <span class="o">=</span> <span class="n">lo</span><span class="o">,</span> <span class="n">i</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="n">hi</span><span class="o">;</span>
@@ -568,7 +568,7 @@
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">lo</span><span class="o">,</span> <span class="n">lt</span> <span class="o">-</span> <span class="mi">1</span><span class="o">);</span>
   <span class="n">sort</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="n">gt</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">hi</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>three-way partitioning</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="priority-queues">Priority Queues</h2>
 <p>A priority queue is an abstract data type that allows adding elements and retrieving the smallest or largest element. Priority queues are useful for an unbounded sequence for which we want to retrieve the <span class="math">\(M\)</span> smallest elements at any given moment.</p>
 <h3 id="priority-queue-data-structure">Data Structure</h3>
@@ -600,13 +600,13 @@
 <li>increment heap size</li>
 <li>swim up the heap to restore heap order</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">swim</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>swim</span></figcaption><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">swim</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">while</span> <span class="o">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="o">&amp;&amp;</span> <span class="n">seq</span><span class="o">[</span><span class="n">k</span> <span class="o">/</span> <span class="mi">2</span><span class="o">]</span> <span class="o">&lt;</span> <span class="n">seq</span><span class="o">[</span><span class="n">k</span><span class="o">])</span> <span class="o">{</span>
     <span class="n">swap</span><span class="o">(</span><span class="n">seq</span><span class="o">[</span><span class="n">k</span> <span class="o">/</span> <span class="mi">2</span><span class="o">],</span> <span class="n">seq</span><span class="o">[</span><span class="n">k</span><span class="o">]);</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">k</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>swim</span></figcaption></figure>
+</code></pre></figure>
 <h4 id="priority-queue-removal">Removal</h4>
 <div class="right">
 <table>
@@ -631,7 +631,7 @@
 <li>decrement heap size</li>
 <li>sink down the heap to restore heap order</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sink</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>sink</span></figcaption><pre><code class="highlight language-java"><span class="kd">private</span> <span class="kt">void</span> <span class="nf">sink</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">while</span> <span class="o">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="o">)</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">k</span><span class="o">;</span>
 
@@ -642,7 +642,7 @@
     <span class="n">k</span> <span class="o">=</span> <span class="n">j</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>sink</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="heap-sort">Heap Sort</h3>
 <div class="right">
 <table>
@@ -674,7 +674,7 @@
 <li>sink the new root</li>
 <li>repeat 1-3 until the priority queue becomes empty</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>heap sort</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">N</span> <span class="o">/</span> <span class="mi">2</span><span class="o">;</span> <span class="n">k</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">k</span><span class="o">--)</span>
@@ -685,7 +685,7 @@
     <span class="n">sink</span><span class="o">(</span><span class="n">seq</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="n">N</span><span class="o">);</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>heap sort</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="selection">Selection</h2>
 <div class="right">
 <table>
@@ -704,7 +704,7 @@
 </table>
 </div>
 <p>Selecting the <span class="math">\(k\)</span> smallest items in a sequence can be accomplished by using the quick sort algorithm’s partition algorithm. This is guaranteed by the invariant held by quick sort’s partition algorithm which states that given the partition index <span class="math">\(j\)</span>, all elements to the left are less than or equal to <span class="math">\(j\)</span> and all elements to the right are greater than or equal to <span class="math">\(j\)</span>, effectively making the sub-sequence up to <span class="math">\(j\)</span> consist of the smallest <span class="math">\(j\)</span> elements in the sequence.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">public</span> <span class="n">Comparable</span> <span class="nf">select</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>selection</span></figcaption><pre><code class="highlight language-java"><span class="kd">public</span> <span class="n">Comparable</span> <span class="nf">select</span><span class="o">(</span><span class="n">Comparable</span><span class="o">[]</span> <span class="n">seq</span><span class="o">,</span> <span class="kt">int</span> <span class="n">k</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">shuffle</span><span class="o">(</span><span class="n">seq</span><span class="o">);</span>
 
   <span class="kt">int</span> <span class="n">lo</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">hi</span> <span class="o">=</span> <span class="n">seq</span><span class="o">.</span><span class="na">length</span> <span class="o">-</span> <span class="mi">1</span><span class="o">;</span>
@@ -719,7 +719,7 @@
 
   <span class="k">return</span> <span class="n">seq</span><span class="o">[</span><span class="n">k</span><span class="o">];</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>selection</span></figcaption></figure>
+</code></pre></figure>
 <h1 id="searching">Searching</h1>
 <p><strong>Answers</strong>: Finding a certain element in a collection.</p>
 <h2 id="binary-search-trees">Binary Search Trees</h2>
@@ -741,7 +741,7 @@
 </div>
 <p>This is the classical data structure consisting of a binary tree where each node has two children. The sub-tree to the left of each node consists of elements smaller than the node and the sub-tree to the right of each node consists of elements greater than the node.</p>
 <p>The performance of <abbr title="Binary Search Trees">BST</abbr>s greatly depends on the shape of the tree, which is a result of the distribution and order of the elements that are input.</p>
-<h4 id="binary-search-tree-traversal">Traversal</h4>
+<h3 id="binary-search-tree-traversal">Traversal</h3>
 <p>There are three main forms of traversing a <abbr title="Binary Search Trees">BST</abbr>. The <em>order</em> refers to the order in which the current node <span class="math">\(C\)</span> is visited, that is, the time at which <span class="math">\(C\)</span> is visited is the only thing that varies, so <span class="math">\(L\)</span> is always visited before <span class="math">\(R\)</span>.</p>
 <table>
 <thead>
@@ -765,7 +765,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="binary-search-tree-deletion">Deletion</h4>
+<h3 id="binary-search-tree-deletion">Deletion</h3>
 <p>Most operations such as insertion and lookup are very straightforward. Deletion is somewhat more involved.</p>
 <p>To delete node <span class="math">\(z\)</span>:</p>
 <ol type="1">
@@ -965,7 +965,7 @@
       <span class="n">m</span><span class="o">-&gt;</span><span class="n">key</span> <span class="o">=</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">;</span>
       <span class="n">delete</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">c</span><span class="o">-&gt;</span><span class="n">key</span><span class="p">);</span>
 </code></pre></figure>
-<p><strong>Second</strong>, if the node to be deleted has a child, simply replace the successor with its child.</p>
+<p><strong>Second</strong>, if the node to be deleted has one child, simply replace the successor with its child.</p>
 <figure class="codeblock"><pre><code class="highlight language-c">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">m</span><span class="o">-&gt;</span><span class="n">left</span> <span class="o">!=</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">m</span><span class="o">-&gt;</span><span class="n">right</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
       <span class="c1">// replace with child, delete child</span>
       <span class="n">delete_one_child</span><span class="p">(</span><span class="n">m</span><span class="p">);</span>
@@ -1224,7 +1224,7 @@
 <p>Adjacency lists have the best balance between space and time performance. They have space usage proportional to <span class="math">\(V + E\)</span>, constant time to add an edge, and time proportional to the degree of <span class="math">\(v\)</span> to iterate through adjacent vertices.</p>
 <h3 id="depth-first-search">Depth-First Search</h3>
 <p>Depth-First Search (<abbr title="Depth-First Search">DFS</abbr>) is a graph traversal algorithm that visits a vertex, marks that vertex as visited, then visits all unmarked adjacent vertices.</p>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">dfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>depth-first search</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">dfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">marked</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="n">count</span><span class="o">++</span><span class="p">;</span>
 
@@ -1234,7 +1234,7 @@
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>depth-first search</span></figcaption></figure>
+</code></pre></figure>
 <p>To trace the paths in the graph, an array can be kept of size <span class="math">\(V\)</span> indexed by a given vertex whose value is the vertex that connects to it. This array of edges represents a tree rooted at the source vertex.</p>
 <h3 id="breadth-first-search">Breadth-First Search</h3>
 <p>Breadth-First Search (<abbr title="Breadth-First Search">BFS</abbr>) traversal aids in finding the shortest path between two vertices. Its basic operation consists of:</p>
@@ -1244,7 +1244,7 @@
 <li>mark and enqueue all adjacent vertices</li>
 <li>repeat 2-3 until the queue is empty</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">bfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>breadth-first search</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">bfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">s</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">queue</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">vertexQueue</span><span class="p">;</span>
   <span class="n">marked</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="n">vertexQueue</span><span class="p">.</span><span class="n">enqueue</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
@@ -1260,11 +1260,11 @@
       <span class="p">}</span>
   <span class="p">}</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>breadth-first search</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="connected-components">Connected Components</h3>
 <p>Depth-First Search can also be used to find connected components of a graph. This is accomplished by initiating <abbr title="Depth-First Search">DFS</abbr> on every unmarked vertex and each time it is called on a vertex, set the vertex’ connected component identifier.</p>
 <p>A run of <abbr title="Depth-First Search">DFS</abbr> finds, and thus marks, every vertex in a connected component. Upon completing such a run, a counter variable signifying the connected componenet identifier is incremented and then it is called on the next unmarked vertex in the graph, i.e. a vertex not in a connected component found so far.</p>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">findConnectedComponents</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>finding connected components</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">findConnectedComponents</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">id</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">V</span><span class="p">());</span>
   <span class="n">vector</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span> <span class="n">marked</span><span class="p">(</span><span class="n">G</span><span class="p">.</span><span class="n">V</span><span class="p">());</span>
   <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -1284,11 +1284,11 @@
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">marked</span><span class="p">[</span><span class="n">w</span><span class="p">])</span>
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>finding connected components</span></figcaption></figure>
+</code></pre></figure>
 <p>Compared to <a href="#dynamic-connectivity">Union-Find</a>, the <abbr title="Depth-First Search">DFS</abbr> approach is theoretically faster because it provides a constant-time guarantee. However, in practice the difference is negligible and Union-Find tends to be faster because it doesn’t have to build a full representation of a graph. Perhaps more importantly, the <abbr title="Depth-First Search">DFS</abbr> approach has to preprocess the graph by running <abbr title="Depth-First Search">DFS</abbr> on the separate connected components. As a result, Union-Find is an online algorithm where it can be queried even while new edges are added without having to re-preprocess the graph.</p>
 <h3 id="cycle-detection">Cycle Detection</h3>
 <p><abbr title="Depth-First Search">DFS</abbr> can also be used to determine if there are cycles present in a graph. This is accomplished by keeping track of the vertex previous to the one being focused on by the <abbr title="Depth-First Search">DFS</abbr>. If one of the current vertex’ neighbors is already marked and it is not the previous vertex, then it means that there is an edge to an already marked vertex, thus forming a cycle.</p>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">bool</span> <span class="nf">detectCycles</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>cycle detection</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">bool</span> <span class="nf">detectCycles</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span><span class="p">();</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">marked</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
@@ -1303,11 +1303,11 @@
     <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">w</span> <span class="o">!=</span> <span class="n">u</span><span class="p">)</span>
       <span class="n">hasCycle</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>cycle detection</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="bipartite-detection">Bipartite Detection</h3>
 <p><abbr title="Depth-First Search">DFS</abbr> can also be used to determine whether or not the graph is bipartite. Another way to frame the question is: can the vertices of the graph be assigned one of two colors such that no edge connects vertices of the game color?</p>
 <p>This is accomplished by maintaining a vertex-indexed array that will store that vertex’ color. As <abbr title="Depth-First Search">DFS</abbr> traverses the graph, it will alternate the color of every vertex it visits. The graph starts out as assumed to be bipartite, and only if <abbr title="Depth-First Search">DFS</abbr> encounters a marked vertex whose color is the same as the current vertex does it conclude that the graph is not bipartite.</p>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">bool</span> <span class="nf">bipartiteDetect</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>bipartite detection</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">bool</span> <span class="nf">bipartiteDetect</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">s</span> <span class="o">&lt;</span> <span class="n">G</span><span class="p">.</span><span class="n">V</span><span class="p">();</span> <span class="n">s</span><span class="o">++</span><span class="p">)</span>
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">marked</span><span class="p">[</span><span class="n">s</span><span class="p">])</span>
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
@@ -1322,7 +1322,7 @@
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
     <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="n">w</span><span class="p">]</span> <span class="o">==</span> <span class="n">color</span><span class="p">[</span><span class="n">v</span><span class="p">])</span> <span class="n">isBipartite</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>bipartite detection</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="directed-graphs">Directed Graphs</h2>
 <p>The edges in <strong>directed graphs</strong> have an associated one-way direction, such that edges are defined by an ordered pair of vertices that define a one-way adjacency. A directed graph (or <strong>digraph</strong>) is a set of vertices and a collection of directed edges, each connecting an ordered pair of vertices. The <strong>outdegree</strong> of a vertex is the number of edges pointing from it, while the <strong>indegree</strong> is the number of edges pointing to it.</p>
 <p>The first vertex in a directed edge is the <strong>head</strong> and the second vertex is the <strong>tail</strong>. Edges are drawn as arrows pointing from head to tail, such as <span class="math">\(v \rightarrow w\)</span>.</p>
@@ -1333,7 +1333,7 @@
 <h3 id="directed-cycle-detection">Cycle Detection</h3>
 <p>A digraph with no directed cycles is known as a directed acyclic graph (<abbr title="Directed Acyclic Graph">DAG</abbr>). For this reason, checking a digraph for directed cycles answers the question of whether the digraph is <abbr title="Directed Acyclic Graph">DAG</abbr>.</p>
 <p>Directed cycle detection is accomplished by maintaining a boolean array representing whether or not a directed path belongs to the same connected component. Then during <abbr title="Depth-First Search">DFS</abbr> if the encountered vertex is already marked and is part of the same component, it returns the path from the current vertex through the cycle back to the current vertex. If no such cycle exists, the graph is a <abbr title="Directed Acyclic Graph">DAG</abbr>.</p>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">dfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>directed cycle detection</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">dfs</span><span class="p">(</span><span class="k">const</span> <span class="n">Graph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">onStack</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
   <span class="n">marked</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
 
@@ -1355,7 +1355,7 @@
 
   <span class="n">onStack</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>directed cycle detection</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="topological-order">Topological Order</h3>
 <p>Topological sort puts the vertices of a digraph in order such that all of its directed edges point from a vertex earlier in the order to a vertex later in the order. Three different orders are possible, which are accomplished by saving each vertex covered by the <abbr title="Depth-First Search">DFS</abbr> in a queue or stack, depending on the desired order:</p>
 <ul>
@@ -1377,7 +1377,7 @@
 <li>are two given vertices strongly connected?</li>
 <li>how many strong components does the digraph contain?</li>
 </ul>
-<figure class="codeblock"><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">findStrongComponents</span><span class="p">(</span><span class="k">const</span> <span class="n">Digraph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
+<figure class="codeblock"><figcaption><span>kosaraju-sharir algorithm</span></figcaption><pre><code class="highlight language-cpp"><span class="kt">void</span> <span class="nf">findStrongComponents</span><span class="p">(</span><span class="k">const</span> <span class="n">Digraph</span> <span class="o">&amp;</span><span class="n">G</span><span class="p">)</span> <span class="p">{</span>
   <span class="n">Digraph</span> <span class="n">reverse</span> <span class="o">=</span> <span class="n">G</span><span class="p">.</span><span class="n">reverse</span><span class="p">();</span>
 
   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">s</span> <span class="o">:</span> <span class="n">reverse</span><span class="p">.</span><span class="n">reversePost</span><span class="p">())</span>
@@ -1395,7 +1395,7 @@
     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">marked</span><span class="p">[</span><span class="n">w</span><span class="p">])</span>
       <span class="n">dfs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">w</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre><figcaption><span>kosaraju-sharir algorithm</span></figcaption></figure>
+</code></pre></figure>
 <p>The algorithm can be understood by considering a kernel <abbr title="Directed Acyclic Graph">DAG</abbr>, or <em>condensation digraph</em>, associated with each digraph, formed by collapsing all vertices in each strong component to a single vertex. This <abbr title="Directed Acyclic Graph">DAG</abbr> can then be put into reverse topological order. Remember that reverse postorder of a <abbr title="Directed Acyclic Graph">DAG</abbr> is equivalent to topological sort.</p>
 <p>The algorithm begins by finding a vertex that is in a sink component of the kernel <abbr title="Directed Acyclic Graph">DAG</abbr>. A <strong>sink component</strong> is one that has no edges pointing from it. Running <abbr title="Depth-First Search">DFS</abbr> from this vertex only visits the vertices in that component. <abbr title="Depth-First Search">DFS</abbr> then marks the vertices in that component, effectively removing them from further consideration in that digraph. It then repeats this by finding another sink component in the resulting kernel <abbr title="Directed Acyclic Graph">DAG</abbr>.</p>
 <p>The first vertex in a reverse postorder of <span class="math">\(G\)</span> is in a <em>source</em> component of the kernel <abbr title="Directed Acyclic Graph">DAG</abbr>, whereas the first vertex in a reverse postorder of the <em>reverse</em> digraph <span class="math">\(G^R\)</span> is in a <em>sink</em> component of the kernel <abbr title="Directed Acyclic Graph">DAG</abbr>.</p>
@@ -1432,7 +1432,7 @@
 <p>This method of finding the <abbr title="Minimum Spanning Tree">MST</abbr> operates by attaching a new edge to a growing tree at each step. Starting with any vertex from the graph to create a single-vertex tree, each time taking the minimum-weight edge that connects a vertex on the tree to a vertex not yet on the tree.</p>
 <p>The vertices in the tree being built are represented using a vertex-indexed boolean array where an element is set to true if the vertex is in the tree. The edges in the tree can be represented with a queue that collects edges or a vertex-indexed array of edge objects. Crossing edges are held in a minimum priority queue, making the operation of choosing the edge with the lowest weight particularly straightforward.</p>
 <p>The act of adding an edge to the tree corresponds to adding a vertex to the tree. When this occurs, all edges from the newly added vertex to all vertices not in the tree must be added to the crossing edges priority queue. Furthermore, any edges previously in the priority queue that connected the newly added vertex to a vertex already in the tree become <em>ineligible</em> — or they would create a cycle — and should be ignored or removed.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">prim</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>prim's algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">prim</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">visit</span><span class="o">(</span><span class="n">G</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="c1">// start at arbitrary vertex</span>
 
   <span class="k">while</span> <span class="o">(!</span><span class="n">pq</span><span class="o">.</span><span class="na">empty</span><span class="o">())</span> <span class="o">{</span>
@@ -1455,7 +1455,7 @@
   <span class="k">for</span> <span class="o">(</span><span class="n">Edge</span> <span class="n">e</span> <span class="o">:</span> <span class="n">G</span><span class="o">.</span><span class="na">adj</span><span class="o">(</span><span class="n">v</span><span class="o">))</span>
     <span class="k">if</span> <span class="o">(!</span><span class="n">marked</span><span class="o">[</span><span class="n">e</span><span class="o">.</span><span class="na">other</span><span class="o">(</span><span class="n">v</span><span class="o">)])</span> <span class="n">pq</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="n">e</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>prim's algorithm</span></figcaption></figure>
+</code></pre></figure>
 <h4 id="eager-prims">Eager Prim’s Algorithm</h4>
 <div class="right">
 <table>
@@ -1485,7 +1485,7 @@
 </ul>
 <p>For each vertex present in the above arrays, the vertex index associated with its weight are stored in a minimum priority queue, such that when the minimum weight is removed the associated index is returned. The implication of maintaining the priority queue this way is that given the next minimum-weight crossing edge returned by the priority queue, its associated vertex is the next one to add to the <abbr title="Minimum Spanning Tree">MST</abbr>.</p>
 <p>An improvement from the lazy implementation is that the eager implementation uses space proportional to <span class="math">\(V\)</span> whereas the lazy implementation uses <span class="math">\(E\)</span>.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">primEager</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>eager prim's algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">primEager</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">G</span><span class="o">.</span><span class="na">V</span><span class="o">();</span> <span class="n">v</span><span class="o">++)</span> <span class="o">{</span>
     <span class="n">distTo</span><span class="o">[</span><span class="n">v</span><span class="o">]</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">POSITIVE_INFINITY</span><span class="o">;</span>
   <span class="o">}</span>
@@ -1512,7 +1512,7 @@
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>eager prim's algorithm</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="kruskals-algorithm">Kruskal’s Algorithm</h3>
 <div class="right">
 <table>
@@ -1537,7 +1537,7 @@
 <p>An alternative method for finding the <abbr title="Minimum Spanning Tree">MST</abbr> is to process the edges in increasing order of their weight values, each time taking an edge for the <abbr title="Minimum Spanning Tree">MST</abbr> that doesn’t form a cycle, stopping once <span class="math">\(V-1\)</span> edges have been aggregated. The edges form a forest of trees, gradually growing into a single tree (the <abbr title="Minimum Spanning Tree">MST</abbr>). The algorithm can be thought of as starting with a forest of <span class="math">\(V\)</span> single-vertex trees, and on each step finding an edge to connect two trees until there is only one left (the <abbr title="Minimum Spanning Tree">MST</abbr>).</p>
 <p>The implementation uses a priority queue of edges based on their weight, a union-find data structure to identify potential cycles, and a queue to collect edges for for the <abbr title="Minimum Spanning Tree">MST</abbr>.</p>
 <p>Despite the simplicity of Kruskal’s algorithm, it is generally slower than Prim’s because it has to check if an edge is already connected using the union-find data structure on each edge that is considered for the <abbr title="Minimum Spanning Tree">MST</abbr>.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">kruskal</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>kruskal's algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">kruskal</span><span class="o">(</span><span class="n">EdgeWeightedGraph</span> <span class="n">G</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">mst</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Edge</span><span class="o">&gt;();</span>
   <span class="n">pq</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MinPQ</span><span class="o">&lt;</span><span class="n">Edge</span><span class="o">&gt;();</span>
   <span class="n">uf</span> <span class="o">=</span> <span class="k">new</span> <span class="n">UF</span><span class="o">(</span><span class="n">G</span><span class="o">.</span><span class="na">V</span><span class="o">());</span>
@@ -1553,11 +1553,11 @@
     <span class="n">mst</span><span class="o">.</span><span class="na">enqueue</span><span class="o">(</span><span class="n">e</span><span class="o">);</span> <span class="c1">// add the edge to result</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>kruskal's algorithm</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="shortest-paths">Shortest Paths</h2>
 <p>The <strong>shortest path</strong> from vertex <span class="math">\(s\)</span> to <span class="math">\(t\)</span> in an edge-weighted digraph is a directed path from <span class="math">\(s\)</span> to <span class="math">\(t\)</span> such that no other such path has a lower weight. A <strong>shortest-path tree</strong> (<abbr title="Shortest-Paths Tree">SPT</abbr>) for a source vertex <span class="math">\(s\)</span> is a subgraph containing <span class="math">\(s\)</span> and all the vertices reachable from <span class="math">\(s\)</span> that forms a directed tree rooted at <span class="math">\(s\)</span> such that every path is a shortest path in the digraph.</p>
 <p><strong>Edge relaxation</strong> refers to replacing an existing edge that reaches <span class="math">\(w\)</span> with a new edge <span class="math">\(v \rightarrow w\)</span> if the new edge makes the path from the source vertex to <span class="math">\(w\)</span> be of lower cost than it was previously.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">relax</span><span class="o">(</span><span class="n">DirectedEdge</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>edge relaxation</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">relax</span><span class="o">(</span><span class="n">DirectedEdge</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">from</span><span class="o">(),</span> <span class="n">w</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">to</span><span class="o">();</span>
 
   <span class="k">if</span> <span class="o">(</span><span class="n">distTo</span><span class="o">[</span><span class="n">w</span><span class="o">]</span> <span class="o">&gt;</span> <span class="n">distTo</span><span class="o">[</span><span class="n">v</span><span class="o">]</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="na">weight</span><span class="o">())</span> <span class="o">{</span>
@@ -1565,9 +1565,9 @@
     <span class="n">edgeTo</span><span class="o">[</span><span class="n">w</span><span class="o">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">;</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>edge relaxation</span></figcaption></figure>
+</code></pre></figure>
 <p><strong>Vertex relaxation</strong> is similar to edge relaxation except that it relaxes all of the edges pointing from a given vertex.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">relax</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>vertex relaxation</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">relax</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">v</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">(</span><span class="n">DirectedEdge</span> <span class="n">e</span> <span class="o">:</span> <span class="n">G</span><span class="o">.</span><span class="na">adj</span><span class="o">(</span><span class="n">v</span><span class="o">))</span> <span class="o">{</span>
     <span class="kt">int</span> <span class="n">w</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="na">to</span><span class="o">();</span>
 
@@ -1577,7 +1577,7 @@
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>vertex relaxation</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="dijkstras-algorithm">Dijkstra’s Algorithm</h3>
 <div class="right">
 <table>
@@ -1601,7 +1601,7 @@
 </div>
 <p>Dijkstra’s alrogithm is similar to Prim’s algorithm for finding the <abbr title="Minimum Spanning Tree">MST</abbr>. Dijkstra’s algorithm finds the <abbr title="Shortest-Paths Tree">SPT</abbr> by finding the lowest-weight non-tree vertex as provided by an index minimum-priority queue and relaxing that vertex.</p>
 <p>Dijkstra’s algorithm <strong>requires</strong> that edges be non-negative.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">dijkstra</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>dijkstra's algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">dijkstra</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">G</span><span class="o">.</span><span class="na">V</span><span class="o">();</span> <span class="n">v</span><span class="o">++)</span>
     <span class="n">distTo</span><span class="o">[</span><span class="n">v</span><span class="o">]</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">POSITIVE_INFINITY</span><span class="o">;</span>
   <span class="n">distTo</span><span class="o">[</span><span class="n">s</span><span class="o">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span>
@@ -1625,7 +1625,7 @@
     <span class="o">}</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>dijkstra's algorithm</span></figcaption></figure>
+</code></pre></figure>
 <p>To specifically find the shortest path from the source vertex to an arbitrary vertex, simply terminate the search as soon as the target vertex comes off of the priority queue.</p>
 <h3 id="topological-sort">Topological Sort</h3>
 <div class="right">
@@ -1649,7 +1649,7 @@
 </table>
 </div>
 <p>Shortest paths can be found much more efficiently in acyclic graphs, specifically, the single-source problem can be solved in linear time, negative edge weights are easily handled, and other related problems such as finding the longest paths are solvable. This is possible by relaxing vertices in topological order.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">shortestPathAcyclic</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>shortest-paths in DAG</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">shortestPathAcyclic</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="n">G</span><span class="o">.</span><span class="na">V</span><span class="o">();</span> <span class="n">v</span><span class="o">++)</span> 
     <span class="n">distTo</span><span class="o">[</span><span class="n">v</span><span class="o">]</span> <span class="o">=</span> <span class="n">Double</span><span class="o">.</span><span class="na">POSITIVE_INFINITY</span><span class="o">;</span>
   <span class="n">distTo</span><span class="o">[</span><span class="n">s</span><span class="o">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="o">;</span>
@@ -1657,7 +1657,7 @@
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">:</span> <span class="n">G</span><span class="o">.</span><span class="na">topologicalOrder</span><span class="o">())</span>
     <span class="n">relax</span><span class="o">(</span><span class="n">G</span><span class="o">,</span> <span class="n">v</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>shortest-paths in DAG</span></figcaption></figure>
+</code></pre></figure>
 <p>This approach can be used for finding the longest path between two vertices in a <abbr title="Directed Acyclic Graph">DAG</abbr>, accomplished by creating a copy of the <abbr title="Directed Acyclic Graph">DAG</abbr> and negating the weight of every edge.</p>
 <h3 id="parallel-job-scheduling">Parallel Job Scheduling</h3>
 <p>The <strong>critical path method</strong> for parallel job scheduling consists of encoding the constraints of the scheduling problem in a <abbr title="Directed Acyclic Graph">DAG</abbr>. Both a source vertex <span class="math">\(s\)</span> and a sink vertex <span class="math">\(t\)</span> are created on either ends of the graph. Jobs are encoded in the graph as a pair of nodes connected by an edge whose weight corresponds to that job’s duration. For each precedence constraint <span class="math">\(v \rightarrow w\)</span>, add a zero-weight edge from <span class="math">\(v\)</span> to <span class="math">\(w\)</span>. Finally, add a zero-weight edge from the source to every job’s start vertex and from every job’s end vertex to the sink.</p>
@@ -1691,7 +1691,7 @@
 <p>The problem of finding the shortest paths can be generalized to graphs containing negative cycles. The Bellman-Ford algorithm accomplishes this by adding the source vertex to a queue and entering a loop where a vertex is dequeued and relaxed, and any vertex affected by that relaxation gets enqueued.</p>
 <p>A <strong>negative cycle</strong> is a directed cycle with net negative weight. No shortest path between <span class="math">\(s\)</span> and <span class="math">\(v\)</span> can consist of a vertex that lies within a negative cycle, or the weight of the path can be made arbitrarily low and a <em>shortest</em> path would “never” be achieved.</p>
 <p>To prevent the Bellman-Ford algorithm from looping infinitely due to negative cycles, it has to ensure to terminate after <span class="math">\(V\)</span> passes either by keeping track with a counter or by detecting negative cycles within a subgraph.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">bellmanFord</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>bellman-ford algorithm</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">bellmanFord</span><span class="o">(</span><span class="n">EdgeWeightedDigraph</span> <span class="n">G</span><span class="o">,</span> <span class="kt">int</span> <span class="n">s</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">queue</span><span class="o">.</span><span class="na">enqueue</span><span class="o">(</span><span class="n">s</span><span class="o">);</span>
   <span class="n">onQ</span><span class="o">[</span><span class="n">s</span><span class="o">]</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
 
@@ -1720,10 +1720,10 @@
       <span class="n">findNegativeCycle</span><span class="o">();</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>bellman-ford algorithm</span></figcaption></figure>
+</code></pre></figure>
 <p>If the queue is not empty after <span class="math">\(V\)</span> passes through each edge then there is a negative cycle. By extension, if a negative cycle is present in a graph, the Bellman-Ford algorithm can end up in an infinite loop, continuously lowering the weight of each affected path.</p>
 <p>This is mitigated by checking for negative cycles on every <span class="math">\(V^{th}\)</span> call to relax, as on line 26 of the above code listing. On every such interval, a <a href="#directed-cycle-detection">cycle finder</a> is initiated on the sub-graph denoted by the edges so-far considered by Bellman-Ford.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">findNegativeCycle</span><span class="o">()</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>negative cycle finder</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">findNegativeCycle</span><span class="o">()</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">V</span> <span class="o">=</span> <span class="n">edgeTo</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
   <span class="n">EdgeWeightedDigraph</span> <span class="n">spt</span> <span class="o">=</span> <span class="k">new</span> <span class="n">EdgeWeightedDigraph</span><span class="o">(</span><span class="n">V</span><span class="o">);</span>
 
@@ -1735,14 +1735,14 @@
 
   <span class="n">cycle</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="na">cycle</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>negative cycle finder</span></figcaption></figure>
+</code></pre></figure>
 <h1 id="strings">Strings</h1>
 <p>Strings have special properties which necessitate more efficient algorithms for sorting and searching. Other subjects concerning strings include tries, regular expressions, and data compression.</p>
 <h2 id="string-sorting">Sorting</h2>
 <p>Certain properties of strings and alphabets can make for more efficient sorting algorithms for strings.</p>
 <h3 id="counting-sort">Counting Sort</h3>
 <p>Counting sort, also known as key-indexed counting, essentially involves computing a histogram of the number of occurrences of each character, then regenerating the array in sorted order using that information.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
+<figure class="codeblock"><figcaption><span>counting sort</span></figcaption><pre><code class="highlight language-java"><span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
 
 <span class="kt">int</span><span class="o">[]</span> <span class="n">aux</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">N</span><span class="o">];</span>
 <span class="kt">int</span><span class="o">[]</span> <span class="n">count</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">R</span> <span class="o">+</span> <span class="mi">1</span><span class="o">];</span>
@@ -1762,7 +1762,7 @@
 <span class="c1">// copy back to original array</span>
 <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
   <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="n">aux</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
-</code></pre><figcaption><span>counting sort</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="least-significant-digit-sort">Least Significant Digit Sort</h3>
 <div class="right">
 <table>
@@ -1785,7 +1785,7 @@
 </table>
 </div>
 <p>Least Significant Digit (<abbr title="Least Significant Digit">LSD</abbr>) sort works by sorting the strings based on the last character and then repeating this operation up until the first character. This is accomplished by modifying the counting sort algorithm so that it does a pass for every character in the string. This is mainly useful if all strings are the same length <span class="math">\(W\)</span> and relatively small alphabet size <span class="math">\(R\)</span>.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">W</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>least significant digit sort</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">sort</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">W</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="na">length</span><span class="o">;</span>
   <span class="kt">int</span> <span class="n">R</span> <span class="o">=</span> <span class="mi">256</span><span class="o">;</span>
 
@@ -1811,7 +1811,7 @@
       <span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="n">aux</span><span class="o">[</span><span class="n">i</span><span class="o">];</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>least significant digit sort</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="most-significant-digit-sort">Most Significant Digit Sort</h3>
 <div class="right">
 <table>
@@ -1842,7 +1842,7 @@
 <p>Because <abbr title="Most Significant Digit">MSD</abbr> works left-to-right and strings may be of variable — not uniform — length, the possibility of reaching the end of the string requires special handling. This is solved by observing the fact that a smaller string <span class="math">\(S_1\)</span> that is a prefix of larger string <span class="math">\(S_2\)</span> should naturally come before it in lexicographically sorted order. For example, <em>sea</em> should come before <em>seashore</em>.</p>
 <p>This order is maintained by keeping a separate count of such strings that have had all of their characters sorted. This count is held at <code>count[1]</code>. A string has had all of its characters sorted if the character position currently being sorted is past the length of the string currently being considered. Once the counts are converted to key ranges, such strings will naturally be inserted at the beginning of the sorted sub-array.</p>
 <p>On each recursion of the sorting operation, an array for counts is allocated whose size is proportional to the alphabet size, occurrences are counted, transformed to key ranges, and so on. The point is that these operations can come to dominate the sorting operation, which makes having a cutoff for small sub-arrays crucial. After the cutoff, insertion sort takes over, with the slight modification that it only operates on the <span class="math">\(d^{th}\)</span> character position onward.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">charAt</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>most significant digit sort</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">charAt</span><span class="o">(</span><span class="n">String</span> <span class="n">s</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">d</span> <span class="o">&lt;</span> <span class="n">s</span><span class="o">.</span><span class="na">length</span><span class="o">())</span>
     <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">d</span><span class="o">);</span>
   <span class="k">else</span>
@@ -1884,7 +1884,7 @@
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">r</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">r</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">r</span><span class="o">++)</span>
     <span class="n">sort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">count</span><span class="o">[</span><span class="n">r</span><span class="o">],</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">count</span><span class="o">[</span><span class="n">r</span> <span class="o">+</span> <span class="mi">1</span><span class="o">]</span> <span class="o">-</span> <span class="mi">1</span><span class="o">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>most significant digit sort</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="three-way-string-quicksort">Three-way String QuickSort</h3>
 <div class="right">
 <table>
@@ -1914,7 +1914,7 @@
 <p>Three-way quicksort can be adapted to work on a per-character basis similar to <abbr title="Most Significant Digit">MSD</abbr>. The advantages of this are that the algorithm doesn’t use extra space — unlike <abbr title="Most Significant Digit">MSD</abbr> — and that the number of sub-arrays per recurse is bounded at three.</p>
 <p>A direct result of only splitting into three sub-arrays is that more data movements are required to get elements into their correct position compared to <abbr title="Most Significant Digit">MSD</abbr>. However, three-way quicksort’s three-way splits adapt well to handling equal keys, keys with small arrays, and keys that fall into a small range.</p>
 <p>Research has shown that no algorithm can beat 3-way string quicksort by more than a constant factor.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">stringQuickSort</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>string quicksort</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">stringQuickSort</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">a</span><span class="o">,</span> <span class="kt">int</span> <span class="n">lo</span><span class="o">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">hi</span> <span class="o">&lt;=</span> <span class="n">lo</span><span class="o">)</span> <span class="k">return</span><span class="o">;</span>
 
   <span class="kt">int</span> <span class="n">lt</span> <span class="o">=</span> <span class="n">lo</span><span class="o">,</span> <span class="n">gt</span> <span class="o">=</span> <span class="n">hi</span><span class="o">;</span>
@@ -1933,13 +1933,13 @@
   <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="o">)</span> <span class="n">sort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">lt</span><span class="o">,</span> <span class="n">gt</span><span class="o">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
   <span class="n">sort</span><span class="o">(</span><span class="n">a</span><span class="o">,</span> <span class="n">gt</span> <span class="o">+</span> <span class="mi">1</span><span class="o">,</span> <span class="n">hi</span><span class="o">,</span> <span class="n">d</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>string quicksort</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="tries">Tries</h2>
 <p>Trie structures exploit string properties to provide much faster string search, with hits taking time proportional to the length of the key and where misses require examining only a few characters.</p>
 <p><img src="/images/notes/algorithms/tries/trie.png" class="right"></p>
 <p>The structure of tries is comprised of a tree where every node has <span class="math">\(R\)</span> <strong>links</strong> where <span class="math">\(R\)</span> is the size of the alphabet. Every node also has an associated <strong>label</strong> corresponding to the character value consumed to reach the node. The root node has no such label as there is no link pointing to it. Every node also also has an associated <strong>value</strong> corresponding to the value associated with the key denoted by the path ending at the particular node.</p>
 <p>A <strong>search hit</strong> occurs when the trie search arrives at the final node and that node’s value is not empty. A <strong>search hit</strong> occurs both if the final node’s value is empty or if the search terminated on a null link.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Value</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>trie search</span></figcaption><pre><code class="highlight language-java"><span class="n">Value</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">Node</span> <span class="n">x</span> <span class="o">=</span> <span class="n">get</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
   <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="na">val</span><span class="o">;</span>
@@ -1951,9 +1951,9 @@
   <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">d</span><span class="o">);</span>
   <span class="k">return</span> <span class="nf">get</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">[</span><span class="n">c</span><span class="o">],</span> <span class="n">key</span><span class="o">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie search</span></figcaption></figure>
+</code></pre></figure>
 <p>Trie insertion simply consists of searching for the key and setting the value. If the key does not already exist, then create nodes for every character not yet in the trie.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">put</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">val</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
+<figure class="codeblock"><figcaption><span>trie insertion</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">put</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">val</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
 
 <span class="n">Node</span> <span class="nf">put</span><span class="o">(</span><span class="n">Node</span> <span class="n">x</span><span class="o">,</span> <span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Node</span><span class="o">();</span>
@@ -1962,9 +1962,9 @@
   <span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">[</span><span class="n">c</span><span class="o">]</span> <span class="o">=</span> <span class="n">put</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">[</span><span class="n">c</span><span class="o">],</span> <span class="n">key</span><span class="o">,</span> <span class="n">val</span><span class="o">,</span> <span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
   <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie insertion</span></figcaption></figure>
+</code></pre></figure>
 <p>Tries also allow operations for collecting keys with a common prefix. This is accomplished by finding the node at the end of the prefix’ path and then recursively performing <abbr title="Breadth-First Search">BFS</abbr> on every node and enqueueing any node that has a non-empty value.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">keysWithPrefix</span><span class="o">(</span><span class="n">String</span> <span class="n">prefix</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>trie key collection</span></figcaption><pre><code class="highlight language-java"><span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">keysWithPrefix</span><span class="o">(</span><span class="n">String</span> <span class="n">prefix</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">q</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
   <span class="n">collect</span><span class="o">(</span><span class="n">get</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">prefix</span><span class="o">,</span> <span class="mi">0</span><span class="o">),</span> <span class="n">prefix</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
   <span class="k">return</span> <span class="n">q</span><span class="o">;</span>
@@ -1977,9 +1977,9 @@
   <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">c</span><span class="o">++)</span>
     <span class="n">collect</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">[</span><span class="n">c</span><span class="o">],</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">c</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie key collection</span></figcaption></figure>
+</code></pre></figure>
 <p>This can also be modified to allow wildcard pattern matches, for example, keys that match <code>fin.</code> could include <code>fine</code>, <code>find</code>, etc.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">keysWithPrefix</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>trie key wildcards</span></figcaption><pre><code class="highlight language-java"><span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="nf">keysWithPrefix</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;</span> <span class="n">q</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Queue</span><span class="o">&lt;</span><span class="n">String</span><span class="o">&gt;();</span>
   <span class="n">collect</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
   <span class="k">return</span> <span class="n">q</span><span class="o">;</span>
@@ -1997,10 +1997,10 @@
     <span class="k">if</span> <span class="o">(</span><span class="n">next</span> <span class="o">==</span> <span class="sc">&#39;.&#39;</span> <span class="o">||</span> <span class="n">next</span> <span class="o">==</span> <span class="n">c</span><span class="o">)</span>
       <span class="n">collect</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">next</span><span class="o">[</span><span class="n">c</span><span class="o">],</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">c</span><span class="o">,</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">q</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie key wildcards</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="trie-deletion">Deletion</h3>
 <p>Deletion is a straightforward process in tries, simply involving finding the node and emptying its value. If this operation makes the node’s parent’s children all be null, then the same operation must be run on the parent.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">delete</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
+<figure class="codeblock"><figcaption><span>trie deletion</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">delete</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
 
 <span class="n">Node</span> <span class="nf">delete</span><span class="o">(</span><span class="n">Node</span> <span class="n">x</span><span class="o">,</span> <span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
@@ -2019,11 +2019,11 @@
 
   <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie deletion</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="ternary-search-trees">Ternary Search Trees</h3>
 <p>Ternary Search Trees (<abbr title="Ternary Search Trees">TST</abbr>s) seek to avoid the excessive space cost of regular R-way tries demonstrated above. <abbr title="Ternary Search Trees">TST</abbr>s are structured such that each node has only three links for characters less than, equal to, and greater than the node.</p>
 <p>R-way tries can provide the fastest search, finishing the operation with a constant number of compares. However, space usage increases rapidly with larger alphabets <abbr title="Ternary Search Trees">TST</abbr>s are preferable, sacrificing a constant number of compares for a logarithmic number of compares.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Node</span> <span class="nf">get</span><span class="o">(</span><span class="n">Node</span> <span class="n">x</span><span class="o">,</span> <span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>ternary search tree search</span></figcaption><pre><code class="highlight language-java"><span class="n">Node</span> <span class="nf">get</span><span class="o">(</span><span class="n">Node</span> <span class="n">x</span><span class="o">,</span> <span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="k">if</span> <span class="o">(</span><span class="n">x</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
   <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">d</span><span class="o">);</span>
 
@@ -2033,9 +2033,9 @@
                     <span class="k">return</span> <span class="nf">get</span><span class="o">(</span><span class="n">x</span><span class="o">.</span><span class="na">mid</span><span class="o">,</span>   <span class="n">key</span><span class="o">,</span> <span class="n">d</span><span class="o">);</span>
   <span class="k">else</span> <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>ternary search tree search</span></figcaption></figure>
+</code></pre></figure>
 <p>Insertion is similar to insertion with tries except that only one of three links can be taken, instead of <span class="math">\(R\)</span> links.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">put</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">val</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
+<figure class="codeblock"><figcaption><span>ternary search tree insertion</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">put</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">)</span> <span class="o">{</span> <span class="n">root</span> <span class="o">=</span> <span class="n">put</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">,</span> <span class="n">val</span><span class="o">,</span> <span class="mi">0</span><span class="o">);</span> <span class="o">}</span>
 
 <span class="n">Node</span> <span class="nf">put</span><span class="o">(</span><span class="n">Node</span> <span class="n">x</span><span class="o">,</span> <span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Value</span> <span class="n">val</span><span class="o">,</span> <span class="kt">int</span> <span class="n">d</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">d</span><span class="o">);</span>
@@ -2049,13 +2049,13 @@
   <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="na">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">;</span>
   <span class="k">return</span> <span class="n">x</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>ternary search tree insertion</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="substring-search">Substring Search</h2>
 <p>Searching for a string within another string is a very common operation that can also benefit from exploiting certain properties of strings.</p>
 <h3 id="brute-force-substring-search">Brute-Force</h3>
 <p>The most straightforward approach is a brute-force algorithm where every character in the text is checked to see if the pattern’s first character matches, and if so, checks to see if the second character in the pattern matches, and so on.</p>
 <p>If any character in the pattern matches during this check, the pattern iterator is not incremented and instead the text iterator is set back the amount of spaces equal to the pattern iterator, which essentially moves the text iterator one position past the position where the match checking was initiated. The pattern iterator is then reset to zero.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>brute-force substring search</span></figcaption><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">j</span><span class="o">,</span> <span class="n">M</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
 
@@ -2071,7 +2071,7 @@
   <span class="k">if</span> <span class="o">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">M</span><span class="o">)</span> <span class="k">return</span> <span class="n">i</span> <span class="o">-</span> <span class="n">M</span><span class="o">;</span>
   <span class="k">else</span>        <span class="k">return</span> <span class="n">N</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>brute-force substring search</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="knuth-morris-pratt">Knuth-Morris-Pratt</h3>
 <p>The Knuth-Morris-Pratt (<abbr title="Knuth-Morris-Pratt">KMP</abbr>) substring search algorithm considers that it’s probably not necessary to backtrack all the way to the beginning, since the characters along that stretch of the sequence have already been seen. One way to know the correct distance to backtrack is accomplished using a Deterministic Finite-State Automaton (<abbr title="Deterministic Finite-State Automaton">DFA</abbr>). There are other methods that either <a href="http://algs4.cs.princeton.edu/53substring/KMPplus.java.html">build an <abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr></a> or build a <a href="http://www.inf.fh-flensburg.de/lang/algorithmen/pattern/kmpen.htm">partial-match table</a>.</p>
 <h4 id="kmp-dfa-composition">DFA Composition</h4>
@@ -2101,7 +2101,7 @@ A B C D E F
 <li>the pointer to the fall-back state is updated to the state arrived at by following the transition corresponding to the current pattern character from the previous fall-back state</li>
 </ol></li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">constructDFA</span><span class="o">(</span><span class="kt">int</span><span class="o">[][]</span> <span class="n">dfa</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>DFA construction</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">constructDFA</span><span class="o">(</span><span class="kt">int</span><span class="o">[][]</span> <span class="n">dfa</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">dfa</span><span class="o">[</span><span class="n">pattern</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="mi">0</span><span class="o">)][</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
@@ -2112,10 +2112,10 @@ A B C D E F
     <span class="n">X</span> <span class="o">=</span> <span class="n">dfa</span><span class="o">[</span><span class="n">pattern</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)][</span><span class="n">X</span><span class="o">];</span>
   <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>DFA construction</span></figcaption></figure>
+</code></pre></figure>
 <h4 id="kmp-search">KMP Search</h4>
 <p>Now that the <abbr title="Deterministic Finite-State Automaton">DFA</abbr> is constructed, a string can be searched easily. It simply iterates the text pointer on each iteration, while the pattern’s pointer iterates based on the output from the <abbr title="Deterministic Finite-State Automaton">DFA</abbr> given the current text character as input. Iteration ends when the full length of either the text or the pattern is exhausted. If the full pattern was consumed then there was a match and the pointer to the start of the match is returned.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>KMP search</span></figcaption><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">i</span><span class="o">,</span> <span class="n">j</span><span class="o">,</span> <span class="n">N</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">length</span><span class="o">(),</span> <span class="n">M</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   
   <span class="k">for</span> <span class="o">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
@@ -2124,13 +2124,13 @@ A B C D E F
   <span class="k">if</span> <span class="o">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">M</span><span class="o">)</span> <span class="k">return</span> <span class="n">i</span> <span class="o">-</span> <span class="n">M</span><span class="o">;</span>
   <span class="k">else</span>        <span class="k">return</span> <span class="n">N</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>KMP search</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="boyer-moore">Boyer-Moore</h3>
 <p>The Boyer-Moore substring search algorithm works by reading the pattern for comparison in reverse order while skipping through the text accordingly to facilitate this. When a comparison mismatches, the algorithm looks in a skip table to determine how far ahead to jump forward to begin the next match attempt. This behavior is known as the mismatched character heuristic.</p>
 <h4 id="bm-skip-table">Skip Table</h4>
 <p>The mismatched character heuristic makes use of the aforementioned skip table. The table is indexed by a character from the alphabet and gives the index of its rightmost occurrence in the pattern, or -1 if not present. That very value defines how far ahead to skip if that character from the text caused the mismatch.</p>
 <p>The table is constructed by first setting all entries to -1, then for every character in the pattern, set that character’s entry to its position in the pattern.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">constructSkipTable</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>skip table construction</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">constructSkipTable</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span><span class="o">[]</span> <span class="n">right</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">int</span><span class="o">[</span><span class="n">R</span><span class="o">];</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">c</span><span class="o">++)</span>
@@ -2139,7 +2139,7 @@ A B C D E F
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span>
     <span class="n">right</span><span class="o">[</span><span class="n">pattern</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">)]</span> <span class="o">=</span> <span class="n">j</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>skip table construction</span></figcaption></figure>
+</code></pre></figure>
 <h4 id="bm-search">Search</h4>
 <p>The searching algorithm, as previously stated, iterates the text pointer <code>i</code> from left-to-right and the pattern pointer <code>j</code> right-to-left. If there is a mismatch with character <code>c</code> in the text, then one of three things can occur:</p>
 <ol type="1">
@@ -2148,7 +2148,7 @@ A B C D E F
 <li><strong>if <code>i</code> is not increased due to the above case</strong>: then just increment <code>i</code> instead so that the pattern always slides at least one position to the right</li>
 </ol>
 <p>The above cases are handled with the simple statement <code>skip = j - right[text.charAt(i + j)]</code>. Case 1 is handled because characters not present in the pattern are stored as -1 in the table, thereby turning the statement into <code>skip = j + 1</code>. Case 2 is handled normally by finding the right-most occurrence’ position of <code>c</code> in the table and subtracting that from <code>j</code>. Case 3 is handled by simply checking if <code>skip</code> is less than one and if so setting it to one. If <code>skip</code> was never changed from its initial value of zero, then a match was found.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>boyer-moore search</span></figcaption><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">text</span><span class="o">,</span> <span class="n">String</span> <span class="n">pattern</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   <span class="kt">int</span> <span class="n">skip</span><span class="o">;</span>
@@ -2170,22 +2170,22 @@ A B C D E F
 
   <span class="k">return</span> <span class="n">N</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>boyer-moore search</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="rabin-karp">Rabin-Karp</h3>
 <p>The Rabin-Karp algorithm conceptually works by computing a hash of the pattern and then hashing every equal-lengthed substring in the text to find a match. The key idea is that a string of length <span class="math">\(M\)</span> corresponds to an <span class="math">\(M\)</span>-digit base-<span class="math">\(R\)</span> number. So a proper hash function would convert an <span class="math">\(M\)</span>-digit base-<span class="math">\(R\)</span> number to an integer value between <span class="math">\(0\)</span> and <span class="math">\(Q - 1\)</span> where <span class="math">\(Q\)</span> is some very large prime number. This is possible with a simple modular hashing scheme, by taking the remainder of dividing the number by <span class="math">\(Q\)</span>.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">long</span> <span class="nf">hash</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">M</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>modular hash function via horner's method</span></figcaption><pre><code class="highlight language-java"><span class="kt">long</span> <span class="nf">hash</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="kt">int</span> <span class="n">M</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">long</span> <span class="n">h</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">M</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span>
     <span class="n">h</span> <span class="o">=</span> <span class="o">(</span><span class="n">R</span> <span class="o">*</span> <span class="n">h</span> <span class="o">+</span> <span class="n">key</span><span class="o">.</span><span class="na">charAt</span><span class="o">(</span><span class="n">j</span><span class="o">))</span> <span class="o">%</span> <span class="n">Q</span><span class="o">;</span>
   <span class="k">return</span> <span class="n">h</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>modular hash function via horner's method</span></figcaption></figure>
+</code></pre></figure>
 <p>The problem with using the above approach for the text is that it incurs the cost of multiplication, addition, and remainder calculations for <em>each character</em>. Instead, for an <span class="math">\(M\)</span>-character substring of the text where <span class="math">\(t_i\)</span> corresponds to <code>text.charAt(i)</code> the hash <span class="math">\(x_i\)</span> can be computed as:</p>
 <p><span class="math">\[ x_i = t_i R^{M - 1} + t_{i + 1} R^{M - 2} + \ldots + t_{i + M - 1} R^0 \]</span></p>
 <p>From the above formula it’s apparent that the hash is constructed by individual <em>hash components</em> derived from each character in the text. It stands to reason, then, that the hash of the text shifted one character to the right is:</p>
 <p><span class="math">\[ x_{i + 1} = \left( x_i - t_i R^{M - 1} \right) R + t_{i + M} \]</span></p>
 <p>That is, the original hash minus the hash component of the first character of the previous text, plus the hash component of the new ending character.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>rabin-karp</span></figcaption><pre><code class="highlight language-java"><span class="kt">int</span> <span class="nf">search</span><span class="o">(</span><span class="n">String</span> <span class="n">pattern</span><span class="o">,</span> <span class="n">String</span> <span class="n">text</span><span class="o">)</span> <span class="o">{</span>
   <span class="kt">int</span> <span class="n">M</span> <span class="o">=</span> <span class="n">pattern</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   <span class="kt">long</span> <span class="n">Q</span> <span class="o">=</span> <span class="n">longRandomPrime</span><span class="o">();</span>
   <span class="kt">long</span> <span class="n">RM</span> <span class="o">=</span> <span class="mi">1</span><span class="o">;</span>
@@ -2212,7 +2212,7 @@ A B C D E F
 <span class="c1">// return true for Monte Carlo</span>
 <span class="c1">// or check pattern vs text[i .. i - M + 1] for Las Vegas</span>
 <span class="kt">boolean</span> <span class="nf">check</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="kc">true</span><span class="o">;</span> <span class="o">}</span>
-</code></pre><figcaption><span>rabin-karp</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="regular-expressions">Regular Expressions</h2>
 <p>A Regular Expression pattern can be represented as a Non-Deterministic Finite-State Automaton (<abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr>) where every character in the pattern corresponds to a state in the <abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr>, followed by an accept state. Characters from the alphabet have an outgoing edge (match transition) going to the next state (character) in the pattern. Metacharacters such as parentheses, pipes, and asterisks have at least one outgoing edge (<span class="math">\(\epsilon\)</span>-transition) going to another state that represents their purpose.</p>
 <p><abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr> traversal in this context occurs as follows:</p>
@@ -2266,13 +2266,13 @@ A B C D E F
   <span class="o">}</span>
 </code></pre></figure>
 <p>Once the entire text has been consumed, the final iteration of the above loop would leave the final set of reachable states intact. If this set contains the final, <em>accept</em> state, then the <abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr> accepts the text — that is, there was indeed a match. Otherwise, there wasn’t a match.</p>
-<figure class="codeblock"><pre><code class="highlight language-java">  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">:</span> <span class="n">pc</span><span class="o">)</span>
+<figure class="codeblock"><figcaption><span>regular expression matching</span></figcaption><pre><code class="highlight language-java">  <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">v</span> <span class="o">:</span> <span class="n">pc</span><span class="o">)</span>
     <span class="k">if</span> <span class="o">(</span><span class="n">v</span> <span class="o">==</span> <span class="n">M</span><span class="o">)</span>
       <span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
 
   <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>regular expression matching</span></figcaption></figure>
+</code></pre></figure>
 <h3 id="regex-nfa-construction">NFA Construction</h3>
 <p>The construction of the <abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr> is accomplished similar to how Djikstra’s <a href="http://en.wikipedia.org/wiki/Shunting-yard_algorithm">shunting-yard algorithm</a> works for evaluating mathematical expressions in infix notation by using two stacks: one for operators and another for values.</p>
 <p>In this context, a stack is maintained for the operators and a digraph the size of the length of the pattern plus one (to account for the accept state) is maintained to represent the <abbr title="Non-Deterministic Finite-State Automaton">NFA</abbr>’s <span class="math">\(\epsilon\)</span>-transitions. <strong>Concatenation</strong> is already handled implicitly by nature of how the pattern is stored.</p>
@@ -2307,13 +2307,13 @@ A B C D E F
     <span class="o">}</span>
 </code></pre></figure>
 <p>Finally, <code>)</code>, <code>*</code>, and <code>)</code> each also have an <span class="math">\(\epsilon\)</span>-transition leading to the next state in the pattern.</p>
-<figure class="codeblock"><pre><code class="highlight language-java">    <span class="k">if</span> <span class="o">(</span><span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;(&#39;</span> <span class="o">||</span> <span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;*&#39;</span> <span class="o">||</span> <span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;)&#39;</span><span class="o">)</span>
+<figure class="codeblock"><figcaption><span>NFA construction</span></figcaption><pre><code class="highlight language-java">    <span class="k">if</span> <span class="o">(</span><span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;(&#39;</span> <span class="o">||</span> <span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;*&#39;</span> <span class="o">||</span> <span class="n">re</span><span class="o">[</span><span class="n">i</span><span class="o">]</span> <span class="o">==</span> <span class="sc">&#39;)&#39;</span><span class="o">)</span>
       <span class="n">G</span><span class="o">.</span><span class="na">addEdge</span><span class="o">(</span><span class="n">i</span><span class="o">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
   <span class="o">}</span>
 
   <span class="k">return</span> <span class="n">G</span><span class="o">;</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>NFA construction</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="data-compression">Data Compression</h2>
 <p>Universally good lossless data compression is impossible because, for example, it would mean that data could be compressed over and over again until eventually reaching a compressed length of 0. Instead, lossless compression aims to exploit the known structure of the target data for the best compression ratio.</p>
 <h3 id="run-length-encoding">Run-Length Encoding</h3>
@@ -2328,7 +2328,7 @@ A B C D E F
 <p>Instead, a property known as <strong>prefix-free code</strong> is enforced for the encodings, which prevents any code from being a prefix of another. In the above, a possible representation could be <code>A</code> with <code>0</code>, <code>B</code> with <code>1111</code>, <code>C</code> with <code>110</code>, <code>D</code> with <code>100</code>, <code>R</code> with <code>1110</code>, and <code>!</code> with <code>101</code>, yielding the encoding <code>011111110011001000111111100101</code>. While this is a slightly longer representation, it is unambiguous.</p>
 <p>Prefix-free codes can be easily represented using a trie where left links are <code>0</code> and right links are <code>1</code>. Leave nodes contain the character represented by the bits of the edges of the path used to reach them. Each node in the trie has an associated frequency (used during construction) and character (for leaves).</p>
 <p>Constructing the trie consists of first creating a forest of 1-node trees — all of which are leaves — one for each character in the input, with its frequency variable set to the number of times it appears in the input. The trie is then constructed from the bottom-up by merging the two least frequent characters (nodes) with a new parent node with its frequency set to their sum. This is greatly facilitated by a priority queue:</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="n">Node</span> <span class="nf">buildTrie</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">freq</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>trie construction</span></figcaption><pre><code class="highlight language-java"><span class="n">Node</span> <span class="nf">buildTrie</span><span class="o">(</span><span class="kt">int</span><span class="o">[]</span> <span class="n">freq</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">MinPQ</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">pq</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MinPQ</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;();</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">char</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">c</span><span class="o">++)</span>
@@ -2345,7 +2345,7 @@ A B C D E F
 
   <span class="k">return</span> <span class="n">pq</span><span class="o">.</span><span class="na">delMin</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>trie construction</span></figcaption></figure>
+</code></pre></figure>
 <p>The way in which the trie is constructed ensures that the more frequent characters (nodes) are closer to the root, and as a result are encoded with fewer bits.</p>
 <p>One thing to recognize is that the trie has to somehow be encoded in the compressed data so that it can then be decompressed. The trie can be encoded in a bitstream by performing pre-order traversal (root - left - right), and at each node:</p>
 <ul>
@@ -2361,7 +2361,7 @@ A B C D E F
 <li>the longest prefix of the input present in the trie is found and its value output to the compressed stream</li>
 <li>if the length of the prefix is shorter than the remaining input length, a new code is added for the string consisting of the prefix concatenated with the next character in the input stream. This is a simple operation, essentially done by adding a new node with the new code to the node at which the prefix ends</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">compress</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>LZW compression</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">compress</span><span class="o">(</span><span class="n">String</span> <span class="n">input</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">TST</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">TST</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;();</span>
 
   <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">R</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span>
@@ -2383,7 +2383,7 @@ A B C D E F
   <span class="n">BinaryStdOut</span><span class="o">.</span><span class="na">write</span><span class="o">(</span><span class="n">R</span><span class="o">,</span> <span class="n">W</span><span class="o">);</span>
   <span class="n">BinaryStdOut</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>LZW compression</span></figcaption></figure>
+</code></pre></figure>
 <p><strong>Decompression</strong> depends on a table indexed by codes and valued by strings (prefixes), this is constructed from the alphabet. The code of the first character in the input stream is read and its associated string is retrieved from the table. Decompression continues until the EOF character is encountered, on each iteration doing the following:</p>
 <ol type="1">
 <li>the string associated with the code is output</li>
@@ -2392,7 +2392,7 @@ A B C D E F
 <li>if the current code counter is equal to the next (lookahead) code — therefore making it impossible to read what the next code’s first character is, since it’s in the process of being constructed — then first character of the string currently being constructed is appended to its end, following basic logic</li>
 <li>a new code is added to the table at an incremented code corresponding to the previously read string concatenated with the first character of the current string’s first character</li>
 </ol>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">decompress</span><span class="o">()</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>LZW decompression</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">decompress</span><span class="o">()</span> <span class="o">{</span>
   <span class="n">String</span><span class="o">[]</span> <span class="n">st</span> <span class="o">=</span> <span class="k">new</span> <span class="n">String</span><span class="o">[</span><span class="n">L</span><span class="o">];</span>
   <span class="kt">int</span> <span class="n">codeword</span> <span class="o">=</span> <span class="n">BinaryStdIn</span><span class="o">.</span><span class="na">readInt</span><span class="o">(</span><span class="n">W</span><span class="o">);</span>
   <span class="kt">int</span> <span class="n">i</span><span class="o">;</span>
@@ -2423,14 +2423,14 @@ A B C D E F
 
   <span class="n">BinaryStdOut</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>LZW decompression</span></figcaption></figure>
+</code></pre></figure>
 <h1 id="context">Context</h1>
 <p>Miscellaneous algorithms follow.</p>
 <h2 id="b-trees">B-Trees</h2>
 <p>A B-Trees of order <span class="math">\(M\)</span> is a tree consisting of internal and external <span class="math">\(k\)</span>-nodes each consisting of <span class="math">\(k\)</span> keys where <span class="math">\(2 \leq k \leq M - 1\)</span> at the root and <span class="math">\(M/2 \leq k \leq M - 1\)</span> at every other node. <strong>Internal nodes</strong> contain copies of keys, where every key is greater than or equal to its parent node’s associated key, but not greater than the parent node’s next largest key. <strong>External nodes</strong> are the leaves of the tree that associate keys with data. A <strong>sentinel key</strong> is created to be less than all other keys and is the first key in the root node.</p>
 <h3 id="b-tree-insertion">Insertion</h3>
 <p>To insert a key, the tree is recursively descended by following the link pertaining to the interval upon which the inserted key falls until an external node is reached. The tree is balanced on the way up the tree after the recursive call. If a node is full it is split into two <span class="math">\(M/2\)</span>-nodes and attached to a parent 2-node (if at the root) or a <span class="math">\((k + 1)\)</span>-node where <span class="math">\(k\)</span> was the original size of the full node’s parent. Whenever a node is split, the smallest key in the new node (or both smallest keys from both nodes if at the root) is inserted into the parent node.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">Key</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>B-Tree insertion</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="n">Key</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">add</span><span class="o">(</span><span class="n">root</span><span class="o">,</span> <span class="n">key</span><span class="o">);</span>
 
   <span class="k">if</span> <span class="o">(</span><span class="n">root</span><span class="o">.</span><span class="na">isFull</span><span class="o">())</span> <span class="o">{</span>
@@ -2454,10 +2454,10 @@ A B C D E F
 
   <span class="n">next</span><span class="o">.</span><span class="na">close</span><span class="o">();</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>B-Tree insertion</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="suffix-arrays">Suffix Arrays</h2>
 <p>Suffix arrays are arrays of suffixes of a given text which help with procedures such as finding the longest repeated substring in some text.</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kd">class</span> <span class="nc">SuffixArray</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>suffix array</span></figcaption><pre><code class="highlight language-java"><span class="kd">class</span> <span class="nc">SuffixArray</span> <span class="o">{</span>
   <span class="kd">private</span> <span class="kd">final</span> <span class="n">String</span><span class="o">[]</span> <span class="n">suffixes</span><span class="o">;</span>
   <span class="kd">private</span> <span class="kd">final</span> <span class="kt">int</span> <span class="n">N</span><span class="o">;</span>
 
@@ -2479,9 +2479,9 @@ A B C D E F
   <span class="kd">public</span> <span class="n">String</span> <span class="nf">select</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">suffixes</span><span class="o">[</span><span class="n">i</span><span class="o">];</span> <span class="o">}</span>
   <span class="kd">public</span> <span class="kt">int</span> <span class="nf">index</span><span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">)</span> <span class="o">{</span> <span class="k">return</span> <span class="n">N</span> <span class="o">-</span> <span class="n">suffixes</span><span class="o">[</span><span class="n">i</span><span class="o">].</span><span class="na">length</span><span class="o">();</span> <span class="o">}</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>suffix array</span></figcaption></figure>
+</code></pre></figure>
 <p>Using this suffix array class, the longest repeated substring can be found efficiently:</p>
-<figure class="codeblock"><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+<figure class="codeblock"><figcaption><span>longest repeated substring</span></figcaption><pre><code class="highlight language-java"><span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
   <span class="n">String</span> <span class="n">text</span> <span class="o">=</span> <span class="n">StdIn</span><span class="o">.</span><span class="na">readAll</span><span class="o">();</span>
   <span class="kt">int</span> <span class="n">N</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="na">length</span><span class="o">();</span>
   <span class="n">SuffixArray</span> <span class="n">sa</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SuffixArray</span><span class="o">(</span><span class="n">text</span><span class="o">);</span>
@@ -2495,7 +2495,7 @@ A B C D E F
 
   <span class="n">StdOut</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">lrs</span><span class="o">);</span>
 <span class="o">}</span>
-</code></pre><figcaption><span>longest repeated substring</span></figcaption></figure>
+</code></pre></figure>
 <h2 id="network-flow">Network-Flow</h2>
 <p>The Network-Flow problem concerns itself with finding the settings in a network that maximize the flow from source to sink. At each junction in the network there are switches that control the flow’s distribution between it’s outgoing edges. The problem can be modeled as an edge-weighted digraph with a single source and sink pair, where the weights correspond to the capacity of the edge.</p>
 <p>An <strong>st-flow</strong> is a set of edge flows for the network that represent the distribution of flow values for each edge. An <strong>st-flow value</strong> is the sink’s inflow. The network-flow problem can be described as finding an st-flow such that no other st-flow has a larger st-flow value. Such an st-flow can be referred to as a <strong>maxflow</strong>.</p>
@@ -2527,53 +2527,54 @@ A B C D E F
 </ol>
 </section></div>
   <div class="meta">
-    <div class="date"><i class="fa fa-calendar fa-fw"></i> July 15, 2013</div>
-    <div class="notes"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
-    <div class="commit"><i class="fa fa-code-fork fa-fw"></i> <a href='https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/algorithms.markdown'>History</a><span class='hash'>, <a href='https://github.com/blaenk/blaenk.github.io/commit/3c69d8c' title='typo'>3c69d8c</a></span></div>
+    <div class="meta-component"><i class="fa fa-calendar fa-fw"></i> July 15, 2013</div>
+    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/algorithms.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/36ae1dc" title="typo">36ae1dc</a></span></div>
+    <div class="meta-component"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
   </div>
 </article>
 
 
+    </div>
+    <footer id="footer" class="inner">
+      <span id="social">
+        <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
+        &middot;
+        <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
+        &middot;
+        <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
+        &middot;
+        <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
+        &middot;
+        <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
+      </span>
+    </footer>
+    
+    
+    <!-- google analytics -->
+    <script async="true" type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37339861-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!--MathJax CDN-->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: "none"
+      });
+
+      MathJax.Hub.Register.MessageHook('End Process', function() {
+        jQuery('#MathJax_Font_Test').empty();
+        jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
+      });
+    </script>
+    <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
   </div>
-  <footer id="footer" class="inner">
-    <span id="social">
-      <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
-      &middot;
-      <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
-      &middot;
-      <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
-      &middot;
-      <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
-      &middot;
-      <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
-    </span>
-  </footer>
-  
-  
-  <!-- google analytics -->
-  <script async="true" type="text/javascript">
-    var _gaq = _gaq || [];
-    _gaq.push(['_setAccount', 'UA-37339861-1']);
-    _gaq.push(['_trackPageview']);
-
-    (function() {
-      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-    })();
-  </script>
-  <!--MathJax CDN-->
-  <script type="text/x-mathjax-config">
-    MathJax.Hub.Config({
-      messageStyle: "none"
-    });
-
-    MathJax.Hub.Register.MessageHook('End Process', function() {
-      jQuery('#MathJax_Font_Test').empty();
-      jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
-    });
-  </script>
-  <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
-  </script>
 </body>
 </html>

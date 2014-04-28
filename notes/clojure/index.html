@@ -1,0 +1,528 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Clojure - Blaenk Denum</title>
+  <meta name="author" content="Jorge Israel Peña">
+  <meta name="description" content="AKA Blaenk Denum">
+
+  <meta name="HandheldFriendly" content="True">
+  <meta name="MobileOptimized" content="320">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="/favicon.png" rel="shortcut icon">
+  <link href='http://fonts.googleapis.com/css?family=Noto+Sans:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+  <link href='http://fonts.googleapis.com/css?family=Merriweather:900italic,900,700italic,400italic,700,400,300italic,300' rel='stylesheet' type='text/css'>
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link href='/css/screen.css' rel='stylesheet' type='text/css' media='screen' />
+  <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/atom.xml" />
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <script src='/js/blaenk.js' type='text/javascript'></script>
+</head>
+<body>
+  <div class="wrapper">
+    <header id="header" class="inner">
+      <div id="stamp">
+        <h1><a href="/">Jorge Israel Peña</a></h1>
+        <h4>AKA BLAENK DENUM</h4>
+      </div>
+      <nav id="main-nav">
+        <ul class="main">
+          <li><a href="/about/">About</a></li>
+          <li><a href="/work/">Work</a></li>
+          <li><a href="/lately/">Lately</a></li>
+          <li><a href="/notes/">Notes</a></li>
+          <li><a id="search_btn">Search</a></li>
+        </ul>
+      </nav>
+      <nav id="mobile-nav">
+        <div class="alignleft menu">
+          <a class="button">Menu</a>
+          <div class="container">
+            <ul class="main">
+              <li><a href="/about/">About</a></li>
+              <li><a href="/work/">Work</a></li>
+              <li><a href="/lately/">Lately</a></li>
+              <li><a href="/notes/">Notes</a></li>
+              <li><a id="search_btn">Search</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="alignright search">
+          <a class="button"></a>
+          <div class="container">
+            <form action="http://google.com/search" method="get">
+              <input type="text" name="q" results="0">
+              <input type="hidden" name="q" value="site:blaenkdenum.com">
+            </form>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div id="content" class="inner">
+      <form class="desk_search" action="http://google.com/search" method="get">
+        <input id="search" type="text" name="q" results="0" placeholder="Search" autocomplete="off" spellcheck="false">
+        <input type="hidden" name="q" value="site:blaenkdenum.com">
+      </form>
+      <article class="post">
+  <h2 class="title"><a href="/notes/clojure/"><span>Clojure</span></a></h2>
+  <div class="entry-content"><p>Recently I’ve been thinking about my opinions on the various languages I know, particularly with regards to which I should focus on, and I decided that knowing a <abbr title="Java Virtual Machine">JVM</abbr> language would be very beneficial because of how robust and time-proven the <abbr title="Java Virtual Machine">JVM</abbr> is, especially compared to other language <abbr title="Virtual Machine">VM</abbr>s. For this reason I considered Scala and Clojure, and Scala seemed more like Haskell to me so I decided to <a href="/notes/scala">go with that one first</a>.</p>
+<p>I didn’t have an overwhelming reaction to Scala, so I decided to give Clojure a shot as well to better compare them. My main resource is the book <a href="http://amzn.com/1449394701">Clojure Programming</a>. There’s also <a href="http://www.braveclojure.com/">Clojure for the Brave and True</a>.</p>
+<nav id="toc"><p>Contents</p><ol><li><a href="#homoiconicity">Homoiconicity</a><ol><li><a href="#reader">Reader</a></li><li><a href="#scalar-literals">Scalar Literals</a><ol><li><a href="#keywords">Keywords</a></li><li><a href="#symbols">Symbols</a></li><li><a href="#numbers">Numbers</a></li><li><a href="#regular-expressions">Regular Expressions</a></li><li><a href="#comments">Comments</a></li><li><a href="#whitespace">Whitespace</a></li><li><a href="#collections">Collections</a></li></ol></li><li><a href="#namespaces">Namespaces</a></li><li><a href="#special-forms">Special Forms</a><ol><li><a href="#suppressing-evaluation">Suppressing Evaluation</a></li><li><a href="#code-blocks">Code Blocks</a></li><li><a href="#vars">Vars</a></li><li><a href="#local-bindings">Local Bindings</a></li><li><a href="#creating-functions">Creating Functions</a></li><li><a href="#conditionals">Conditionals</a></li><li><a href="#looping">Looping</a></li><li><a href="#java-interop">Java Interop</a></li><li><a href="#specialized-mutation">Specialized Mutation</a></li><li><a href="#eval">Eval</a></li></ol></li></ol></li></ol></nav>
+<h1 id="homoiconicity">Homoiconicity</h1>
+<p>Clojure and other lisp languages are <em>homoiconic</em>, often referred to as “code as data,” which means that the way the code is written is itself the abstract syntax tree (<abbr title="Abstract Syntax Tree">AST</abbr>) of the program. This makes creating embedded domain specific languages (<abbr title="Embedded Domain Specific Language">EDSL</abbr>s) very straightforward, as well as simply making the code easier to reason about. Questions of precedence, for example, are directly encoded into the code.</p>
+<p>Because Clojure code is itself an <abbr title="Abstract Syntax Tree">AST</abbr> in a Clojure data structure, metaprogramming is also more powerful because it simply involves manipulating that data structure; this is the basis of macros.</p>
+<h2 id="reader">Reader</h2>
+<p>Clojure <abbr title="Abstract Syntax Tree">AST</abbr> structures can be deserialized into Clojure structures using the <code>read</code>-like functions. In the following examples, the structures are printed back out by the <abbr title="Read-Eval-Print-Loop">REPL</abbr> using the <code>pr-str</code> function. The fact that serialization of Clojure structures is this straightforward is what drives most Clojure developers to use it as the primary serialization mechanism.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nf">read-string</span> <span class="s">&quot;42&quot;</span><span class="p">)</span>
+<span class="c1">;= 42</span>
+<span class="p">(</span><span class="nf">read-string</span> <span class="s">&quot;(+ 1 2)&quot;</span><span class="p">)</span>
+<span class="c1">;= (+ 1 2)</span>
+<span class="p">(</span><span class="nb">pr-str </span><span class="p">(</span><span class="nf">read-string</span> <span class="s">&quot;[1 2 3]&quot;</span><span class="p">))</span>
+<span class="c1">;= [1 2 3]</span>
+</code></pre></figure>
+<div class="callout">
+<p><strong>Note</strong>: the Clojure <abbr title="Read-Eval-Print-Loop">REPL</abbr> always starts in the default <code>user</code> namespace.</p>
+</div>
+<p>The reader allows for different syntax to make code more concise. For example, evaluation of a form can be suppressed by prefixing it with a quote <code>'</code>. Anonymous function literals can be defined with <code>#()</code>.</p>
+<h2 id="scalar-literals">Scalar Literals</h2>
+<p>Characters are denoted by a blackslash, as in <code>\c</code>, and they natively support Unicode. It’s also possible to use special characters such as <code>\n</code> would be used in strings, but individually:</p>
+<ul>
+<li><code>\space</code></li>
+<li><code>\newline</code></li>
+<li><code>\formfeed</code></li>
+<li><code>\return</code></li>
+<li><code>\backspace</code></li>
+<li><code>\tab</code></li>
+</ul>
+<h3 id="keywords">Keywords</h3>
+<p>Keywords I believe are similar to Ruby/Scala symbols and Erlang atoms. The are prefixed by a colon <code>:</code> and consist of any non-whitespace character, where a slash <code>/</code> denotes a <em>namespaced keyword</em>, and a double colon <code>::</code> is expanded by the reader to a namespaced keyword in the current namespace, or another namespace if the keyword started by a namespace alias as in <code>::alias/keyword</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">pizza</span> <span class="p">{</span><span class="ss">:name</span> <span class="s">&quot;Ramunto&#39;s&quot;</span>
+            <span class="ss">:location</span> <span class="s">&quot;Claremont, NH&quot;</span>
+            <span class="ss">::location</span> <span class="s">&quot;123,-456&quot;</span><span class="p">})</span>
+<span class="c1">;= #&#39;user/pizza</span>
+<span class="nv">pizza</span>
+<span class="c1">;= {:name &quot;Ramunto&#39;s&quot;, :location &quot;Claremont, NH&quot;, :user/location &quot;123,-456&quot;}</span>
+<span class="p">(</span><span class="ss">:user/location</span> <span class="nv">pizza</span><span class="p">)</span>
+<span class="c1">;= &quot;123,-456</span>
+</code></pre></figure>
+<p>Keywords are “named” values which are values that have intrinsic names that can be accessed using the <code>name</code> function, and the namespace can be accessed with the <code>namespace</code> function:</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nb">name </span><span class="ss">:user/location</span><span class="p">)</span>
+<span class="c1">;= &quot;location&quot;</span>
+<span class="p">(</span><span class="nb">namespace </span><span class="ss">:user/location</span><span class="p">)</span>
+<span class="c1">;= &quot;user&quot;</span>
+</code></pre></figure>
+<p>As in Ruby, keywords are often used for indexing hashes. The following defines a hashmap with a <code>:name</code> and <code>:city</code> key and then accesses the value for the <code>:city</code> key. Keywords can be used in the function position because they <em>are</em> functions that look themselves up in collections passed to them.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">person</span> <span class="p">{</span><span class="ss">:name</span> <span class="s">&quot;Sandra Cruz&quot;</span>
+             <span class="ss">:city</span> <span class="s">&quot;Portland, ME&quot;</span><span class="p">})</span>
+<span class="c1">;= #&#39;user/person</span>
+<span class="p">(</span><span class="ss">:city</span> <span class="nv">person</span><span class="p">)</span>
+<span class="c1">;= &quot;Portland, ME&quot;</span>
+</code></pre></figure>
+<h3 id="symbols">Symbols</h3>
+<p>Symbols are identifiers that evaluate to the values they name. For example, in the following code, <code>average</code> is a symbol referring to the function held in the var named <code>average</code>. Symbols containing a slash <code>/</code> denote a <em>namespaced symbol</em> which evaluates to the named value in the specified namespace.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nf">average</span> <span class="p">[</span><span class="mi">10</span> <span class="mi">20</span> <span class="mi">30</span><span class="p">])</span>
+<span class="c1">;= 20</span>
+</code></pre></figure>
+<p>The variables can be referred to directly by prefixing a symbol with <code>#'</code>.</p>
+<h3 id="numbers">Numbers</h3>
+<p>Numeric literals exist for a variety of number types. Custom numerical bases can be used with the <code>#r</code> prefix where <code>#</code> would be the desired number base.</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Syntax</th>
+<th style="text-align: left;">Type</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">42, 0xff, 2r101, 040</td>
+<td style="text-align: left;">long</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">3.14, 6.02e23</td>
+<td style="text-align: left;">double</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">42N</td>
+<td style="text-align: left;">clojure.lang.BigInt</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">0.01M</td>
+<td style="text-align: left;">java.math.BigDecimal</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">22/7</td>
+<td style="text-align: left;">clojure.lang.Ratio</td>
+</tr>
+</tbody>
+</table>
+<h3 id="regular-expressions">Regular Expressions</h3>
+<p>Strings prefixed with a hash <code>#</code> are regex literals which yield <code>java.util.regex.Pattern</code> instances.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nb">re-seq </span><span class="o">#</span><span class="s">&quot;(\d+)-(\d+)&quot;</span> <span class="s">&quot;1-3&quot;</span><span class="p">)</span>
+<span class="c1">;= ([&quot;1-3&quot; &quot;1&quot; &quot;3&quot;])</span>
+</code></pre></figure>
+<h3 id="comments">Comments</h3>
+<p>Single-line comments are started with a semicolon <code>;</code>. There are also <em>form-level</em> comments prefixed by the <code>#_</code> reader macro which cue the reader to ignore the next Clojure <em>form</em> following the macro. This is particularly useful when wanting to comment out blocks of code. The <code>comment</code> macro can also be used to comment out code but they always evaluate to <code>nil</code>, which may be unexpected.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nf">read-string</span> <span class="s">&quot;(+ 1 2 #_(* 2 2) 8)&quot;</span><span class="p">)</span>
+<span class="c1">;= (+ 1 2 8)</span>
+
+<span class="p">(</span><span class="kd">defn </span><span class="nv">some-func</span>
+  <span class="p">[</span><span class="nv">args</span><span class="p">]</span>
+  <span class="nv">code</span>
+  <span class="o">#</span><span class="nv">_</span><span class="p">(</span><span class="k">if </span><span class="nv">debug-level</span>
+    <span class="p">(</span><span class="nb">println </span><span class="s">&quot;debugging&quot;</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">println </span><span class="s">&quot;more debugging&quot;</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nb">+ </span><span class="mi">1</span> <span class="mi">2</span> <span class="p">(</span><span class="nb">comment </span><span class="p">(</span><span class="nb">* </span><span class="mi">2</span> <span class="mi">2</span><span class="p">))</span> <span class="mi">8</span><span class="p">)</span>
+<span class="c1">;= NullPointerException</span>
+</code></pre></figure>
+<h3 id="whitespace">Whitespace</h3>
+<p>Commas are considered whitespace by the reader. Whether to use them or not is a question of style, but they’re generally used when multiple pairs of values appear on the same line.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nb">= </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span>, <span class="mi">2</span>, <span class="mi">3</span><span class="p">])</span>
+<span class="c1">;= true</span>
+
+<span class="p">(</span><span class="nf">create-user</span> <span class="p">{</span><span class="ss">:name</span> <span class="nv">user</span>, <span class="ss">:email</span> <span class="nv">email</span><span class="p">})</span>
+</code></pre></figure>
+<h3 id="collections">Collections</h3>
+<p>There are literals for lists, vectors, maps, and sets. Note that since lists denote calls in Clojure, it’s necessary to quote them to prevent their evaluation as a call.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="o">&#39;</span><span class="p">(</span><span class="nf">a</span> <span class="nv">b</span> <span class="ss">:name</span> <span class="mf">12.5</span><span class="p">)</span>     <span class="c1">;; list</span>
+<span class="p">[</span><span class="ss">&#39;a</span> <span class="ss">&#39;b</span> <span class="mf">12.5</span><span class="p">]</span>          <span class="c1">;; vector</span>
+<span class="p">{</span><span class="ss">:name</span> <span class="s">&quot;Bob&quot;</span> <span class="ss">:age</span> <span class="mi">31</span><span class="p">}</span> <span class="c1">;; map</span>
+<span class="o">#</span><span class="p">{</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">}</span>              <span class="c1">;; set</span>
+</code></pre></figure>
+<h2 id="namespaces">Namespaces</h2>
+<p>Vars are defined using the <code>def</code> special form which takes the symbol used to refer to the var and the value to store in that var. When the symbol is used on its own to access the var’s value, the symbol is said to be <em>unqualified</em> and so it is resolved within the current namespace. Vars can also be redefined by supplying the same symbol with a different value to the <code>def</code> function.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">x</span> <span class="mi">1</span><span class="p">)</span>
+<span class="c1">;= #&#39;user/x</span>
+<span class="nv">x</span>
+<span class="c1">;= 1</span>
+<span class="p">(</span><span class="k">def </span><span class="nv">x</span> <span class="s">&quot;hello&quot;</span><span class="p">)</span>
+<span class="c1">;= #&#39;user/x</span>
+<span class="nv">x</span>
+<span class="c1">;= &quot;hello&quot;</span>
+</code></pre></figure>
+<p>Contrary to unqualified symbols, symbols can be <em>namespace-qualified</em> so that they are resolved within the specified namespace. For example, if we create a new namespace <code>foo</code>, we can continue to refer to the symbol <code>x</code> by qualifying the namespace:</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="nv">*ns*</span>
+<span class="c1">;= #&lt;Namespace user&gt;</span>
+
+<span class="p">(</span><span class="kd">ns </span><span class="nv">foo</span><span class="p">)</span> <span class="c1">; create and switch to new &#39;foo&#39; namespace</span>
+<span class="c1">;= nil</span>
+
+<span class="nv">*ns*</span>
+<span class="c1">;= #&lt;Namespace foo&gt;</span>
+
+<span class="nv">user/x</span>
+<span class="c1">;= &quot;hello&quot;</span>
+</code></pre></figure>
+<p>However, if we attempt to access the unqualified symbol, it will try to find <code>x</code> within the <code>foo</code> namespace, which doesn’t exist:</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="nv">x</span>
+<span class="c1">;= CompilerException: Unable to resolve symbol: x</span>
+</code></pre></figure>
+<h2 id="special-forms">Special Forms</h2>
+<p>Special forms are Clojure’s primitive building blocks of computation upon which the rest of Clojure is built.</p>
+<h3 id="suppressing-evaluation">Suppressing Evaluation</h3>
+<p>The special form <code>quote</code> suppresses evaluation of a Clojure expression. For example symbols evaluate to the value of the var they represent, but with <code>quote</code> that evaluation is suppressed, so they evaluate to themselves like strings and numbers do. The quote character <code>'</code> is reader syntax for <code>quote</code>. In fact, <code>quote</code> can be used on reader sugars to determine how they’re actually represented.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">quote </span><span class="nv">x</span><span class="p">)</span>
+<span class="c1">;= x</span>
+<span class="p">(</span><span class="nb">symbol? </span><span class="p">(</span><span class="k">quote </span><span class="nv">x</span><span class="p">))</span>
+<span class="c1">;= true</span>
+
+<span class="ss">&#39;x</span>
+<span class="c1">;= x</span>
+
+<span class="p">(</span><span class="nb">symbol? </span><span class="ss">&#39;x</span><span class="p">)</span>
+<span class="c1">;= true</span>
+
+<span class="p">(</span><span class="nb">= </span><span class="o">&#39;</span><span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">list </span><span class="ss">&#39;+</span> <span class="ss">&#39;x</span> <span class="ss">&#39;x</span><span class="p">))</span>
+<span class="c1">;= true</span>
+</code></pre></figure>
+<h3 id="code-blocks">Code Blocks</h3>
+<p>The special form <code>do</code> evaluates all of the expressions provided to it in order and yields the last expression’s value as its value. Many other forms such as <code>fn</code>, <code>let</code>, <code>loop</code>, <code>try</code> and <code>defn</code> wrap their body in an implicit <code>do</code> expression so that multiple inner expressions are evaluated.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nf">do</span>
+  <span class="p">(</span><span class="nb">println </span><span class="s">&quot;hi&quot;</span><span class="p">)</span>
+  <span class="p">(</span><span class="nb">apply * </span><span class="p">[</span><span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span><span class="p">]))</span>
+<span class="c1">; hi</span>
+<span class="c1">;= 120</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">a</span> <span class="p">(</span><span class="nb">inc </span><span class="p">(</span><span class="nb">rand-int </span><span class="mi">6</span><span class="p">))</span>
+      <span class="nv">b</span> <span class="p">(</span><span class="nb">inc </span><span class="p">(</span><span class="nb">rand-int </span><span class="mi">6</span><span class="p">))]</span>
+  <span class="p">(</span><span class="nb">println </span><span class="p">(</span><span class="nf">format</span> <span class="s">&quot;You rolled a %s and a %s&quot;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">))</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">a</span> <span class="nv">b</span><span class="p">))</span>
+</code></pre></figure>
+<h3 id="vars">Vars</h3>
+<p>The special form <code>def</code> defines or redefines a var with an optional value within the current namespace. Other forms implicitly create or redefine vars and are usually prefixed with <code>def</code> such as <code>defn</code> and <code>defn-</code>.</p>
+<p>It’s possible to refer to vars instead of the values that they hold by using the special form <code>var</code>. There’s also a shorthand for this with <code>#'</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">x</span> <span class="mi">5</span><span class="p">)</span>
+<span class="c1">;= #&#39;user/x</span>
+
+<span class="p">(</span><span class="k">var </span><span class="nv">x</span><span class="p">)</span>
+<span class="c1">;= #&#39;user/x</span>
+
+<span class="o">#</span><span class="ss">&#39;x</span>
+<span class="c1">;= #&#39;user/x</span>
+</code></pre></figure>
+<h3 id="local-bindings">Local Bindings</h3>
+<p>The special form <code>let</code> allows lexically scoped named references to be defined.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">hypot</span>
+  <span class="p">[</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span>
+  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">x2</span> <span class="p">(</span><span class="nb">* </span><span class="nv">x</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="nv">y2</span> <span class="p">(</span><span class="nb">* </span><span class="nv">y</span> <span class="nv">y</span><span class="p">)]</span>
+    <span class="p">(</span><span class="nf">Math/sqrt</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">x2</span> <span class="nv">y2</span><span class="p">))))</span>
+</code></pre></figure>
+<p>The <code>let</code> form also allows <em>destructuring</em> similar to pattern-matching in languages like Haskell, Rust, Scala, and Erlang. For example, to destructure a sequence, specifically a vector, we simply pass it a list of symbols that will take on the appropriate values. Destructuring can also be nested, as in other languages. The ampersand <code>&amp;</code> can be used to specify that the following symbol should take on the remaining <em>sequence</em> of values. The <code>:as</code> keyword can be used to bind the collection to a value, similar to what <code>@</code> does in Haskell, Scala, and Rust.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">v</span> <span class="p">[</span><span class="mi">42</span> <span class="s">&quot;foo&quot;</span> <span class="mf">99.2</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">12</span><span class="p">]])</span>
+<span class="c1">;= #&#39;user/v</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span><span class="p">]</span> <span class="nv">v</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">z</span><span class="p">))</span>
+<span class="c1">;= 141.2</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">x</span> <span class="nv">_</span> <span class="nv">_</span> <span class="p">[</span><span class="nv">y</span> <span class="nv">z</span><span class="p">]]</span> <span class="nv">v</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">y</span> <span class="nv">z</span><span class="p">))</span>
+<span class="c1">;= 59</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">x</span> <span class="o">&amp;</span> <span class="nv">rest</span><span class="p">]</span> <span class="nv">v</span><span class="p">]</span>
+  <span class="nv">rest</span><span class="p">)</span>
+<span class="c1">;= (&quot;foo&quot; 99.2 [5 12])</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">x</span> <span class="nv">_</span> <span class="nv">z</span> <span class="ss">:as</span> <span class="nv">original-vector</span><span class="p">]</span> <span class="nv">v</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">conj </span><span class="nv">original-vector</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">z</span><span class="p">)))</span>
+<span class="c1">;= [42 &quot;foo&quot; 99.2 [5 12] 141.2]</span>
+</code></pre></figure>
+<p>Maps can also be destructured in a similar manner. This works with Clojure’s <code>hash-map</code>, <code>array-map</code>, records, collections implementing <code>java.util.Map</code>, and values supported by the <code>get</code> function such as Clojure vectors, strings, and array can be keyed by their indices.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">m</span> <span class="p">{</span><span class="ss">:a</span> <span class="mi">5</span> <span class="ss">:b</span> <span class="mi">6</span>
+        <span class="ss">:c</span> <span class="p">[</span><span class="mi">7</span> <span class="mi">8</span> <span class="mi">9</span><span class="p">]</span>
+        <span class="ss">:d</span> <span class="p">{</span><span class="ss">:e</span> <span class="mi">10</span> <span class="ss">:f</span> <span class="mi">11</span><span class="p">}</span>
+        <span class="s">&quot;foo&quot;</span> <span class="mi">88</span>
+        <span class="mi">42</span> <span class="nv">false</span><span class="p">})</span>
+<span class="c1">;= #&#39;user/m</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[{</span><span class="nv">a</span> <span class="ss">:a</span> <span class="nv">b</span> <span class="ss">:b</span><span class="p">}</span> <span class="nv">m</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">a</span> <span class="nv">b</span><span class="p">))</span>
+<span class="c1">;= 11</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[{</span><span class="nv">x</span> <span class="mi">3</span> <span class="nv">y</span> <span class="mi">8</span><span class="p">}</span> <span class="p">[</span><span class="mi">12</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">-18</span> <span class="mi">44</span> <span class="mi">6</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">]]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+<span class="c1">;= -17</span>
+</code></pre></figure>
+<p>The <code>:as</code> keyword can be used to bind the collection. The <code>:or</code> keyword can be used to provide a defaults map which will be consulted if the destructured keys aren’t present.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">let </span><span class="p">[{</span><span class="nv">k</span> <span class="ss">:unknown</span> <span class="nv">x</span> <span class="ss">:a</span>
+       <span class="ss">:or</span> <span class="p">{</span><span class="nv">k</span> <span class="mi">50</span><span class="p">}}</span> <span class="nv">m</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">+ </span><span class="nv">k</span> <span class="nv">x</span><span class="p">))</span>
+<span class="c1">;= 55</span>
+</code></pre></figure>
+<p>Often times it may be desirable to destructure a map such that the symbols are named after the keys of the map, but doing this explicitly can get repetitive, which is why the options <code>:keys</code>, <code>:strs</code>, and <code>:syms</code> can be used.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">chas</span> <span class="p">{</span><span class="ss">:name</span> <span class="s">&quot;Chas&quot;</span> <span class="ss">:age</span> <span class="mi">31</span> <span class="ss">:location</span> <span class="s">&quot;Massachusetts&quot;</span><span class="p">})</span>
+<span class="c1">;= #&#39;user/chas</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[{</span><span class="nb">name </span><span class="ss">:name</span> <span class="nv">age</span> <span class="ss">:age</span> <span class="nv">location</span> <span class="ss">:location</span><span class="p">}</span> <span class="nv">chas</span><span class="p">]</span>
+  <span class="p">(</span><span class="nf">format</span> <span class="s">&quot;%s is %s years old and lives in %s.&quot;</span> <span class="nb">name </span><span class="nv">age</span> <span class="nv">location</span><span class="p">))</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nb">name </span><span class="nv">age</span> <span class="nv">location</span><span class="p">]}</span> <span class="nv">chas</span><span class="p">]</span>
+  <span class="p">(</span><span class="nf">format</span> <span class="s">&quot;%s is %s years old and lives in %s.&quot;</span> <span class="nb">name </span><span class="nv">age</span> <span class="nv">location</span><span class="p">))</span>
+</code></pre></figure>
+<p>It’s also possible to destructure vectors which themselves contain key-value pairs. This can be done explicitly by binding the key-value pairs with <code>&amp;</code>, converting that to a <code>hash-map</code>, and then destructuring that — but it’s also possible with regular destructure syntax. This is specifically made possible by <code>let</code> by allowing the destructuring of rest sequences if they have an even number of values, i.e. key-value pairs.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">def </span><span class="nv">user-info</span> <span class="p">[</span><span class="s">&quot;robert8990&quot;</span> <span class="mi">2011</span> <span class="ss">:name</span> <span class="s">&quot;Bob&quot;</span> <span class="ss">:city</span> <span class="s">&quot;Boston&quot;</span><span class="p">])</span>
+<span class="c1">;= #&#39;user/user-info</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">username</span> <span class="nv">account-year</span> <span class="o">&amp;</span> <span class="nv">extra-info</span><span class="p">]</span> <span class="nv">user-info</span>
+      <span class="p">{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nb">name </span><span class="nv">city</span><span class="p">]}</span> <span class="p">(</span><span class="nb">apply hash-map </span><span class="nv">extra-info</span><span class="p">)]</span>
+  <span class="p">(</span><span class="nf">format</span> <span class="s">&quot;%s is in %s&quot;</span> <span class="nb">name </span><span class="nv">city</span><span class="p">))</span>
+<span class="c1">;= &quot;Bob is in Boston&quot;</span>
+
+<span class="p">(</span><span class="k">let </span><span class="p">[[</span><span class="nv">username</span> <span class="nv">account-year</span> <span class="o">&amp;</span> <span class="p">{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nb">name </span><span class="nv">city</span><span class="p">]}]</span> <span class="nv">user-info</span><span class="p">]</span>
+  <span class="p">(</span><span class="nf">format</span> <span class="s">&quot;%s is in %s&quot;</span> <span class="nb">name </span><span class="nv">city</span><span class="p">))</span>
+<span class="c1">;= &quot;Bob is in Boston&quot;</span>
+</code></pre></figure>
+<h3 id="creating-functions">Creating Functions</h3>
+<p>The special form <code>fn</code> is used to create functions. A function defined this way has no name, and so cannot be referred to later on. It can be place inside a var using the <code>def</code> form. The <code>fn</code> form also takes an optional name by which the function can reference itself. Furthermore, a function can have <em>multiple arities</em>, that is, define different bodies depending on the number of arguments passed.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">((</span><span class="k">fn </span><span class="p">[</span><span class="nv">x</span><span class="p">]</span> <span class="p">(</span><span class="nb">+ </span><span class="mi">10</span> <span class="nv">x</span><span class="p">))</span> <span class="mi">8</span><span class="p">)</span>
+
+<span class="p">(</span><span class="k">def </span><span class="nv">add-ten</span> <span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">x</span><span class="p">]</span> <span class="p">(</span><span class="nb">+ </span><span class="mi">10</span> <span class="nv">x</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="nf">add-ten</span> <span class="mi">20</span><span class="p">)</span>
+<span class="c1">;= 30</span>
+
+<span class="p">(</span><span class="k">def </span><span class="nv">strange-adder</span> <span class="p">(</span><span class="k">fn </span><span class="nv">adder-self-reference</span>
+                    <span class="p">([</span><span class="nv">x</span><span class="p">]</span> <span class="p">(</span><span class="nf">adder-self-reference</span> <span class="nv">x</span> <span class="mi">1</span><span class="p">))</span>
+                    <span class="p">([</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">y</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nf">strange-adder</span> <span class="mi">10</span><span class="p">)</span>
+<span class="c1">;= 11</span>
+
+<span class="p">(</span><span class="nf">strange-adder</span> <span class="mi">10</span> <span class="mi">50</span><span class="p">)</span>
+<span class="c1">;= 60</span>
+</code></pre></figure>
+<p>The <code>defn</code> form encapsulates the functionality of <code>def</code> and <code>fn</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">strange-adder</span>
+  <span class="p">([</span><span class="nv">x</span><span class="p">]</span> <span class="p">(</span><span class="nf">strange-adder</span> <span class="nv">x</span> <span class="mi">1</span><span class="p">))</span>
+  <span class="p">([</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span> <span class="p">(</span><span class="nb">+ </span><span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+</code></pre></figure>
+<p>The special form <code>letfn</code> can be used to define multiple functions at once that are aware of each other. This is useful for definining mutually recursive functions.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="nf">letfn</span> <span class="p">[(</span><span class="nf">odd?</span> <span class="p">[</span><span class="nv">n</span><span class="p">]</span>
+          <span class="p">(</span><span class="nf">even?</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">)))</span>
+        <span class="p">(</span><span class="nf">even?</span> <span class="p">[</span><span class="nv">n</span><span class="p">]</span>
+          <span class="p">(</span><span class="nb">or </span><span class="p">(</span><span class="nb">zero? </span><span class="nv">n</span><span class="p">)</span>
+            <span class="p">(</span><span class="nf">odd?</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">n</span><span class="p">))))])</span>
+
+<span class="p">(</span><span class="nf">odd?</span> <span class="mi">11</span><span class="p">)</span>
+<span class="c1">;= true</span>
+</code></pre></figure>
+<p>Variadic functions are possible using the rest arguments syntax from destructuring.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">concat-rest</span>
+  <span class="p">[</span><span class="nv">x</span> <span class="o">&amp;</span> <span class="nv">rest</span><span class="p">]</span>
+  <span class="p">(</span><span class="nb">apply str </span><span class="p">(</span><span class="nb">butlast </span><span class="nv">rest</span><span class="p">)))</span>
+
+<span class="p">(</span><span class="kd">defn </span><span class="nv">make-user</span>
+  <span class="p">[</span><span class="o">&amp;</span> <span class="p">[</span><span class="nv">user-id</span><span class="p">]]</span>
+  <span class="p">{</span><span class="ss">:user-id</span> <span class="p">(</span><span class="nb">or </span><span class="nv">user-id</span> <span class="p">(</span><span class="nb">str </span><span class="p">(</span><span class="nf">java.util.UUID/randomUUID</span><span class="p">)))})</span>
+</code></pre></figure>
+<p>It’s also possible to use keyword arguments in functions, which is facilitated through map destructuring of rest sequences.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">make-user</span>
+  <span class="p">[</span><span class="nv">username</span> <span class="o">&amp;</span> <span class="p">{</span><span class="ss">:keys</span> <span class="p">[</span><span class="nv">email</span> <span class="nv">join-date</span><span class="p">]</span>
+               <span class="ss">:or</span> <span class="p">{</span><span class="nv">join-date</span> <span class="p">(</span><span class="nf">java.util.Date.</span><span class="p">)}}]</span>
+  <span class="p">{</span><span class="ss">:username</span> <span class="nv">username</span>
+   <span class="ss">:join-date</span> <span class="nv">join-date</span>
+   <span class="ss">:email</span> <span class="nv">email</span>
+   <span class="ss">:exp-date</span> <span class="p">(</span><span class="nf">java.util.Date.</span> <span class="p">(</span><span class="nb">long </span><span class="p">(</span><span class="nf">+2.592e9</span> <span class="p">(</span><span class="nf">.getTime</span> <span class="nv">join-date</span><span class="p">))))})</span>
+
+<span class="p">(</span><span class="nf">make-user</span> <span class="s">&quot;Bobby&quot;</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">make-user</span> <span class="s">&quot;Bobby&quot;</span>
+            <span class="ss">:join-date</span> <span class="p">(</span><span class="nf">java.util.Date.</span> <span class="mi">111</span> <span class="mi">0</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="ss">:email</span> <span class="s">&quot;bobby@example.com&quot;</span><span class="p">)</span>
+</code></pre></figure>
+<p>Function literals have specific, concise syntax by being prepended with <code>#</code>. Placeholder arguments are prepended with <code>%</code>, though the first argument can be referred to by a single <code>%</code>. Function literals don’t contain an implicit <code>do</code> form, so multiple statements require an explicit <code>do</code> form. It’s also possible to specify variadic functions by assigning the rest of the arguments to <code>%&amp;</code>.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">x</span> <span class="nv">y</span><span class="p">]</span> <span class="p">(</span><span class="nf">Math/pow</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+<span class="o">#</span><span class="p">(</span><span class="nf">Math/pow</span> <span class="nv">%1</span> <span class="nv">%2</span><span class="p">)</span>
+
+<span class="p">(</span><span class="k">fn </span><span class="p">[</span><span class="nv">x</span> <span class="o">&amp;</span> <span class="nv">rest</span><span class="p">]</span> <span class="p">(</span><span class="nb">- </span><span class="nv">x</span> <span class="p">(</span><span class="nb">apply + </span><span class="nv">rest</span><span class="p">)))</span>
+<span class="o">#</span><span class="p">(</span><span class="nb">- </span><span class="nv">%</span> <span class="p">(</span><span class="nb">apply + </span><span class="nv">%</span><span class="o">&amp;</span><span class="p">))</span>
+</code></pre></figure>
+<div class="callout">
+<p><strong>Note</strong>: Function literals cannot be nested.</p>
+</div>
+<h3 id="conditionals">Conditionals</h3>
+<p>The special form <code>if</code> is the single primitive conditional operator in Clojure. If no else-expression is provided it is assumed to be <code>nil</code>. There are other conditionals based on this form that are more convenient in specific situations.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">if </span><span class="nv">condition?</span> <span class="nv">true</span> <span class="nv">false</span><span class="p">)</span>
+
+<span class="p">(</span><span class="nb">if-let </span><span class="p">[</span><span class="nv">nums</span> <span class="p">(</span><span class="nb">seq </span><span class="p">(</span><span class="nb">filter </span><span class="nv">even?</span> <span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]))]</span>
+  <span class="p">(</span><span class="nb">reduce + </span><span class="nv">nums</span><span class="p">)</span>
+  <span class="s">&quot;No even numbers found.&quot;</span><span class="p">)</span> <span class="c1">; else</span>
+
+<span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">= </span><span class="nv">x</span> <span class="nv">y</span><span class="p">)</span> <span class="nv">true</span><span class="p">)</span> <span class="c1">; else nil</span>
+
+<span class="p">(</span><span class="nf">cond</span>
+  <span class="p">(</span><span class="nb">&lt; </span><span class="nv">n</span> <span class="mi">0</span><span class="p">)</span> <span class="s">&quot;negative&quot;</span>
+  <span class="p">(</span><span class="nb">&gt; </span><span class="nv">n</span> <span class="mi">0</span><span class="p">)</span> <span class="s">&quot;positive&quot;</span>
+  <span class="ss">:else</span>   <span class="s">&quot;zero&quot;</span><span class="p">)</span>
+</code></pre></figure>
+<h3 id="looping">Looping</h3>
+<p>The special form <code>recur</code> transfers control to the local-most <code>loop</code> or function, allowing recursion without consuming stack space and thereby overflowing the stack. The <code>loop</code> special form takes a vector of binding names and initial values. The final expression is taken as the value of the form itself. The <code>recur</code> special form is considered very low-level that is usually unnecessary, instead opting for <code>doseq</code>, <code>dotimes</code>, <code>map</code>, <code>reduce</code>, <code>for</code>, and so on.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="k">loop </span><span class="p">[</span><span class="nv">x</span> <span class="mi">5</span><span class="p">]</span>
+  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">neg? </span><span class="nv">x</span><span class="p">)</span>
+    <span class="nv">x</span>
+    <span class="p">(</span><span class="nf">recur</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">x</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="kd">defn </span><span class="nv">countdown</span>
+  <span class="p">[</span><span class="nv">x</span><span class="p">]</span>
+  <span class="p">(</span><span class="k">if </span><span class="p">(</span><span class="nb">zero? </span><span class="nv">x</span><span class="p">)</span>
+    <span class="ss">:blastoff!</span>
+    <span class="p">(</span><span class="k">do </span><span class="p">(</span><span class="nb">println </span><span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">recur</span> <span class="p">(</span><span class="nb">dec </span><span class="nv">x</span><span class="p">)))))</span>
+</code></pre></figure>
+<h3 id="java-interop">Java Interop</h3>
+<p>The special forms <code>.</code> and <code>new</code> exist for Java interoperability. Their use is somewhat unnatural in Clojure, however, and so there are sugared forms which are idiomatic.</p>
+<p>There are also special forms for exception handling and throwing. There are also lock primitives to synchronize on the monitor associated with every Java object, but this is usually unnecessary as there’s macro <code>locking</code> that is better suited.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="c1">; instantiation</span>
+<span class="p">(</span><span class="k">new </span><span class="nv">java.util.ArrayList</span> <span class="mi">100</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">java.util.ArrayList.</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1">; static method</span>
+<span class="p">(</span><span class="k">. </span><span class="nv">Math</span> <span class="nv">pow</span> <span class="mi">2</span> <span class="mi">10</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">Math/pow</span> <span class="mi">2</span> <span class="mi">10</span><span class="p">)</span>
+
+<span class="c1">; instance method</span>
+<span class="p">(</span><span class="k">. </span><span class="s">&quot;hello&quot;</span> <span class="nv">substring</span> <span class="mi">1</span> <span class="mi">3</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">.substring</span> <span class="s">&quot;hello&quot;</span> <span class="mi">1</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="c1">; static fields</span>
+<span class="p">(</span><span class="k">. </span><span class="nv">Integer</span> <span class="nv">MAX_VALUE</span><span class="p">)</span>
+<span class="nv">Integer/MAX_VALUE</span>
+
+<span class="c1">; instance field</span>
+<span class="p">(</span><span class="k">. </span><span class="nv">some-object</span> <span class="nv">some-field</span><span class="p">)</span>
+<span class="p">(</span><span class="nf">.someField</span> <span class="nv">some-object</span><span class="p">)</span>
+</code></pre></figure>
+<h3 id="specialized-mutation">Specialized Mutation</h3>
+<p>The <code>set!</code> special form can be used to perform in-place mutation of state, which is useful for setting thread-local values, Java fields, or mutable fields.</p>
+<h3 id="eval">Eval</h3>
+<p>The <code>eval</code> form evaluates its single argument form, which is useful when used with <code>quote</code> or <code>'</code> to suppress evaluation of the argument until it’s evaluated by <code>eval</code>. With this final form, it’s possible to reimplement a simple <abbr title="Read-Eval-Print-Loop">REPL</abbr>.</p>
+<figure class="codeblock"><pre><code class="highlight language-clojure"><span class="p">(</span><span class="kd">defn </span><span class="nv">simple-repl</span>
+  <span class="s">&quot;Simple REPL. :quit to exit.&quot;</span>
+  <span class="p">[]</span>
+  <span class="p">(</span><span class="nb">print </span><span class="p">(</span><span class="nb">str </span><span class="p">(</span><span class="nb">ns-name </span><span class="nv">*ns*</span><span class="p">)</span> <span class="s">&quot;&gt;&gt;&gt; &quot;</span><span class="p">))</span>
+  <span class="p">(</span><span class="nf">flush</span><span class="p">)</span>
+  <span class="p">(</span><span class="k">let </span><span class="p">[</span><span class="nv">expr</span> <span class="p">(</span><span class="nf">read</span><span class="p">)</span>
+        <span class="nv">value</span> <span class="p">(</span><span class="nb">eval </span><span class="nv">expr</span><span class="p">)]</span>
+    <span class="p">(</span><span class="nb">when </span><span class="p">(</span><span class="nb">not= </span><span class="ss">:quit</span> <span class="nv">value</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">println </span><span class="nv">value</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">recur</span><span class="p">))))</span>
+
+<span class="p">(</span><span class="nf">simple-repl</span><span class="p">)</span>
+</code></pre></figure></div>
+  <div class="meta">
+    <div class="meta-component"><i class="fa fa-calendar fa-fw"></i> April  6, 2014</div>
+    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/clojure.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/6107663" title="forgot a word">6107663</a></span></div>
+    <div class="meta-component"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
+  </div>
+</article>
+
+
+    </div>
+    <footer id="footer" class="inner">
+      <span id="social">
+        <a href="https://github.com/blaenk" title="github"><i class="fa fa-github-alt"></i></a>
+        &middot;
+        <a href="http://stackoverflow.com/users/101090/jorge-israel-pena" title="stackoverflow"><i class="fa fa-stack-overflow"></i></a>
+        &middot;
+        <a href="https://twitter.com/blaenk" title="twitter"><i class="fa fa-twitter"></i></a>
+        &middot;
+        <a href="mailto:jorge.israel.p@gmail.com" title="email"><i class="fa fa-envelope"></i></a>
+        &middot;
+        <a href="/atom.xml" title="feed"><i class="fa fa-rss-square"></i></a>
+      </span>
+    </footer>
+    
+    
+    <!-- google analytics -->
+    <script async="true" type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-37339861-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+    <!--MathJax CDN-->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        messageStyle: "none"
+      });
+
+      MathJax.Hub.Register.MessageHook('End Process', function() {
+        jQuery('#MathJax_Font_Test').empty();
+        jQuery('.MathJax_Display').parent('.math').addClass('mobile-math');
+      });
+    </script>
+    <script async="true" type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+  </div>
+</body>
+</html>
