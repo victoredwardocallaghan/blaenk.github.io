@@ -65,7 +65,7 @@ a {
 #header {
   height: 30px;
   padding: 25px 0 30px 0;
-  border-bottom: 3px solid #8ccaff; }
+  border-bottom: 1px solid #efefef; }
   @media screen and (max-width: 766px) {
     #header {
       text-align: center; } }
@@ -492,7 +492,7 @@ article {
   color: #999999;
   width: 230px;
   padding: 10px 0;
-  border-top: 2px solid #eeeeee;
+  border-top: 1px solid #efefef;
   clear: both;
   position: static;
   width: auto; }
@@ -861,15 +861,26 @@ p.notfound {
   color: #999; }
   #footer #social {
     cursor: default;
-    font-family: Menlo, Monaco, "DejaVu Sans Mono", Consolas, monospace;
     font-size: 18px;
     color: #999; }
     #footer #social a {
       color: #999999;
-      transition: color 0.3s; }
+      transition: color 0.3s;
+      padding: 20px; }
+      @media screen and (max-width: 600px) {
+        #footer #social a {
+          padding: 10px; } }
       @media not screen and (max-width: 600px), not screen and (max-width: 766px) {
         #footer #social a:hover {
           color: #555555; } }
+    #footer #social a[title="twitter"]:hover {
+      color: #2eb8e7; }
+    #footer #social a[title="github"]:hover {
+      color: #286da3; }
+    #footer #social a[title="stackoverflow"]:hover, #footer #social a[title="feed"]:hover {
+      color: #d85620; }
+    #footer #social a[title="email"]:hover {
+      color: #f66; }
 
 .center {
   margin-left: auto;
@@ -1034,8 +1045,9 @@ article .entry-content ol li p {
     padding: 0;
     text-align: center;
     width: 100%;
-    background-color: #eee;
-    margin: 30px auto 20px; }
+    background-color: #efefef;
+    margin: 30px auto 20px;
+    height: 1px; }
     .footnotes hr:after {
       content: "\00A7";
       cursor: default;
@@ -1066,7 +1078,7 @@ hr {
 
 #comment {
   padding: 10px 0;
-  border-top: 2px solid #eeeeee;
+  border-top: 1px solid #efefef;
   clear: both; }
 
 #content article {
@@ -1229,7 +1241,7 @@ figure.codeblock {
     counter-increment: none; }
 
 #footer {
-  border-top: 2px solid #ddd; }
+  border-top: 1px solid #efefef; }
 
 .desk_search {
   display: none;
@@ -1277,7 +1289,7 @@ article .entry-content blockquote {
     width: auto;
     margin: 20px auto;
     background-color: transparent;
-    border-top: 2px solid #eee;
+    border-top: 1px solid #efefef;
     color: #eee; }
   article .entry-content blockquote hr:first-child {
     text-align: left;
