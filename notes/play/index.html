@@ -70,7 +70,7 @@
       <article class="post">
   <h2 class="title"><a href="/notes/play/"><span>Play</span></a></h2>
   <div class="entry-content"><p>So I’ve <a href="/notes/scala/">learned</a> Scala the language, and now I think it’s time to learn <a href="http://www.playframework.com/">Play</a>, a popular web framework for it. There is also a browsable <a href="http://www.playframework.com/documentation/2.0.x/api/scala/index.html#package">API documentation</a>.</p>
-<nav id="toc"><p>Contents</p><ol><li><a href="#command">Command</a></li><li><a href="#configuration">Configuration</a><ol><li><a href="#routing">Routing</a></li></ol></li><li><a href="#models">Models</a><ol><li><a href="#persistence">Persistence</a></li></ol></li><li><a href="#views">Views</a><ol><li><a href="#escaping">Escaping</a></li><li><a href="#includes">Includes</a></li><li><a href="#layouts">Layouts</a></li><li><a href="#localization">Localization</a></li></ol></li><li><a href="#controllers">Controllers</a><ol><li><a href="#session">Session</a></li><li><a href="#assets">Assets</a></li></ol></li></ol></nav>
+<nav id="toc"><p>Contents</p><ol><li><a href="#command">Command</a></li><li><a href="#configuration">Configuration</a><ol><li><a href="#routing">Routing</a></li></ol></li><li><a href="#models">Models</a><ol><li><a href="#persistence">Persistence</a></li></ol></li><li><a href="#views">Views</a><ol><li><a href="#escaping">Escaping</a></li><li><a href="#includes">Includes</a></li><li><a href="#layouts">Layouts</a></li><li><a href="#localization">Localization</a></li></ol></li><li><a href="#controllers">Controllers</a><ol><li><a href="#session">Session</a></li><li><a href="#assets">Assets</a></li></ol></li><li><a href="#validation">Validation</a><ol><li><a href="#forms">Forms</a></li></ol></li></ol></nav>
 <h1 id="command">Command</h1>
 <p>The <code>play</code> command is similar to the <code>rails</code> command. The <code>new</code> option bootstraps a simple application with the following directory structure:</p>
 <table>
@@ -474,10 +474,42 @@ Next year, your age will be @(user.age + 1)</code></pre></figure>
 <li>HTTP request has <code>Accept-Encoding: gzip</code></li>
 <li>file with same name and <code>.gz</code> suffix is found</li>
 </ul>
-<p>Play has built-in support for Less and CoffeeScript. Such files can easily be referenced using the assets reverse router by its target extension. The extension can be prefixed by <code>min</code> to use a minified version. A file can opt-out of compilation by prefixing its name with an underscore.</p></div>
+<p>Play has built-in support for Less and CoffeeScript. Such files can easily be referenced using the assets reverse router by its target extension. The extension can be prefixed by <code>min</code> to use a minified version. A file can opt-out of compilation by prefixing its name with an underscore.</p>
+<h1 id="validation">Validation</h1>
+<p>Play provides a forms API which is used for general validation, not just HTML forms. A <code>Mapping</code> is an object that constructs an object from an HTTP request, a process called <em>binding</em>, where the type of the object constructed is a type parameter of <code>Mapping</code>.</p>
+<p>The data from an HTTP request is transformed into a <code>Map[String, String]</code>, and a mapping performs its construction off of this map. A mapping can also perform the reverse process, <em>unbinding</em>.</p>
+<p>A mapping can also define constraints and errors to provide when data doesn’t satisfy the constraints.</p>
+<h2 id="forms">Forms</h2>
+<p><a href="http://www.playframework.com/documentation/2.0/api/scala/play/api/data/Forms$.html">Predefined mappings</a> exist in the <code>Forms</code> namespace, such as <code>Forms.text</code>. Mappings can be composed together, for example using <code>Forms.tuple</code> which can bind values to a tuple type.</p>
+<figure class="codeblock"><pre><code class="highlight language-scala"><span class="k">val</span> <span class="n">data</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">(</span>
+  <span class="s">&quot;name&quot;</span>   <span class="o">-&gt;</span> <span class="s">&quot;Box of paper clips&quot;</span><span class="o">,</span>
+  <span class="s">&quot;ean&quot;</span>    <span class="o">-&gt;</span> <span class="s">&quot;1234567890123&quot;</span><span class="o">,</span>
+  <span class="s">&quot;pieces&quot;</span> <span class="o">-&gt;</span> <span class="s">&quot;300&quot;</span>
+<span class="o">)</span>
+
+<span class="k">val</span> <span class="n">mapping</span><span class="k">:</span> <span class="kt">Mapping</span><span class="o">[(</span><span class="kt">String</span>, <span class="kt">String</span>, <span class="kt">Int</span><span class="o">)]</span> <span class="k">=</span>
+  <span class="nc">Forms</span><span class="o">.</span><span class="n">tuple</span><span class="o">(</span>
+    <span class="s">&quot;name&quot;</span>   <span class="o">-&gt;</span> <span class="nc">Forms</span><span class="o">.</span><span class="n">text</span><span class="o">,</span>
+    <span class="s">&quot;ean&quot;</span>    <span class="o">-&gt;</span> <span class="nc">Forms</span><span class="o">.</span><span class="n">text</span><span class="o">,</span>
+    <span class="s">&quot;pieces&quot;</span> <span class="o">-&gt;</span> <span class="nc">Forms</span><span class="o">.</span><span class="n">number</span>
+<span class="o">)</span>
+</code></pre></figure>
+<p>To be able to bind data, it’s necessary to wrap a mapping in a <code>Form</code>, which can also contain the data that will eventually be bound. The <code>Form</code>’s type parameter is the same as the <code>Mapping</code>’s, representing the data that would be available if it validates. Once the form is created, the data can be bound using the <code>bind</code> method. Since <code>Form</code> is immutable, the <code>bind</code> method returns a new <code>Form</code> populated with the bound data.</p>
+<figure class="codeblock"><pre><code class="highlight language-scala"><span class="k">val</span> <span class="n">productForm</span> <span class="k">=</span> <span class="nc">Form</span><span class="o">(</span><span class="n">mapping</span><span class="o">)</span>
+<span class="k">val</span> <span class="n">processedForm</span> <span class="k">=</span> <span class="n">productForm</span><span class="o">.</span><span class="n">bind</span><span class="o">(</span><span class="n">data</span><span class="o">)</span>
+</code></pre></figure>
+<p>The form can be checked for errors with <code>hasErrors</code> and if there are any the errors can be fetched with <code>getErrors</code>, otherwise the data can be retrieved with <code>get</code>.</p>
+<p>An alternative method of processing the result of binding the data is to use the <code>fold</code> method in the same manner that it’d be used on the <code>Either</code> type, where the first function is the error handler which is passed the form, and the second function is the success handler which is passed the bound data:</p>
+<figure class="codeblock"><pre><code class="highlight language-scala"><span class="n">processedForm</span><span class="o">.</span><span class="n">fold</span><span class="o">(</span>
+  <span class="n">formWithErrors</span> <span class="k">=&gt;</span> <span class="nc">BadRequest</span><span class="o">,</span>
+  <span class="n">productTuple</span> <span class="k">=&gt;</span> <span class="o">{</span>
+    <span class="nc">Ok</span><span class="o">(</span><span class="n">views</span><span class="o">.</span><span class="n">html</span><span class="o">.</span><span class="n">product</span><span class="o">.</span><span class="n">show</span><span class="o">(</span><span class="n">product</span><span class="o">))</span>
+  <span class="o">}</span>
+<span class="o">)</span>
+</code></pre></figure></div>
   <div class="meta">
     <div class="meta-component"><i class="fa fa-calendar fa-fw"></i> April  7, 2014</div>
-    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/play.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/ff51eed" title="finished templates">ff51eed</a></span></div>
+    <div class="meta-component"><i class="fa fa-code-fork fa-fw"></i> <a href="https://github.com/blaenk/blaenk.github.io/commits/source/provider/notes/play.markdown">History</a><span class="hash">, <a href="https://github.com/blaenk/blaenk.github.io/commit/c6138df" title="form validation">c6138df</a></span></div>
     <div class="meta-component"><i class="fa fa-pencil fa-fw"></i> <a href="..">Notes</a></div>
   </div>
 </article>
